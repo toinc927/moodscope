@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0f16">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>MoodScope v0.4</title>
+<style>
+:root{--bg:#090d13;--panel:#111722;--panel2:#151d29;--line:#273140;--text:#eef2f7;--muted:#8e9bad;--blue:#67a7ff;--green:#55d59b;--red:#ff6f7d;--yellow:#e7c76b;--orange:#ff9d62}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hiragino Sans",sans-serif}
+body{min-height:100vh}.app{max-width:760px;margin:auto;padding-bottom:86px}.top{padding:18px 16px 10px;position:sticky;top:0;background:rgba(9,13,19,.94);backdrop-filter:blur(14px);z-index:10;border-bottom:1px solid rgba(255,255,255,.04)}
+.brand{display:flex;align-items:center;justify-content:space-between}.brand h1{font-size:24px;margin:0;font-weight:800;letter-spacing:-.5px}.sub{font-size:11px;color:var(--muted);margin-top:2px}.iconbtn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:11px;padding:9px 11px}
+.search{margin-top:12px;display:flex;gap:8px}.search input{flex:1;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px;font-size:15px;outline:none}.search button{background:var(--blue);color:#07111f;border:0;border-radius:12px;padding:0 14px;font-weight:800}
+.section{padding:12px 16px}.row{display:flex;gap:8px;overflow:auto;scrollbar-width:none}.row::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:8px 12px;font-size:12px}.chip.active{background:#1c2b42;color:#dbeaff;border-color:#3a5f91}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;padding:14px}.card:active{transform:scale(.995)}
+.stock{display:flex;align-items:center;justify-content:space-between;gap:12px}.name{font-weight:750}.code{font-size:11px;color:var(--muted);margin-top:3px}.mood{font-size:25px;font-weight:850;letter-spacing:-1px}.positive{color:var(--green)}.negative{color:var(--red)}.neutral{color:var(--yellow)}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:10px}.bar{height:5px;background:#242d39;border-radius:9px;overflow:hidden;margin-top:8px}.bar>i{display:block;height:100%;background:var(--blue);border-radius:9px}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:8px}.metric{background:var(--panel2);border-radius:13px;padding:12px}.metric .v{font-size:20px;font-weight:800}.metric .l{font-size:10px;color:var(--muted);margin-bottom:4px}
+h2{font-size:14px;margin:8px 0 10px}.hint{font-size:11px;color:var(--muted);line-height:1.55}
+.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(11,15,22,.97);backdrop-filter:blur(16px);border-top:1px solid var(--line);z-index:30}.bottomin{max-width:760px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr)}.nav{padding:9px 2px 10px;text-align:center;color:var(--muted);font-size:10px;border:0;background:none}.nav b{display:block;font-size:17px;margin-bottom:2px}.nav.active{color:#d9e8ff}
+.page{display:none}.page.active{display:block}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:50;align-items:flex-end}.overlay.show{display:flex}.sheet{width:100%;max-width:760px;margin:auto;background:#0f151f;border:1px solid var(--line);border-radius:22px 22px 0 0;max-height:92vh;overflow:auto;padding:18px 16px 28px}.sheethead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.close{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:8px 12px}
+.bigscore{font-size:52px;font-weight:900;letter-spacing:-2px}.label{display:inline-block;margin-top:3px;border-radius:999px;padding:5px 9px;font-size:11px;background:#202938;color:#cbd6e4}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field label{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}.field input,.field select{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;font-size:14px}.full{grid-column:1/-1}.primary{width:100%;border:0;background:var(--blue);color:#07111f;font-weight:850;border-radius:12px;padding:12px;margin-top:10px}.danger{background:#2a1820;color:#ff9ca7;border:1px solid #51303a}
+.table{width:100%;border-collapse:collapse;font-size:11px}.table th,.table td{padding:9px 5px;border-bottom:1px solid var(--line);text-align:right}.table th:first-child,.table td:first-child{text-align:left}
+.fieldcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:13px;margin-bottom:9px}.fieldtop{display:flex;justify-content:space-between}.fieldname{font-weight:750}.small{font-size:10px;color:var(--muted)}.weights{font-size:10px;color:var(--muted);line-height:1.6;margin-top:8px}
+.alert{padding:11px;border-radius:12px;background:#1a202b;border:1px solid var(--line);font-size:11px;margin-bottom:8px}
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(15px);opacity:0;pointer-events:none;background:#edf3fb;color:#08111e;border-radius:999px;padding:10px 14px;font-size:12px;font-weight:700;z-index:80;transition:.2s}.toast.show{opacity:1;transform:translateX(-50%)}
+@media(min-width:700px){.bottom{left:50%;right:auto;width:760px;transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand"><div><h1>MoodScope</h1><div class="sub">SNS投資心理・独自分析 v0.4</div></div><button class="iconbtn" id="settingsBtn">設定</button></div>
+  <div class="search"><input id="search" placeholder="銘柄コード・会社名・テーマを検索"><button id="watchBtn">監視</button></div>
+</header>
+
+<main>
+<section id="page-today" class="page active">
+  <div class="section"><div class="row" id="sortRow">
+    <button class="chip active" data-sort="registered">登録順</button><button class="chip" data-sort="mood">ムード順位</button><button class="chip" data-sort="change">急変</button><button class="chip" data-sort="heat">加熱度</button>
+  </div></div>
+  <div class="section"><div class="row" id="dirRow">
+    <button class="chip active" data-dir="all">全方向</button><button class="chip" data-dir="up">楽観へ</button><button class="chip" data-dir="down">悲観へ</button>
+  </div></div>
+  <div class="section"><h2>お気に入り <span class="small" id="count"></span></h2><div id="stockList"></div></div>
+</section>
+
+<section id="page-fields" class="page">
+  <div class="section"><h2>テーマ・分野</h2><div class="hint">単純平均ではなく、時価総額・関連度・投稿量を使った独自集約。構成銘柄は後から変更できます。</div></div>
+  <div class="section"><div id="fieldList"></div></div>
+</section>
+
+<section id="page-search" class="page">
+  <div class="section"><h2>検索</h2><div class="hint">上の検索欄から銘柄・テーマを検索。サンプルデータ以外は手入力で追加できます。</div></div>
+  <div class="section"><div id="searchResults"></div></div>
+</section>
+
+<section id="page-favorites" class="page">
+  <div class="section"><h2>お気に入り</h2><div id="favList"></div></div>
+</section>
+
+<section id="page-status" class="page">
+  <div class="section"><h2>取得・分析状況</h2>
+    <div class="twocol"><div class="metric"><div class="l">登録銘柄</div><div class="v" id="statusStocks">0</div></div><div class="metric"><div class="l">テーマ</div><div class="v" id="statusFields">0</div></div><div class="metric"><div class="l">履歴データ</div><div class="v" id="statusHistory">0</div></div><div class="metric"><div class="l">分析方式</div><div class="v">独自</div></div></div>
+  </div>
+  <div class="section"><div class="alert"><b>現在のデータ源：手入力モード</b><br>v0.4では計算・UI・履歴を先に固め、Yahoo/X等の自動取得は別工程にします。</div><div class="alert"><b>重要</b><br>このアプリの数値はカブムードの完全再現ではありません。独自ルールとして設計しています。</div></div>
+</section>
+</main>
+</div>
+
+<nav class="bottom"><div class="bottomin">
+<button class="nav active" data-page="today"><b>◉</b>今日</button>
+<button class="nav" data-page="fields"><b>◈</b>分野</button>
+<button class="nav" data-page="search"><b>⌕</b>検索</button>
+<button class="nav" data-page="favorites"><b>★</b>お気に入り</button>
+<button class="nav" data-page="status"><b>≡</b>状況</button>
+</div></nav>
+
+<div class="overlay" id="detailOverlay"><div class="sheet" id="detailSheet"></div></div>
+<div class="overlay" id="settingsOverlay"><div class="sheet">
+  <div class="sheethead"><h2>設定</h2><button class="close" data-close="settingsOverlay">閉じる</button></div>
+  <div class="alert"><b>ムード感度</b><br><select id="sensitivity"><option value="standard">標準</option><option value="high">高感度</option><option value="low">低感度</option></select></div>
+  <div class="alert"><b>独自シグナル</b><br>悲観＋高加熱＝「パニック売り候補」<br>楽観＋高加熱＝「過熱警戒」<br>悲観＋低加熱＝「静かな悲観」<br>楽観＋低加熱＝「静かな改善」</div>
+  <div class="alert"><b>計算の考え方</b><br>ムードは感情方向を中心に、投稿量を「信頼度」として利用。加熱度はムードとは別指標。急変は「今回ムード − 前回ムード」。</div>
+  <button class="primary" id="resetBtn">サンプルデータを初期状態に戻す</button>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const seed=[
+ {code:"9983",name:"ファーストリテイリング",mood:-83,prev:10,posts:142,base:37,neg:71,pos:29,heat:99,fav:true,seg:"Prime",hist:[10,-83]},
+ {code:"4062",name:"イビデン",mood:-70,prev:-35,posts:820,base:420,neg:68,pos:32,heat:73,fav:true,seg:"Prime",hist:[-20,-35,-70]},
+ {code:"6506",name:"安川電機",mood:-58,prev:-41,posts:640,base:600,neg:65,pos:35,heat:52,fav:true,seg:"Prime",hist:[-41,-58]},
+ {code:"5802",name:"住友電気工業",mood:-55,prev:-30,posts:920,base:850,neg:64,pos:36,heat:53,fav:true,seg:"Prime",hist:[-30,-55]},
+ {code:"5801",name:"古河電気工業",mood:-52,prev:-21,posts:540,base:680,neg:62,pos:38,heat:43,fav:true,seg:"Prime",hist:[-21,-52]},
+ {code:"5016",name:"JX金属",mood:-49,prev:-10,posts:410,base:500,neg:61,pos:39,heat:39,fav:true,seg:"Prime",hist:[-10,-49]},
+ {code:"593A",name:"ティアフォー",mood:-5,prev:2,posts:2276,base:1513,neg:52,pos:48,heat:65,fav:true,seg:"Growth",hist:[20,21,26,-11,0,2,-5]},
+ {code:"336A",name:"ダイナミックマッププラットフォーム",mood:-8,prev:-22,posts:296,base:590,neg:57,pos:43,heat:27,fav:true,seg:"Growth",hist:[-45,-22,-8]},
+ {code:"6613",name:"QDレーザ",mood:-25,prev:27,posts:530,base:530,neg:58,pos:42,heat:50,fav:true,seg:"Growth",hist:[27,-25]},
+ {code:"9101",name:"日本郵船",mood:11,prev:-39,posts:880,base:1000,neg:45,pos:55,heat:46,fav:true,seg:"Prime",hist:[-39,11]},
+ {code:"4588",name:"オンコリスバイオファーマ",mood:16,prev:-33,posts:370,base:500,neg:42,pos:58,heat:40,fav:true,seg:"Growth",hist:[-33,16]},
+ {code:"6857",name:"アドバンテスト",mood:32,prev:18,posts:1700,base:1300,neg:34,pos:66,heat:55,fav:true,seg:"Prime",hist:[18,32]},
+ {code:"6146",name:"ディスコ",mood:25,prev:8,posts:1100,base:1000,neg:38,pos:62,heat:54,fav:true,seg:"Prime",hist:[8,25]},
+ {code:"6723",name:"ルネサスエレクトロニクス",mood:18,prev:12,posts:900,base:1000,neg:41,pos:59,heat:46,fav:true,seg:"Prime",hist:[12,18]},
+ {code:"7003",name:"三井E&S",mood:-4,prev:-18,posts:650,base:700,neg:51,pos:49,heat:48,fav:true,seg:"Prime",hist:[-18,-4]},
+ {code:"7011",name:"三菱重工業",mood:-33,prev:-12,posts:1200,base:1000,neg:57,pos:43,heat:57,fav:true,seg:"Prime",hist:[-12,-33]}
+];
+
+const fieldSeed=[
+ {name:"半導体",stocks:["6857","6146","6723"],mood:10,prev:3,heat:46,coverage:82},
+ {name:"電子部品・電線",stocks:["5801","5802"],mood:5,prev:-7,heat:43,coverage:76},
+ {name:"AI・データセンター",stocks:["6857","5801","6723"],mood:-6,prev:-20,heat:50,coverage:79},
+ {name:"通信・ITサービス",stocks:["9432","9433","6701"],mood:-32,prev:-10,heat:51,coverage:68},
+ {name:"防衛・宇宙",stocks:["7011","7012","7013"],mood:8,prev:-14,heat:58,coverage:71},
+ {name:"ロボット・FA",stocks:["6506","6954","6861"],mood:-14,prev:-2,heat:49,coverage:74},
+ {name:"銀行",stocks:["8306","8316","8411"],mood:46,prev:-12,heat:61,coverage:60},
+ {name:"商社",stocks:["8001","8031","8058"],mood:34,prev:-19,heat:75,coverage:71}
+];
+
+let data=JSON.parse(localStorage.getItem("moodscope_v04_data")||"null")||structuredClone(seed);
+let fields=JSON.parse(localStorage.getItem("moodscope_v04_fields")||"null")||structuredClone(fieldSeed);
+let sortMode="registered",dir="all",query="";
+
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function heatCalc(posts,base){if(!base||base<=0)return 0;return clamp(Math.round(50+25*Math.log2(posts/base)),0,100)}
+function moodCalc(posts,base,neg,pos){
+  const polarity=pos-neg;
+  const ratio=base>0?posts/base:1;
+  const confidence=clamp(.55+.45*Math.sqrt(ratio),.55,1);
+  return clamp(Math.round(polarity*confidence),-100,100);
+}
+function label(m){if(m>=65)return"総楽観";if(m>=25)return"楽観気味";if(m>-25)return"様子見";if(m>-65)return"警戒気味";return"総悲観"}
+function cls(n){return n>0?"positive":n<0?"negative":"neutral"}
+function signal(x){
+ const h=x.heat, m=x.mood;
+ if(m<=-25&&h>=65)return["パニック売り候補","negative"];
+ if(m>=25&&h>=65)return["過熱警戒","negative"];
+ if(m<=-25&&h<65)return["静かな悲観","neutral"];
+ if(m>=25&&h<65)return["静かな改善","positive"];
+ return["方向感弱い","neutral"];
+}
+function save(){localStorage.setItem("moodscope_v04_data",JSON.stringify(data));localStorage.setItem("moodscope_v04_fields",JSON.stringify(fields))}
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1500)}
+
+function card(x){
+ const ch=x.mood-x.prev,[sig,sc]=signal(x);
+ return `<div class="card" data-code="${x.code}">
+  <div class="stock"><div><div class="name">${x.name}</div><div class="code">${x.code} · ${x.seg}</div></div><div style="text-align:right"><div class="mood ${cls(x.mood)}">${x.mood>0?"+":""}${x.mood}</div><div class="small">${label(x.mood)}</div></div></div>
+  <div class="meta"><span>加熱度 ${x.heat} · ${x.posts.toLocaleString()}件</span><span class="${cls(ch)}">急変 ${ch>0?"+":""}${ch}</span></div>
+  <div class="bar"><i style="width:${x.heat}%"></i></div>
+  <div class="meta"><span>${sig}</span><span>ネガ ${x.neg}% / ポジ ${x.pos}%</span></div>
+ </div>`
+}
+function filtered(){
+ let a=data.filter(x=>!query||`${x.code} ${x.name}`.toLowerCase().includes(query.toLowerCase()));
+ if(dir==="up")a=a.filter(x=>x.mood-x.prev>0); if(dir==="down")a=a.filter(x=>x.mood-x.prev<0);
+ if(sortMode==="mood")a.sort((a,b)=>b.mood-a.mood); if(sortMode==="change")a.sort((a,b)=>(b.mood-b.prev)-(a.mood-a.prev)); if(sortMode==="heat")a.sort((a,b)=>b.heat-a.heat);
+ return a;
+}
+function render(){
+ $("#stockList").innerHTML=filtered().map(card).join("")||`<div class="hint">該当する銘柄がありません。</div>`;
+ $("#count").textContent=`${data.filter(x=>x.fav).length} / 50`;
+ $("#favList").innerHTML=data.filter(x=>x.fav).map(card).join("");
+ $("#searchResults").innerHTML=filtered().map(card).join("")||`<div class="hint">検索結果なし</div>`;
+ $("#statusStocks").textContent=data.length;
+ $("#statusFields").textContent=fields.length;
+ $("#statusHistory").textContent=data.reduce((s,x)=>s+x.hist.length,0);
+ $$("#stockList .card,#favList .card,#searchResults .card").forEach(e=>e.onclick=()=>openDetail(e.dataset.code));
+}
+function renderFields(){
+ $("#fieldList").innerHTML=fields.map(f=>{
+  const ch=f.mood-f.prev;
+  return `<div class="fieldcard"><div class="fieldtop"><div><div class="fieldname">${f.name}</div><div class="small">構成 ${f.stocks.length}社 · 関連度カバー ${f.coverage}%</div></div><div class="mood ${cls(f.mood)}">${f.mood>0?"+":""}${f.mood}</div></div>
+   <div class="meta"><span>加熱度 ${f.heat}</span><span class="${cls(ch)}">急変 ${ch>0?"+":""}${ch}</span></div><div class="bar"><i style="width:${f.heat}%"></i></div>
+   <div class="weights">集約イメージ：√時価総額 × テーマ関連度 × データ信頼度 → 中央値。<br>※「その他の重み」は今後バックテストで調整。</div></div>`
+ }).join("");
+}
+function openDetail(code){
+ const x=data.find(v=>v.code===code); if(!x)return;
+ const ch=x.mood-x.prev,[sig,sc]=signal(x);
+ $("#detailSheet").innerHTML=`<div class="sheethead"><div><h2>${x.code} ${x.name}</h2><div class="small">${x.seg} · お気に入り ${x.fav?"登録":"未登録"}</div></div><button class="close" id="closeDetail">閉じる</button></div>
+ <div class="bigscore ${cls(x.mood)}">${x.mood>0?"+":""}${x.mood}</div><span class="label">${label(x.mood)} · ${sig}</span>
+ <div class="twocol" style="margin-top:12px"><div class="metric"><div class="l">加熱度</div><div class="v">${x.heat}</div></div><div class="metric"><div class="l">急変</div><div class="v ${cls(ch)}">${ch>0?"+":""}${ch}</div></div><div class="metric"><div class="l">投稿数</div><div class="v">${x.posts.toLocaleString()}</div></div><div class="metric"><div class="l">通常比</div><div class="v">${(x.posts/x.base).toFixed(2)}x</div></div></div>
+ <div class="section" style="padding:14px 0"><table class="table"><tr><th>感情</th><th>値</th></tr><tr><td>ネガティブ</td><td>${x.neg}%</td></tr><tr><td>ポジティブ</td><td>${x.pos}%</td></tr><tr><td>前回ムード</td><td>${x.prev>0?"+":""}${x.prev}</td></tr><tr><td>履歴</td><td>${x.hist.join(" → ")}</td></tr></table></div>
+ <h2>データを入力して再計算</h2>
+ <div class="form"><div class="field"><label>投稿数</label><input id="iPosts" type="number" value="${x.posts}"></div><div class="field"><label>通常投稿数</label><input id="iBase" type="number" value="${x.base}"></div><div class="field"><label>ネガティブ%</label><input id="iNeg" type="number" min="0" max="100" value="${x.neg}"></div><div class="field"><label>ポジティブ%</label><input id="iPos" type="number" min="0" max="100" value="${x.pos}"></div></div>
+ <button class="primary" id="calcBtn">再計算して保存</button><button class="primary danger" id="favToggle">${x.fav?"お気に入りから外す":"お気に入りに追加"}</button>
+ <div class="hint" style="margin-top:10px">ムード式：感情の方向 × 投稿量による信頼度。加熱度は 50 + 25×log₂(投稿数/通常投稿数) を0〜100に収めます。これは独自仕様です。</div>`;
+ $("#detailOverlay").classList.add("show");
+ $("#closeDetail").onclick=()=>$("#detailOverlay").classList.remove("show");
+ $("#favToggle").onclick=()=>{x.fav=!x.fav;save();render();openDetail(code);toast(x.fav?"お気に入りに追加しました":"お気に入りから外しました")};
+ $("#calcBtn").onclick=()=>{
+  const posts=+$("#iPosts").value,base=+$("#iBase").value,neg=+$("#iNeg").value,pos=+$("#iPos").value;
+  if(posts<0||base<=0||neg<0||pos<0||neg+pos!==100){toast("入力値を確認してください");return}
+  x.prev=x.mood;x.posts=posts;x.base=base;x.neg=neg;x.pos=pos;x.heat=heatCalc(posts,base);x.mood=moodCalc(posts,base,neg,pos);x.hist=[...x.hist.slice(-6),x.mood];save();render();renderFields();openDetail(code);toast("保存しました");
+ };
+}
+function showPage(p){
+ $$(".page").forEach(x=>x.classList.remove("active"));$(`#page-${p}`).classList.add("active");
+ $$(".nav").forEach(x=>x.classList.toggle("active",x.dataset.page===p));
+ if(p==="fields")renderFields(); if(p==="status")render();
+}
+$$(".nav").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+$$("[data-sort]").forEach(b=>b.onclick=()=>{$$("[data-sort]").forEach(x=>x.classList.remove("active"));b.classList.add("active");sortMode=b.dataset.sort;render()});
+$$("[data-dir]").forEach(b=>b.onclick=()=>{$$("[data-dir]").forEach(x=>x.classList.remove("active"));b.classList.add("active");dir=b.dataset.dir;render()});
+$("#search").oninput=e=>{query=e.target.value;showPage("search");render()};
+$("#watchBtn").onclick=()=>{showPage("favorites");toast("お気に入りを表示")};
+$("#settingsBtn").onclick=()=>$("#settingsOverlay").classList.add("show");
+$$("[data-close]").forEach(b=>b.onclick=()=>$("#"+b.dataset.close).classList.remove("show"));
+$("#settingsOverlay").onclick=e=>{if(e.target.id==="settingsOverlay")e.currentTarget.classList.remove("show")};
+$("#detailOverlay").onclick=e=>{if(e.target.id==="detailOverlay")e.currentTarget.classList.remove("show")};
+$("#resetBtn").onclick=()=>{if(confirm("サンプルデータを初期状態に戻しますか？")){data=structuredClone(seed);fields=structuredClone(fieldSeed);save();render();renderFields();$("#settingsOverlay").classList.remove("show");toast("初期状態に戻しました")}};
+
+render();renderFields();
+</script>
+</body></html>

@@ -3,39 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0f16">
+<meta name="theme-color" content="#f5f6f8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>MoodScope v0.4</title>
+<title>MoodScope v0.5</title>
 <style>
-:root{--bg:#090d13;--panel:#111722;--panel2:#151d29;--line:#273140;--text:#eef2f7;--muted:#8e9bad;--blue:#67a7ff;--green:#55d59b;--red:#ff6f7d;--yellow:#e7c76b;--orange:#ff9d62}
+:root{--bg:#f5f6f8;--panel:#ffffff;--panel2:#f0f2f5;--line:#dfe3e8;--text:#111827;--muted:#667085;--blue:#3b82f6;--green:#169b68;--red:#dc4b5a;--yellow:#a77b00;--orange:#d97706}
 *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hiragino Sans",sans-serif}
-body{min-height:100vh}.app{max-width:760px;margin:auto;padding-bottom:86px}.top{padding:18px 16px 10px;position:sticky;top:0;background:rgba(9,13,19,.94);backdrop-filter:blur(14px);z-index:10;border-bottom:1px solid rgba(255,255,255,.04)}
+body{min-height:100vh}.app{max-width:760px;margin:auto;padding-bottom:86px}.top{padding:18px 16px 10px;position:sticky;top:0;background:rgba(245,246,248,.94);backdrop-filter:blur(14px);z-index:10;border-bottom:1px solid rgba(255,255,255,.04)}
 .brand{display:flex;align-items:center;justify-content:space-between}.brand h1{font-size:24px;margin:0;font-weight:800;letter-spacing:-.5px}.sub{font-size:11px;color:var(--muted);margin-top:2px}.iconbtn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:11px;padding:9px 11px}
 .search{margin-top:12px;display:flex;gap:8px}.search input{flex:1;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px;font-size:15px;outline:none}.search button{background:var(--blue);color:#07111f;border:0;border-radius:12px;padding:0 14px;font-weight:800}
 .section{padding:12px 16px}.row{display:flex;gap:8px;overflow:auto;scrollbar-width:none}.row::-webkit-scrollbar{display:none}
-.chip{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:8px 12px;font-size:12px}.chip.active{background:#1c2b42;color:#dbeaff;border-color:#3a5f91}
+.chip{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:8px 12px;font-size:12px}.chip.active{background:#eaf2ff;color:#1d4ed8;border-color:#9fc3ff}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;padding:14px}.card:active{transform:scale(.995)}
 .stock{display:flex;align-items:center;justify-content:space-between;gap:12px}.name{font-weight:750}.code{font-size:11px;color:var(--muted);margin-top:3px}.mood{font-size:25px;font-weight:850;letter-spacing:-1px}.positive{color:var(--green)}.negative{color:var(--red)}.neutral{color:var(--yellow)}
-.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:10px}.bar{height:5px;background:#242d39;border-radius:9px;overflow:hidden;margin-top:8px}.bar>i{display:block;height:100%;background:var(--blue);border-radius:9px}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:10px}.bar{height:5px;background:#e6e9ee;border-radius:9px;overflow:hidden;margin-top:8px}.bar>i{display:block;height:100%;background:var(--blue);border-radius:9px}
 .twocol{display:grid;grid-template-columns:1fr 1fr;gap:8px}.metric{background:var(--panel2);border-radius:13px;padding:12px}.metric .v{font-size:20px;font-weight:800}.metric .l{font-size:10px;color:var(--muted);margin-bottom:4px}
 h2{font-size:14px;margin:8px 0 10px}.hint{font-size:11px;color:var(--muted);line-height:1.55}
-.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(11,15,22,.97);backdrop-filter:blur(16px);border-top:1px solid var(--line);z-index:30}.bottomin{max-width:760px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr)}.nav{padding:9px 2px 10px;text-align:center;color:var(--muted);font-size:10px;border:0;background:none}.nav b{display:block;font-size:17px;margin-bottom:2px}.nav.active{color:#d9e8ff}
+.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.97);backdrop-filter:blur(16px);border-top:1px solid var(--line);z-index:30}.bottomin{max-width:760px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr)}.nav{padding:9px 2px 10px;text-align:center;color:var(--muted);font-size:10px;border:0;background:none}.nav b{display:block;font-size:17px;margin-bottom:2px}.nav.active{color:#1d4ed8}
 .page{display:none}.page.active{display:block}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:50;align-items:flex-end}.overlay.show{display:flex}.sheet{width:100%;max-width:760px;margin:auto;background:#0f151f;border:1px solid var(--line);border-radius:22px 22px 0 0;max-height:92vh;overflow:auto;padding:18px 16px 28px}.sheethead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.close{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:8px 12px}
-.bigscore{font-size:52px;font-weight:900;letter-spacing:-2px}.label{display:inline-block;margin-top:3px;border-radius:999px;padding:5px 9px;font-size:11px;background:#202938;color:#cbd6e4}
+.overlay{display:none;position:fixed;inset:0;background:rgba(17,24,39,.28);z-index:50;align-items:flex-end}.overlay.show{display:flex}.sheet{width:100%;max-width:760px;margin:auto;background:#ffffff;border:1px solid var(--line);border-radius:22px 22px 0 0;max-height:92vh;overflow:auto;padding:18px 16px 28px}.sheethead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.close{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:8px 12px}
+.bigscore{font-size:52px;font-weight:900;letter-spacing:-2px}.label{display:inline-block;margin-top:3px;border-radius:999px;padding:5px 9px;font-size:11px;background:#eef2f7;color:#344054}
 .form{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field label{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}.field input,.field select{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;font-size:14px}.full{grid-column:1/-1}.primary{width:100%;border:0;background:var(--blue);color:#07111f;font-weight:850;border-radius:12px;padding:12px;margin-top:10px}.danger{background:#2a1820;color:#ff9ca7;border:1px solid #51303a}
 .table{width:100%;border-collapse:collapse;font-size:11px}.table th,.table td{padding:9px 5px;border-bottom:1px solid var(--line);text-align:right}.table th:first-child,.table td:first-child{text-align:left}
 .fieldcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:13px;margin-bottom:9px}.fieldtop{display:flex;justify-content:space-between}.fieldname{font-weight:750}.small{font-size:10px;color:var(--muted)}.weights{font-size:10px;color:var(--muted);line-height:1.6;margin-top:8px}
-.alert{padding:11px;border-radius:12px;background:#1a202b;border:1px solid var(--line);font-size:11px;margin-bottom:8px}
-.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(15px);opacity:0;pointer-events:none;background:#edf3fb;color:#08111e;border-radius:999px;padding:10px 14px;font-size:12px;font-weight:700;z-index:80;transition:.2s}.toast.show{opacity:1;transform:translateX(-50%)}
+.alert{padding:11px;border-radius:12px;background:#f3f5f7;border:1px solid var(--line);font-size:11px;margin-bottom:8px}
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(15px);opacity:0;pointer-events:none;background:#111827;color:#ffffff;border-radius:999px;padding:10px 14px;font-size:12px;font-weight:700;z-index:80;transition:.2s}.toast.show{opacity:1;transform:translateX(-50%)}
+
+.historybox{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px}.historytitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.historytitle b{font-size:13px}.historylegend{font-size:10px;color:var(--muted)}.historysvg{width:100%;height:190px;display:block}.axis{stroke:#d7dce3;stroke-width:1}.zero{stroke:#b8c0cc;stroke-width:1.2;stroke-dasharray:4 4}.histline{fill:none;stroke:var(--blue);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.histdot{fill:#fff;stroke:var(--blue);stroke-width:2.5}.histlabel{font-size:10px;fill:var(--muted)}.histvalue{font-size:10px;fill:var(--text);font-weight:700}.historyempty{padding:18px 4px;color:var(--muted);font-size:11px}
 @media(min-width:700px){.bottom{left:50%;right:auto;width:760px;transform:translateX(-50%)}}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><div><h1>MoodScope</h1><div class="sub">SNS投資心理・独自分析 v0.4</div></div><button class="iconbtn" id="settingsBtn">設定</button></div>
+  <div class="brand"><div><h1>MoodScope</h1><div class="sub">SNS投資心理・独自分析 v0.5</div></div><button class="iconbtn" id="settingsBtn">設定</button></div>
   <div class="search"><input id="search" placeholder="銘柄コード・会社名・テーマを検索"><button id="watchBtn">監視</button></div>
 </header>
 
@@ -66,9 +68,9 @@ h2{font-size:14px;margin:8px 0 10px}.hint{font-size:11px;color:var(--muted);line
 
 <section id="page-status" class="page">
   <div class="section"><h2>取得・分析状況</h2>
-    <div class="twocol"><div class="metric"><div class="l">登録銘柄</div><div class="v" id="statusStocks">0</div></div><div class="metric"><div class="l">テーマ</div><div class="v" id="statusFields">0</div></div><div class="metric"><div class="l">履歴データ</div><div class="v" id="statusHistory">0</div></div><div class="metric"><div class="l">分析方式</div><div class="v">独自</div></div></div>
+    <div class="twocol"><div class="metric"><div class="l">登録銘柄</div><div class="v" id="statusStocks">0</div></div><div class="metric"><div class="l">テーマ</div><div class="v" id="statusFields">0</div></div><div class="metric"><div class="l">履歴ポイント</div><div class="v" id="statusHistory">0</div></div><div class="metric"><div class="l">分析方式</div><div class="v">独自</div></div></div>
   </div>
-  <div class="section"><div class="alert"><b>現在のデータ源：手入力モード</b><br>v0.4では計算・UI・履歴を先に固め、Yahoo/X等の自動取得は別工程にします。</div><div class="alert"><b>重要</b><br>このアプリの数値はカブムードの完全再現ではありません。独自ルールとして設計しています。</div></div>
+  <div class="section"><div class="alert"><b>現在のデータ源：手入力モード</b><br>v0.5では白背景と履歴グラフを追加。データ取得はまだ手入力モードです。</div><div class="alert"><b>重要</b><br>このアプリの数値はカブムードの完全再現ではありません。独自ルールとして設計しています。</div></div>
 </section>
 </main>
 </div>
@@ -122,8 +124,8 @@ const fieldSeed=[
  {name:"商社",stocks:["8001","8031","8058"],mood:34,prev:-19,heat:75,coverage:71}
 ];
 
-let data=JSON.parse(localStorage.getItem("moodscope_v04_data")||"null")||structuredClone(seed);
-let fields=JSON.parse(localStorage.getItem("moodscope_v04_fields")||"null")||structuredClone(fieldSeed);
+let data=JSON.parse(localStorage.getItem("moodscope_v05_data")||localStorage.getItem("moodscope_v04_data")||"null")||structuredClone(seed);
+let fields=JSON.parse(localStorage.getItem("moodscope_v05_fields")||localStorage.getItem("moodscope_v04_fields")||"null")||structuredClone(fieldSeed);
 let sortMode="registered",dir="all",query="";
 
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -145,7 +147,7 @@ function signal(x){
  if(m>=25&&h<65)return["静かな改善","positive"];
  return["方向感弱い","neutral"];
 }
-function save(){localStorage.setItem("moodscope_v04_data",JSON.stringify(data));localStorage.setItem("moodscope_v04_fields",JSON.stringify(fields))}
+function save(){localStorage.setItem("moodscope_v05_data",JSON.stringify(data));localStorage.setItem("moodscope_v05_fields",JSON.stringify(fields))}
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1500)}
 
 function card(x){
@@ -181,13 +183,24 @@ function renderFields(){
    <div class="weights">集約イメージ：√時価総額 × テーマ関連度 × データ信頼度 → 中央値。<br>※「その他の重み」は今後バックテストで調整。</div></div>`
  }).join("");
 }
+function historyChart(x){
+ const vals=Array.isArray(x.hist)?x.hist.map(Number).filter(Number.isFinite):[];
+ if(vals.length<2)return `<div class="historybox"><div class="historytitle"><b>ムード履歴</b><span class="historylegend">データ不足</span></div><div class="historyempty">履歴が2ポイント以上たまると推移を表示します。</div></div>`;
+ const w=700,h=190,l=42,r=12,t=14,b=28,iw=w-l-r,ih=h-t-b;
+ const px=i=>l+(vals.length===1?iw/2:i*iw/(vals.length-1));
+ const py=v=>t+(100-v)*ih/200;
+ const pts=vals.map((v,i)=>`${px(i).toFixed(1)},${py(v).toFixed(1)}`).join(' ');
+ const grid=[100,50,0,-50,-100].map(v=>`<line class="${v===0?'zero':'axis'}" x1="${l}" y1="${py(v)}" x2="${w-r}" y2="${py(v)}"/><text class="histlabel" x="4" y="${py(v)+3}">${v>0?'+':''}${v}</text>`).join('');
+ const dots=vals.map((v,i)=>`<circle class="histdot" cx="${px(i)}" cy="${py(v)}" r="4"/><text class="histvalue" text-anchor="middle" x="${px(i)}" y="${Math.max(11,py(v)-8)}">${v>0?'+':''}${v}</text>`).join('');
+ return `<div class="historybox"><div class="historytitle"><b>ムード履歴</b><span class="historylegend">過去 → 現在 · ${vals.length}ポイント</span></div><svg class="historysvg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-label="ムード履歴グラフ">${grid}<polyline class="histline" points="${pts}"/>${dots}<text class="histlabel" x="${l}" y="${h-7}">過去</text><text class="histlabel" text-anchor="end" x="${w-r}" y="${h-7}">現在</text></svg></div>`;
+}
 function openDetail(code){
  const x=data.find(v=>v.code===code); if(!x)return;
  const ch=x.mood-x.prev,[sig,sc]=signal(x);
  $("#detailSheet").innerHTML=`<div class="sheethead"><div><h2>${x.code} ${x.name}</h2><div class="small">${x.seg} · お気に入り ${x.fav?"登録":"未登録"}</div></div><button class="close" id="closeDetail">閉じる</button></div>
  <div class="bigscore ${cls(x.mood)}">${x.mood>0?"+":""}${x.mood}</div><span class="label">${label(x.mood)} · ${sig}</span>
  <div class="twocol" style="margin-top:12px"><div class="metric"><div class="l">加熱度</div><div class="v">${x.heat}</div></div><div class="metric"><div class="l">急変</div><div class="v ${cls(ch)}">${ch>0?"+":""}${ch}</div></div><div class="metric"><div class="l">投稿数</div><div class="v">${x.posts.toLocaleString()}</div></div><div class="metric"><div class="l">通常比</div><div class="v">${(x.posts/x.base).toFixed(2)}x</div></div></div>
- <div class="section" style="padding:14px 0"><table class="table"><tr><th>感情</th><th>値</th></tr><tr><td>ネガティブ</td><td>${x.neg}%</td></tr><tr><td>ポジティブ</td><td>${x.pos}%</td></tr><tr><td>前回ムード</td><td>${x.prev>0?"+":""}${x.prev}</td></tr><tr><td>履歴</td><td>${x.hist.join(" → ")}</td></tr></table></div>
+ <div class="section" style="padding:14px 0"><table class="table"><tr><th>感情</th><th>値</th></tr><tr><td>ネガティブ</td><td>${x.neg}%</td></tr><tr><td>ポジティブ</td><td>${x.pos}%</td></tr><tr><td>前回ムード</td><td>${x.prev>0?"+":""}${x.prev}</td></tr></table>${historyChart(x)}</div>
  <h2>データを入力して再計算</h2>
  <div class="form"><div class="field"><label>投稿数</label><input id="iPosts" type="number" value="${x.posts}"></div><div class="field"><label>通常投稿数</label><input id="iBase" type="number" value="${x.base}"></div><div class="field"><label>ネガティブ%</label><input id="iNeg" type="number" min="0" max="100" value="${x.neg}"></div><div class="field"><label>ポジティブ%</label><input id="iPos" type="number" min="0" max="100" value="${x.pos}"></div></div>
  <button class="primary" id="calcBtn">再計算して保存</button><button class="primary danger" id="favToggle">${x.fav?"お気に入りから外す":"お気に入りに追加"}</button>

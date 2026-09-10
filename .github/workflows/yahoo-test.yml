@@ -1,0 +1,19 @@
+name: Yahoo realtime test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Yahoo test
+        run: node scripts/fetch_yahoo.mjs

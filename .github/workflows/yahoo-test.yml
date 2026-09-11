@@ -1,12 +1,14 @@
-name: Yahoo realtime test
+
+name: Yahoo realtime nightly
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 14 * * *"
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4

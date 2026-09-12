@@ -1,89 +1,92 @@
 // MoodScope Yahoo!リアルタイム検索
-// 投稿数を取得して data/yahoo_posts.json に保存
+// 複数銘柄の24時間投稿数を取得して data/yahoo_posts.json に保存
 
-const keyword = "ファナック";
+import fs from "fs";
 
-const url =
-  "https://search.yahoo.co.jp/realtime/api/v1/pagination" +
-  "?p=" + encodeURIComponent(keyword) +
-  "&md=h&results=40";
+const keywords = [
+  "ファナック",
+  "安川電機",
+  "ハーモニック・ドライブ",
+  "IHI",
+  "ソフトバンクグループ",
+  "ローム",
+  "北海道電力",
+  "九州電力",
+  "QPS研究所",
+  "アストロスケール"
+];
 
-const res = await fetch(url, {
-  headers: {
-    "User-Agent": "Mozilla/5.0 (compatible; MoodScope/0.1)"
+const results = [];
+
+for (const keyword of keywords) {
+  console.log(`取得中: ${keyword}`);
+
+  const url =
+    "https://search.yahoo.co.jp/realtime/api/v1/pagination" +
+    "?p=" + encodeURIComponent(keyword) +
+    "&md=h&results=40";
+
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; MoodScope/0.1)"
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error(`Yahoo API HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    const total =
+      data?.timeline?.head?.totalResultsAvailable ?? null;
+
+    results.push({
+      date: new Date().toISOString().slice(0, 10),
+      fetchedAt: new Date().toISOString(),
+      keyword,
+      posts24h: total
+    });
+
+    console.log(`${keyword}: ${total}件`);
+
+  } catch (error) {
+    console.error(`${keyword}: 取得失敗`);
+    console.error(error.message);
+
+    results.push({
+      date: new Date().toISOString().slice(0, 10),
+      fetchedAt: new Date().toISOString(),
+      keyword,
+      posts24h: null,
+      error: error.message
+    });
   }
-});
-
-if (!res.ok) {
-  throw new Error(`Yahoo API HTTP ${res.status}`);
 }
 
-const data = await res.json();
-
-const total = data?.timeline?.head?.totalResultsAvailable ?? null;
-
-if (total === null) {
-  throw new Error("Yahooから投稿数を取得できませんでした");
-}
-
-// 日本時間の日付
-const now = new Date();
-
-const jst = new Date(
-  now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" })
-);
-
-const date =
-  jst.getFullYear() +
-  "-" +
-  String(jst.getMonth() + 1).padStart(2, "0") +
-  "-" +
-  String(jst.getDate()).padStart(2, "0");
-
-// 保存用データ
-const record = {
-  date,
-  fetchedAt: now.toISOString(),
-  keyword,
-  posts24h: total
-};
-
-console.log(JSON.stringify(record, null, 2));
-
-// ファイル操作
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-
-await mkdir("data", { recursive: true });
-
-const file = "data/yahoo_posts.json";
+const filePath = "data/yahoo_posts.json";
 
 let history = [];
 
-try {
-  const old = await readFile(file, "utf8");
-  history = JSON.parse(old);
-} catch {
-  history = [];
+if (fs.existsSync(filePath)) {
+  try {
+    history = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch {
+    history = [];
+  }
 }
 
-// 同じ日のデータがあれば更新
-const index = history.findIndex(
-  item => item.date === date && item.keyword === keyword
-);
+history.push(...results);
 
-if (index >= 0) {
-  history[index] = record;
-} else {
-  history.push(record);
-}
+fs.mkdirSync("data", { recursive: true });
 
-// 日付順に並べる
-history.sort((a, b) => a.date.localeCompare(b.date));
-
-await writeFile(
-  file,
-  JSON.stringify(history, null, 2) + "\n",
+fs.writeFileSync(
+  filePath,
+  JSON.stringify(history, null, 2),
   "utf8"
 );
 
-console.log(`保存完了: ${file}`);
+console.log("");
+console.log(`保存完了: ${filePath}`);
+console.log(`今回取得: ${results.length}銘柄`);

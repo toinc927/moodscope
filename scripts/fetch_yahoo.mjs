@@ -1,15 +1,14 @@
 // MoodScope: Yahoo!リアルタイム検索から複数銘柄の24時間投稿数を取得
 const keywords = [
+
   "ファナック",
+
   "安川電機",
+
   "ハーモニック・ドライブ",
-  "IHI",
-  "イビデン",
-  "住友電工",
-  "古河電工",
-  "JX金属",
-  "ティアフォー",
-  "QPS"
+
+  "IHI"
+
 ];
 
 const fs = await import("node:fs/promises");

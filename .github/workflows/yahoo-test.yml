@@ -16,11 +16,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run Yahoo test
+      - name: Run Yahoo multi-stock fetch
         run: node scripts/fetch_yahoo.mjs
 
       - name: Calculate Heat
         run: node scripts/calculate_heat.mjs
+
+      - name: Test Yahoo sentiment data
+        run: node scripts/test_yahoo_sentiment.mjs
 
       - name: Save data
         run: |

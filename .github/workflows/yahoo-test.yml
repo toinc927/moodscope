@@ -31,6 +31,9 @@ jobs:
       - name: Probe Yahoo sentiment v2
         run: node scripts/test_yahoo_sentiment_v2.mjs
 
+      - name: Probe Yahoo sentiment v3
+        run: node scripts/test_yahoo_sentiment_v3.mjs
+
       - name: Save data
         run: |
           git config user.name "github-actions[bot]"

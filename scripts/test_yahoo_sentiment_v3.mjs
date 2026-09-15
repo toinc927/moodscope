@@ -6,21 +6,6 @@ const UA =
 const pageUrl =
   `https://search.yahoo.co.jp/realtime/search?p=${encodeURIComponent(keyword)}`;
 
-const importantTerms = [
-  "sentimentData",
-  "dataPositive",
-  "dataNegative"
-];
-
-const secondaryTerms = [
-  "positive",
-  "negative",
-  "sentiment",
-  "感情の割合",
-  "ポジティブ",
-  "ネガティブ"
-];
-
 async function fetchText(url, headers = {}) {
   const res = await fetch(url, {
     headers: {
@@ -36,26 +21,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function countOccurrences(text, term) {
-  const lower = text.toLowerCase();
-  const needle = term.toLowerCase();
-
-  let count = 0;
-  let pos = 0;
-
-  while (true) {
-    const i = lower.indexOf(needle, pos);
-
-    if (i < 0) break;
-
-    count++;
-    pos = i + needle.length;
-  }
-
-  return count;
-}
-
-function printContext(text, term, limit = 8) {
+function printExactMatches(text, term, limit = 30) {
   const lower = text.toLowerCase();
   const needle = term.toLowerCase();
 
@@ -67,12 +33,16 @@ function printContext(text, term, limit = 8) {
 
     if (i < 0) break;
 
-    console.log(`\n--- ${term} @ ${i} ---`);
+    console.log("\n");
+    console.log("########################################");
+    console.log(`EXACT HIT: ${term}`);
+    console.log(`POSITION: ${i}`);
+    console.log("########################################");
 
     console.log(
       text.slice(
-        Math.max(0, i - 1200),
-        Math.min(text.length, i + 2500)
+        Math.max(0, i - 500),
+        Math.min(text.length, i + 1500)
       )
     );
 
@@ -83,133 +53,62 @@ function printContext(text, term, limit = 8) {
   return count;
 }
 
-function findUrls(text) {
-  const results = new Set();
+function printRegexMatches(text, regex, label, limit = 30) {
+  let match;
+  let count = 0;
 
-  const patterns = [
-    /https?:\/\/[^"'\\\s<>()]+/gi,
-    /\/api\/[^"'\\\s<>()]+/gi,
-    /\/realtime\/[^"'\\\s<>()]+/gi,
-    /\/search\/[^"'\\\s<>()]+/gi
-  ];
+  while (
+    (match = regex.exec(text)) !== null &&
+    count < limit
+  ) {
+    console.log("\n");
+    console.log("========================================");
+    console.log(`REGEX HIT: ${label}`);
+    console.log(`POSITION: ${match.index}`);
+    console.log(`MATCH: ${match[0]}`);
+    console.log("========================================");
 
-  for (const re of patterns) {
-    let match;
+    console.log(
+      text.slice(
+        Math.max(0, match.index - 800),
+        Math.min(text.length, match.index + 2200)
+      )
+    );
 
-    while ((match = re.exec(text)) !== null) {
-      let value = match[0];
-
-      value = value.replace(
-        /[),.;}\]]+$/,
-        ""
-      );
-
-      if (
-        value.includes("sentiment") ||
-        value.includes("realtime") ||
-        value.includes("/api/") ||
-        value.includes("/search/")
-      ) {
-        results.add(value);
-      }
-
-      if (results.size >= 100) {
-        break;
-      }
-    }
+    count++;
   }
 
-  return [...results];
+  return count;
 }
 
-function printAssignmentPatterns(text) {
-  const patterns = [
-    /sentimentData\s*=/gi,
-    /sentimentData\s*:/gi,
-    /["']sentimentData["']\s*:/gi,
-    /dataPositive\s*:/gi,
-    /dataNegative\s*:/gi,
-    /positive\s*:/gi,
-    /negative\s*:/gi,
-    /sentimentData\s*\(/gi,
-    /\.\s*sentimentData/gi
+function findScriptUrls(html) {
+  const urls = [
+    ...html.matchAll(
+      /<script[^>]+src=["']([^"']+)["']/gi
+    )
+  ].map(m => m[1]);
+
+  return [
+    ...new Set(
+      urls.map(src =>
+        src.startsWith("http")
+          ? src
+          : new URL(src, pageUrl).href
+      )
+    )
   ];
-
-  for (const re of patterns) {
-    let match;
-    let count = 0;
-
-    while (
-      (match = re.exec(text)) !== null &&
-      count < 15
-    ) {
-      console.log(
-        `\nPATTERN: ${re}`
-      );
-
-      console.log(
-        `POSITION: ${match.index}`
-      );
-
-      console.log(
-        text.slice(
-          Math.max(0, match.index - 1800),
-          Math.min(text.length, match.index + 3500)
-        )
-      );
-
-      count++;
-    }
-  }
-}
-
-function printDataGetterPatterns(text) {
-  const patterns = [
-    /fetch\s*\(/gi,
-    /axios/gi,
-    /XMLHttpRequest/gi,
-    /useSWR/gi,
-    /useQuery/gi,
-    /queryFn/gi,
-    /get[A-Z][A-Za-z0-9_]*/g,
-    /request[A-Z][A-Za-z0-9_]*/g,
-    /client\.[a-zA-Z]+\(/g
-  ];
-
-  for (const re of patterns) {
-    let match;
-    let count = 0;
-
-    while (
-      (match = re.exec(text)) !== null &&
-      count < 10
-    ) {
-      console.log(
-        `\nGETTER PATTERN: ${re}`
-      );
-
-      console.log(
-        text.slice(
-          Math.max(0, match.index - 1000),
-          Math.min(text.length, match.index + 2200)
-        )
-      );
-
-      count++;
-    }
-  }
 }
 
 async function main() {
   console.log("========================================");
-  console.log("Yahoo sentiment v4 diagnostic");
+  console.log("Yahoo sentimentData source diagnostic");
   console.log("========================================");
 
   console.log(`KEYWORD: ${keyword}`);
   console.log(`PAGE: ${pageUrl}`);
 
   // ======================================
-  // 1. Fetch Yahoo page
+  // 1. Yahoo page
   // ======================================
 
   const page = await fetchText(pageUrl, {
@@ -223,21 +122,30 @@ async function main() {
   console.log(`HTML LENGTH: ${page.text.length}`);
 
   // ======================================
-  // 2. Search HTML
+  // 2. Search HTML itself
   // ======================================
 
   console.log("\n========================================");
-  console.log("HTML IMPORTANT TERMS");
+  console.log("HTML: sentimentData");
   console.log("========================================");
 
-  for (const term of importantTerms) {
-    console.log(
-      `${term}: ${countOccurrences(page.text, term)}`
+  const htmlCount =
+    printExactMatches(
+      page.text,
+      "sentimentData",
+      20
     );
-  }
+
+  console.log(
+    `\nHTML sentimentData occurrences: ${htmlCount}`
+  );
+
+  // ======================================
+  // 3. Next.js embedded data
+  // ======================================
 
   console.log("\n========================================");
-  console.log("HTML NEXT DATA TERMS");
+  console.log("HTML: NEXT DATA");
   console.log("========================================");
 
   for (const term of [
@@ -248,104 +156,72 @@ async function main() {
     "dehydratedState"
   ]) {
     console.log(
-      `${term}: ${countOccurrences(page.text, term)}`
+      `${term}: ${
+        page.text.toLowerCase().split(
+          term.toLowerCase()
+        ).length - 1
+      }`
     );
   }
 
-  console.log("\n========================================");
-  console.log("HTML SENTIMENT CONTEXT");
-  console.log("========================================");
-
-  for (const term of importantTerms) {
-    printContext(page.text, term, 5);
-  }
-
   // ======================================
-  // 3. Inline scripts
+  // 4. Inline scripts
   // ======================================
 
   const inlineScripts = [
     ...page.text.matchAll(
       /<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi
     )
-  ].map(match => match[1]);
+  ].map(m => m[1]);
 
   console.log("\n========================================");
-  console.log("INLINE SCRIPT COUNT");
+  console.log("INLINE SCRIPTS");
   console.log("========================================");
 
-  console.log(inlineScripts.length);
+  console.log(
+    `INLINE SCRIPT COUNT: ${inlineScripts.length}`
+  );
 
   for (let i = 0; i < inlineScripts.length; i++) {
     const js = inlineScripts[i];
 
-    const importantHit =
-      importantTerms.some(term =>
-        js.toLowerCase().includes(term.toLowerCase())
-      );
-
-    if (!importantHit) {
+    if (
+      !js.toLowerCase().includes("sentimentdata")
+    ) {
       continue;
     }
 
-    console.log(
-      `\n########################################`
+    console.log("\n");
+    console.log("########################################");
+    console.log(`INLINE SCRIPT HIT: ${i}`);
+    console.log(`JS LENGTH: ${js.length}`);
+    console.log("########################################");
+
+    printExactMatches(
+      js,
+      "sentimentData",
+      20
     );
-
-    console.log(
-      `INLINE SCRIPT HIT: ${i}`
-    );
-
-    console.log(
-      `JS LENGTH: ${js.length}`
-    );
-
-    console.log(
-      `########################################`
-    );
-
-    printAssignmentPatterns(js);
-
-    console.log("\nPOSSIBLE URLS:");
-
-    for (const url of findUrls(js)) {
-      console.log(url);
-    }
   }
 
   // ======================================
-  // 4. Find external JS
+  // 5. External JS
   // ======================================
 
-  const scriptUrls = [
-    ...page.text.matchAll(
-      /<script[^>]+src=["']([^"']+)["']/gi
-    )
-  ].map(match => match[1]);
-
-  const uniqueScripts = [
-    ...new Set(
-      scriptUrls.map(src =>
-        src.startsWith("http")
-          ? src
-          : new URL(src, pageUrl).href
-      )
-    )
-  ];
+  const scripts =
+    findScriptUrls(page.text);
 
   console.log("\n========================================");
-  console.log("EXTERNAL SCRIPT COUNT");
+  console.log("EXTERNAL SCRIPTS");
   console.log("========================================");
 
-  console.log(uniqueScripts.length);
+  console.log(
+    `SCRIPT COUNT: ${scripts.length}`
+  );
 
-  // ======================================
-  // 5. Fetch every external JS
-  // ======================================
+  let hitScripts = 0;
 
-  let importantHitCount = 0;
-
-  for (const url of uniqueScripts) {
+  for (const url of scripts) {
     try {
       const result = await fetchText(url, {
         "Accept":
@@ -362,94 +238,141 @@ async function main() {
 
       const js = result.text;
 
-      const hits = importantTerms.filter(term =>
-        js.toLowerCase().includes(term.toLowerCase())
-      );
-
-      if (hits.length === 0) {
+      if (
+        !js.toLowerCase().includes(
+          "sentimentdata"
+        )
+      ) {
         continue;
       }
 
-      importantHitCount++;
+      hitScripts++;
 
-      console.log(
-        "\n\n########################################"
-      );
-
-      console.log(
-        "######## IMPORTANT SCRIPT HIT ########"
-      );
-
-      console.log(
-        "########################################"
-      );
+      console.log("\n\n");
+      console.log("########################################");
+      console.log("######## SENTIMENT SCRIPT ########");
+      console.log("########################################");
 
       console.log(`URL: ${url}`);
       console.log(`JS LENGTH: ${js.length}`);
-      console.log(`IMPORTANT TERMS: ${hits.join(", ")}`);
 
       // ------------------------------------
-      // Exact occurrence counts
+      // Exact sentimentData occurrences
       // ------------------------------------
 
-      console.log("\n--- OCCURRENCE COUNTS ---");
+      printExactMatches(
+        js,
+        "sentimentData",
+        20
+      );
 
-      for (const term of [
-        ...importantTerms,
-        ...secondaryTerms
-      ]) {
-        const count = countOccurrences(
-          js,
-          term
-        );
+      // ------------------------------------
+      // Assignment-like patterns
+      // ------------------------------------
 
-        if (count > 0) {
-          console.log(
-            `${term}: ${count}`
+      console.log("\n");
+      console.log("========================================");
+      console.log("ASSIGNMENT-LIKE PATTERNS");
+      console.log("========================================");
+
+      printRegexMatches(
+        js,
+        /sentimentData\s*=/gi,
+        "sentimentData =",
+        20
+      );
+
+      printRegexMatches(
+        js,
+        /sentimentData\s*:/gi,
+        "sentimentData:",
+        20
+      );
+
+      printRegexMatches(
+        js,
+        /["']sentimentData["']\s*:/gi,
+        "\"sentimentData\":",
+        20
+      );
+
+      // ------------------------------------
+      // Positive / Negative data
+      // ------------------------------------
+
+      console.log("\n");
+      console.log("========================================");
+      console.log("DATA POSITIVE / NEGATIVE");
+      console.log("========================================");
+
+      printRegexMatches(
+        js,
+        /dataPositive\s*:/gi,
+        "dataPositive:",
+        20
+      );
+
+      printRegexMatches(
+        js,
+        /dataNegative\s*:/gi,
+        "dataNegative:",
+        20
+      );
+
+      // ------------------------------------
+      // API-looking strings
+      // ------------------------------------
+
+      console.log("\n");
+      console.log("========================================");
+      console.log("API / DATA LOOKING STRINGS");
+      console.log("========================================");
+
+      const patterns = [
+        /https?:\/\/[^"'\\\s<>()]+/gi,
+        /\/api\/[^"'\\\s<>()]+/gi,
+        /\/realtime\/[^"'\\\s<>()]+/gi,
+        /\/search\/[^"'\\\s<>()]+/gi
+      ];
+
+      const foundUrls = new Set();
+
+      for (const regex of patterns) {
+        let match;
+
+        while ((match = regex.exec(js)) !== null) {
+          let value = match[0];
+
+          value = value.replace(
+            /[),.;}\]]+$/,
+            ""
           );
+
+          if (
+            value.includes("sentiment") ||
+            value.includes("realtime") ||
+            value.includes("/api/") ||
+            value.includes("/search/")
+          ) {
+            foundUrls.add(value);
+          }
+
+          if (foundUrls.size >= 100) {
+            break;
+          }
         }
       }
 
-      // ------------------------------------
-      // Assignment patterns
-      // ------------------------------------
-
-      console.log(
-        "\n--- ASSIGNMENT / OBJECT PATTERNS ---"
-      );
-
-      printAssignmentPatterns(js);
-
-      // ------------------------------------
-      // Possible API URLs
-      // ------------------------------------
-
-      console.log(
-        "\n--- POSSIBLE API / DATA URLS ---"
-      );
-
-      const urls = findUrls(js);
-
-      if (urls.length === 0) {
+      if (foundUrls.size === 0) {
         console.log("(none)");
+      } else {
+        for (const value of foundUrls) {
+          console.log(value);
+        }
       }
-
-      for (const apiUrl of urls) {
-        console.log(apiUrl);
-      }
-
-      // ------------------------------------
-      // Data getter patterns
-      // ------------------------------------
-
+    } catch (error) {
       console.log(
-        "\n--- DATA GETTER PATTERNS ---"
-      );
-
-      printDataGetterPatterns(js);
-    } catch (e) {
-      console.log(
-        `SCRIPT ERROR: ${url} :: ${e.message}`
+        `SCRIPT ERROR: ${url} :: ${error.message}`
       );
     }
   }
@@ -458,16 +381,17 @@ async function main() {
   // 6. Summary
   // ======================================
 
-  console.log("\n========================================");
+  console.log("\n");
+  console.log("========================================");
   console.log("SUMMARY");
   console.log("========================================");
 
   console.log(
-    `IMPORTANT SCRIPT HITS: ${importantHitCount}`
+    `SENTIMENT SCRIPT HITS: ${hitScripts}`
   );
 
   console.log(
-    "\nYahoo sentiment v4 diagnostic finished."
+    "Yahoo sentimentData source diagnostic finished."
   );
 }
 

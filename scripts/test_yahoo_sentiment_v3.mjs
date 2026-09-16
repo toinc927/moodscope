@@ -19,7 +19,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printContext(text, position, before = 1500, after = 5000) {
+function printContext(text, position, before = 1200, after = 3500) {
   console.log("\n");
   console.log("========================================");
   console.log(`POSITION: ${position}`);
@@ -31,32 +31,6 @@ function printContext(text, position, before = 1500, after = 5000) {
       Math.min(text.length, position + after)
     )
   );
-}
-
-function searchAll(text, pattern, label, max = 20) {
-  const regex = new RegExp(pattern, "gi");
-
-  let match;
-  let count = 0;
-
-  while ((match = regex.exec(text)) !== null && count < max) {
-    console.log("\n");
-    console.log("########################################");
-    console.log(`MATCH: ${label}`);
-    console.log(`POSITION: ${match.index}`);
-    console.log(`TEXT: ${match[0]}`);
-    console.log("########################################");
-
-    printContext(text, match.index);
-
-    count++;
-
-    if (regex.lastIndex === match.index) {
-      regex.lastIndex++;
-    }
-  }
-
-  console.log(`\n${label} COUNT: ${count}`);
 }
 
 function findScriptUrls(html) {
@@ -77,13 +51,31 @@ function findScriptUrls(html) {
   ];
 }
 
+function findAllPositions(text, needle, limit = 50) {
+  const positions = [];
+  let start = 0;
+
+  while (positions.length < limit) {
+    const pos = text.indexOf(needle, start);
+
+    if (pos < 0) {
+      break;
+    }
+
+    positions.push(pos);
+    start = pos + needle.length;
+  }
+
+  return positions;
+}
+
 async function main() {
   console.log("========================================");
-  console.log("Yahoo module 77507 diagnostic");
+  console.log("Yahoo module 77507 full search");
   console.log("========================================");
 
   // ------------------------------------------
-  // 1. Yahooページ取得
+  // 1. Yahooページ
   // ------------------------------------------
 
   const page = await fetchText(pageUrl, {
@@ -104,30 +96,19 @@ async function main() {
 
   console.log("\n");
   console.log("========================================");
-  console.log("EXTERNAL SCRIPT LIST");
+  console.log("SCRIPT LIST");
   console.log("========================================");
 
   console.log(`SCRIPT COUNT: ${scripts.length}`);
 
   // ------------------------------------------
-  // 3. 612.jsを最優先で調査
+  // 3. 全JSを調査
   // ------------------------------------------
 
-  const targetChunk =
-    "https://s.yimg.jp/images/realtime/fe/assets/_next/static/4.299.2/chunks/612.js";
+  let moduleReferenceCount = 0;
+  let moduleDefinitionCount = 0;
 
-  const orderedScripts = [
-    targetChunk,
-    ...scripts.filter(x => x !== targetChunk)
-  ];
-
-  let found77507 = false;
-
-  // ------------------------------------------
-  // 4. 全JSから77507を探す
-  // ------------------------------------------
-
-  for (const url of orderedScripts) {
+  for (const url of scripts) {
     try {
       const result = await fetchText(url, {
         "Accept":
@@ -144,96 +125,150 @@ async function main() {
 
       const js = result.text;
 
-      // 77507という数字そのもの
+      // 77507を含まないJSはスキップ
       if (!js.includes("77507")) {
         continue;
       }
 
       console.log("\n\n");
       console.log("########################################");
-      console.log("######## MODULE 77507 FOUND ########");
+      console.log("######## 77507 FOUND IN SCRIPT ########");
       console.log("########################################");
 
       console.log(`URL: ${url}`);
       console.log(`JS LENGTH: ${js.length}`);
 
-      found77507 = true;
-
       // --------------------------------------
-      // 5. 77507: の定義
+      // A. 77507: 本体定義
       // --------------------------------------
 
-      searchAll(
-        js,
-        "77507\\s*:",
-        "77507: MODULE DEFINITION",
-        20
-      );
+      const definitionPatterns = [
+        "77507:",
+        "77507:function",
+        "77507=(",
+        "77507 ="
+      ];
+
+      let hasDefinition = false;
+
+      for (const pattern of definitionPatterns) {
+        const positions =
+          findAllPositions(js, pattern, 20);
+
+        if (positions.length > 0) {
+          hasDefinition = true;
+
+          console.log("\n");
+          console.log("########################################");
+          console.log("######## MODULE DEFINITION ########");
+          console.log("########################################");
+
+          console.log(
+            `PATTERN: ${pattern}`
+          );
+
+          console.log(
+            `COUNT: ${positions.length}`
+          );
+
+          for (const position of positions) {
+            console.log("\n");
+            console.log(
+              `DEFINITION POSITION: ${position}`
+            );
+
+            printContext(
+              js,
+              position,
+              1000,
+              6000
+            );
+          }
+        }
+      }
+
+      if (hasDefinition) {
+        moduleDefinitionCount++;
+      }
 
       // --------------------------------------
-      // 6. 77507に関係するwebpack表記
+      // B. 77507) 参照
       // --------------------------------------
 
-      searchAll(
-        js,
-        "77507\\s*\\)",
-        "77507)",
-        20
-      );
+      const referencePositions =
+        findAllPositions(js, "77507)", 50);
 
-      searchAll(
-        js,
-        "77507\\s*[,}]",
-        "77507 module boundary",
-        20
-      );
+      if (referencePositions.length > 0) {
+        moduleReferenceCount +=
+          referencePositions.length;
 
-      // --------------------------------------
-      // 7. 重要ワード
-      // --------------------------------------
+        console.log("\n");
+        console.log("########################################");
+        console.log("######## MODULE REFERENCES ########");
+        console.log("########################################");
 
-      searchAll(
-        js,
-        "sentimentPieChart",
-        "sentimentPieChart",
-        30
-      );
+        console.log(
+          `REFERENCE COUNT: ${referencePositions.length}`
+        );
 
-      searchAll(
-        js,
-        "sentiment",
-        "sentiment",
-        30
-      );
+        for (const position of referencePositions) {
+          console.log("\n");
+          console.log(
+            `REFERENCE POSITION: ${position}`
+          );
 
-      searchAll(
-        js,
-        "positive",
-        "positive",
-        30
-      );
-
-      searchAll(
-        js,
-        "negative",
-        "negative",
-        30
-      );
-
-      searchAll(
-        js,
-        "samplingRate",
-        "samplingRate",
-        30
-      );
+          printContext(
+            js,
+            position,
+            1200,
+            3500
+          );
+        }
+      }
 
       // --------------------------------------
-      // 8. URL / API候補
+      // C. sentimentPieChart
+      // --------------------------------------
+
+      if (js.includes("sentimentPieChart")) {
+        console.log("\n");
+        console.log("########################################");
+        console.log("######## sentimentPieChart ########");
+        console.log("########################################");
+
+        const positions =
+          findAllPositions(
+            js,
+            "sentimentPieChart",
+            20
+          );
+
+        console.log(
+          `COUNT: ${positions.length}`
+        );
+
+        for (const position of positions) {
+          console.log("\n");
+          console.log(
+            `POSITION: ${position}`
+          );
+
+          printContext(
+            js,
+            position,
+            800,
+            3000
+          );
+        }
+      }
+
+      // --------------------------------------
+      // D. APIっぽいURL
       // --------------------------------------
 
       console.log("\n");
       console.log("========================================");
-      console.log("API / URL CANDIDATES");
+      console.log("API / DATA URL CANDIDATES");
       console.log("========================================");
 
       const urlRegex =
@@ -246,7 +281,10 @@ async function main() {
       while ((match = urlRegex.exec(js)) !== null) {
         let value = match[0];
 
-        value = value.replace(/[),.;}\]]+$/, "");
+        value = value.replace(
+          /[),.;}\]]+$/,
+          ""
+        );
 
         urls.add(value);
 
@@ -262,20 +300,6 @@ async function main() {
           console.log(value);
         }
       }
-
-      // --------------------------------------
-      // 9. 最初に見つけた77507だけ詳細調査
-      // --------------------------------------
-
-      if (found77507) {
-        console.log("\n");
-        console.log("========================================");
-        console.log("STOPPING AFTER FIRST MODULE 77507");
-        console.log("========================================");
-
-        break;
-      }
-
     } catch (error) {
       console.log(
         `SCRIPT ERROR: ${url} :: ${error.message}`
@@ -283,17 +307,25 @@ async function main() {
     }
   }
 
-  console.log("\n");
+  // ------------------------------------------
+  // 4. 結果
+  // ------------------------------------------
+
+  console.log("\n\n");
   console.log("========================================");
   console.log("FINAL SUMMARY");
   console.log("========================================");
 
   console.log(
-    `MODULE 77507 FOUND: ${found77507}`
+    `MODULE DEFINITION SCRIPT COUNT: ${moduleDefinitionCount}`
   );
 
   console.log(
-    "Yahoo module 77507 diagnostic finished."
+    `MODULE REFERENCE COUNT: ${moduleReferenceCount}`
+  );
+
+  console.log(
+    "Yahoo module 77507 full search finished."
   );
 }
 

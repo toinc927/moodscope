@@ -1,15 +1,15 @@
-const pageUrl =
-  "https://search.yahoo.co.jp/realtime/search?p=%E3%83%95%E3%82%A1%E3%83%8A%E3%83%83%E3%82%AF";
-
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36";
 
-async function fetchText(url, headers = {}) {
+const chunkUrl =
+  "https://s.yimg.jp/images/realtime/fe/assets/_next/static/4.299.2/chunks/612.js";
+
+async function fetchText(url) {
   const res = await fetch(url, {
     headers: {
       "User-Agent": UA,
       "Accept": "*/*",
-      ...headers
+      "Referer": "https://search.yahoo.co.jp/realtime/search"
     }
   });
 
@@ -19,314 +19,238 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printContext(text, position, before = 1200, after = 3500) {
-  console.log("\n");
-  console.log("========================================");
-  console.log(`POSITION: ${position}`);
-  console.log("========================================");
-
-  console.log(
-    text.slice(
-      Math.max(0, position - before),
-      Math.min(text.length, position + after)
-    )
+function context(text, position, before = 3000, after = 5000) {
+  return text.slice(
+    Math.max(0, position - before),
+    Math.min(text.length, position + after)
   );
 }
 
-function findScriptUrls(html) {
-  const urls = [
-    ...html.matchAll(
-      /<script[^>]+src=["']([^"']+)["']/gi
-    )
-  ].map(m => m[1]);
+function showMatches(text, regex, label, before = 500, after = 2000) {
+  let match;
+  let count = 0;
 
-  return [
-    ...new Set(
-      urls.map(src =>
-        src.startsWith("http")
-          ? src
-          : new URL(src, pageUrl).href
+  while ((match = regex.exec(text)) !== null) {
+    console.log("\n");
+    console.log("########################################");
+    console.log(`MATCH: ${label}`);
+    console.log(`POSITION: ${match.index}`);
+    console.log("########################################");
+
+    console.log(
+      context(
+        text,
+        match.index,
+        before,
+        after
       )
-    )
-  ];
-}
+    );
 
-function findAllPositions(text, needle, limit = 50) {
-  const positions = [];
-  let start = 0;
+    count++;
 
-  while (positions.length < limit) {
-    const pos = text.indexOf(needle, start);
-
-    if (pos < 0) {
+    if (count >= 20) {
       break;
     }
-
-    positions.push(pos);
-    start = pos + needle.length;
   }
 
-  return positions;
+  console.log(`\n${label} COUNT: ${count}`);
 }
 
 async function main() {
   console.log("========================================");
-  console.log("Yahoo module 77507 full search");
+  console.log("Yahoo module 77507 deep diagnostic");
   console.log("========================================");
 
-  // ------------------------------------------
-  // 1. Yahooページ
-  // ------------------------------------------
+  console.log(`CHUNK: ${chunkUrl}`);
 
-  const page = await fetchText(pageUrl, {
-    "Accept":
-      "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Referer":
-      "https://search.yahoo.co.jp/realtime/search"
-  });
+  const result = await fetchText(chunkUrl);
 
-  console.log(`PAGE STATUS: ${page.status}`);
-  console.log(`HTML LENGTH: ${page.text.length}`);
+  console.log(`HTTP STATUS: ${result.status}`);
+  console.log(`JS LENGTH: ${result.text.length}`);
 
-  // ------------------------------------------
-  // 2. script一覧
-  // ------------------------------------------
+  const js = result.text;
 
-  const scripts = findScriptUrls(page.text);
-
-  console.log("\n");
-  console.log("========================================");
-  console.log("SCRIPT LIST");
+  /*
+   * 1. module 77507
+   */
+  console.log("\n========================================");
+  console.log("1. MODULE 77507");
   console.log("========================================");
 
-  console.log(`SCRIPT COUNT: ${scripts.length}`);
+  const moduleMatches = [
+    /77507\s*:/g,
+    /77507\)/g,
+    /77507\s*,/g,
+    /77507\s*=/g
+  ];
 
-  // ------------------------------------------
-  // 3. 全JSを調査
-  // ------------------------------------------
+  for (const regex of moduleMatches) {
+    showMatches(
+      js,
+      regex,
+      regex.source,
+      1000,
+      7000
+    );
+  }
 
-  let moduleReferenceCount = 0;
-  let moduleDefinitionCount = 0;
+  /*
+   * 2. module definition
+   */
+  console.log("\n========================================");
+  console.log("2. MODULE DEFINITION AROUND 74438");
+  console.log("========================================");
 
-  for (const url of scripts) {
-    try {
-      const result = await fetchText(url, {
-        "Accept":
-          "application/javascript,text/javascript,*/*;q=0.1",
-        "Referer": pageUrl
-      });
+  console.log(
+    context(
+      js,
+      74438,
+      3000,
+      12000
+    )
+  );
 
-      if (
-        result.status < 200 ||
-        result.status >= 300
-      ) {
-        continue;
-      }
+  /*
+   * 3. N require
+   */
+  console.log("\n========================================");
+  console.log("3. N = REQUIRE(77507)");
+  console.log("========================================");
 
-      const js = result.text;
+  showMatches(
+    js,
+    /N\s*=\s*s\(77507\)/g,
+    "N = s(77507)",
+    3000,
+    5000
+  );
 
-      // 77507を含まないJSはスキップ
-      if (!js.includes("77507")) {
-        continue;
-      }
+  /*
+   * 4. sentiment related
+   */
+  console.log("\n========================================");
+  console.log("4. SENTIMENT TERMS");
+  console.log("========================================");
 
-      console.log("\n\n");
-      console.log("########################################");
-      console.log("######## 77507 FOUND IN SCRIPT ########");
-      console.log("########################################");
+  for (const term of [
+    "sentiment",
+    "sentimentData",
+    "dataPositive",
+    "dataNegative",
+    "positive",
+    "negative"
+  ]) {
+    console.log(`\n----- ${term} -----`);
 
-      console.log(`URL: ${url}`);
-      console.log(`JS LENGTH: ${js.length}`);
+    showMatches(
+      js,
+      new RegExp(term, "gi"),
+      term,
+      700,
+      2500
+    );
+  }
 
-      // --------------------------------------
-      // A. 77507: 本体定義
-      // --------------------------------------
+  /*
+   * 5. network-related
+   */
+  console.log("\n========================================");
+  console.log("5. NETWORK / API TERMS");
+  console.log("========================================");
 
-      const definitionPatterns = [
-        "77507:",
-        "77507:function",
-        "77507=(",
-        "77507 ="
-      ];
+  const networkRegexes = [
+    /fetch\s*\(/gi,
+    /axios/gi,
+    /XMLHttpRequest/gi,
+    /\/realtime\/api/gi,
+    /\/api\/v1/gi,
+    /pagination/gi,
+    /samplingRate/gi,
+    /tweetTransit/gi
+  ];
 
-      let hasDefinition = false;
+  for (const regex of networkRegexes) {
+    showMatches(
+      js,
+      regex,
+      regex.source,
+      1200,
+      4000
+    );
+  }
 
-      for (const pattern of definitionPatterns) {
-        const positions =
-          findAllPositions(js, pattern, 20);
+  /*
+   * 6. loadChartData
+   */
+  console.log("\n========================================");
+  console.log("6. LOAD CHART DATA");
+  console.log("========================================");
 
-        if (positions.length > 0) {
-          hasDefinition = true;
+  showMatches(
+    js,
+    /loadChartData\s*=/gi,
+    "loadChartData =",
+    5000,
+    10000
+  );
 
-          console.log("\n");
-          console.log("########################################");
-          console.log("######## MODULE DEFINITION ########");
-          console.log("########################################");
+  /*
+   * 7. exported Z
+   */
+  console.log("\n========================================");
+  console.log("7. EXPORT / Z PATTERNS");
+  console.log("========================================");
 
-          console.log(
-            `PATTERN: ${pattern}`
-          );
+  const exportRegexes = [
+    /\.Z\s*=/g,
+    /Z\s*:/g,
+    /exports\.Z/g,
+    /return\s+Z/g
+  ];
 
-          console.log(
-            `COUNT: ${positions.length}`
-          );
+  for (const regex of exportRegexes) {
+    showMatches(
+      js,
+      regex,
+      regex.source,
+      1500,
+      5000
+    );
+  }
 
-          for (const position of positions) {
-            console.log("\n");
-            console.log(
-              `DEFINITION POSITION: ${position}`
-            );
+  /*
+   * 8. strings that look like API paths
+   */
+  console.log("\n========================================");
+  console.log("8. ALL REALTIME API-LIKE STRINGS");
+  console.log("========================================");
 
-            printContext(
-              js,
-              position,
-              1000,
-              6000
-            );
-          }
-        }
-      }
+  const strings = new Set();
 
-      if (hasDefinition) {
-        moduleDefinitionCount++;
-      }
+  const apiRegex =
+    /["'`]([^"'`]*(?:realtime|api|pagination|stream|sentiment)[^"'`]*)["'`]/gi;
 
-      // --------------------------------------
-      // B. 77507) 参照
-      // --------------------------------------
+  let m;
 
-      const referencePositions =
-        findAllPositions(js, "77507)", 50);
+  while ((m = apiRegex.exec(js)) !== null) {
+    strings.add(m[1]);
 
-      if (referencePositions.length > 0) {
-        moduleReferenceCount +=
-          referencePositions.length;
-
-        console.log("\n");
-        console.log("########################################");
-        console.log("######## MODULE REFERENCES ########");
-        console.log("########################################");
-
-        console.log(
-          `REFERENCE COUNT: ${referencePositions.length}`
-        );
-
-        for (const position of referencePositions) {
-          console.log("\n");
-          console.log(
-            `REFERENCE POSITION: ${position}`
-          );
-
-          printContext(
-            js,
-            position,
-            1200,
-            3500
-          );
-        }
-      }
-
-      // --------------------------------------
-      // C. sentimentPieChart
-      // --------------------------------------
-
-      if (js.includes("sentimentPieChart")) {
-        console.log("\n");
-        console.log("########################################");
-        console.log("######## sentimentPieChart ########");
-        console.log("########################################");
-
-        const positions =
-          findAllPositions(
-            js,
-            "sentimentPieChart",
-            20
-          );
-
-        console.log(
-          `COUNT: ${positions.length}`
-        );
-
-        for (const position of positions) {
-          console.log("\n");
-          console.log(
-            `POSITION: ${position}`
-          );
-
-          printContext(
-            js,
-            position,
-            800,
-            3000
-          );
-        }
-      }
-
-      // --------------------------------------
-      // D. APIっぽいURL
-      // --------------------------------------
-
-      console.log("\n");
-      console.log("========================================");
-      console.log("API / DATA URL CANDIDATES");
-      console.log("========================================");
-
-      const urlRegex =
-        /(?:https?:\/\/|\/api\/|\/realtime\/|\/search\/)[^"'\\\s<>()]+/gi;
-
-      const urls = new Set();
-
-      let match;
-
-      while ((match = urlRegex.exec(js)) !== null) {
-        let value = match[0];
-
-        value = value.replace(
-          /[),.;}\]]+$/,
-          ""
-        );
-
-        urls.add(value);
-
-        if (urls.size >= 100) {
-          break;
-        }
-      }
-
-      if (urls.size === 0) {
-        console.log("(none)");
-      } else {
-        for (const value of urls) {
-          console.log(value);
-        }
-      }
-    } catch (error) {
-      console.log(
-        `SCRIPT ERROR: ${url} :: ${error.message}`
-      );
+    if (strings.size >= 200) {
+      break;
     }
   }
 
-  // ------------------------------------------
-  // 4. 結果
-  // ------------------------------------------
+  if (strings.size === 0) {
+    console.log("(none)");
+  } else {
+    for (const value of strings) {
+      console.log(value);
+    }
+  }
 
-  console.log("\n\n");
+  console.log("\n========================================");
+  console.log("FINISHED");
   console.log("========================================");
-  console.log("FINAL SUMMARY");
-  console.log("========================================");
-
-  console.log(
-    `MODULE DEFINITION SCRIPT COUNT: ${moduleDefinitionCount}`
-  );
-
-  console.log(
-    `MODULE REFERENCE COUNT: ${moduleReferenceCount}`
-  );
-
-  console.log(
-    "Yahoo module 77507 full search finished."
-  );
 }
 
 main().catch(error => {

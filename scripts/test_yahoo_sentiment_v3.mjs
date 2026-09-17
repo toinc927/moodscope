@@ -21,45 +21,41 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, position, before = 4000, after = 8000) {
+function around(text, pos, before = 5000, after = 8000) {
   console.log(
     text.slice(
-      Math.max(0, position - before),
-      Math.min(text.length, position + after)
+      Math.max(0, pos - before),
+      Math.min(text.length, pos + after)
     )
   );
 }
 
-function findAll(text, regex, label, limit = 20) {
+function search(text, regex, label, limit = 30) {
   let count = 0;
-  let match;
+  let m;
 
   regex.lastIndex = 0;
 
-  while ((match = regex.exec(text)) !== null && count < limit) {
+  while ((m = regex.exec(text)) !== null && count < limit) {
     console.log("\n");
     console.log("==================================================");
     console.log(`HIT: ${label}`);
-    console.log(`POSITION: ${match.index}`);
-    console.log(`MATCH: ${match[0]}`);
+    console.log(`POSITION: ${m.index}`);
+    console.log(`MATCH: ${m[0]}`);
     console.log("==================================================");
 
-    printAround(text, match.index);
+    around(text, m.index);
 
     count++;
   }
 
   console.log(`\n${label} COUNT: ${count}`);
-  return count;
 }
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo loadChartData API diagnostic");
+  console.log("Yahoo sentimentData source diagnostic");
   console.log("==================================================");
-
-  console.log(`KEYWORD: ${keyword}`);
-  console.log(`PAGE: ${pageUrl}`);
 
   const page = await fetchText(pageUrl, {
     "Accept":
@@ -71,7 +67,7 @@ async function main() {
   console.log(`PAGE HTTP: ${page.status}`);
   console.log(`HTML LENGTH: ${page.text.length}`);
 
-  const scriptUrls = [
+  const scripts = [
     ...page.text.matchAll(
       /<script[^>]+src=["']([^"']+)["']/gi
     )
@@ -83,13 +79,13 @@ async function main() {
         : new URL(src, pageUrl).href
     );
 
-  const scripts = [...new Set(scriptUrls)];
+  const uniqueScripts = [...new Set(scripts)];
 
-  console.log(`SCRIPT COUNT: ${scripts.length}`);
+  console.log(`SCRIPT COUNT: ${uniqueScripts.length}`);
 
-  let found = false;
+  let checked = 0;
 
-  for (const url of scripts) {
+  for (const url of uniqueScripts) {
     try {
       const result = await fetchText(url, {
         "Accept":
@@ -103,69 +99,85 @@ async function main() {
 
       const js = result.text;
 
-      if (!js.includes("loadChartData")) {
+      if (
+        !js.includes("dataPositive") &&
+        !js.includes("dataNegative") &&
+        !js.includes("sentimentData")
+      ) {
         continue;
       }
 
-      found = true;
+      checked++;
 
       console.log("\n");
       console.log("##################################################");
-      console.log("LOADCHARTDATA SCRIPT FOUND");
+      console.log("SENTIMENT-RELATED SCRIPT FOUND");
       console.log("##################################################");
-
       console.log(`URL: ${url}`);
       console.log(`JS LENGTH: ${js.length}`);
 
-      findAll(
+      search(
         js,
-        /loadChartData/gi,
-        "loadChartData",
+        /dataPositive/gi,
+        "dataPositive",
         30
       );
 
-      findAll(
+      search(
         js,
-        /N\.Z/g,
-        "N.Z",
+        /dataNegative/gi,
+        "dataNegative",
         30
       );
 
-      findAll(
+      search(
         js,
         /sentimentData/gi,
         "sentimentData",
         30
       );
 
-      findAll(
+      search(
         js,
-        /tweetTransit/gi,
-        "tweetTransit",
+        /sentimentData\s*[:=]/gi,
+        "sentimentData assignment",
         30
       );
 
-      findAll(
+      search(
         js,
-        /samplingRate/gi,
-        "samplingRate",
+        /dataPositive\s*[:=]/gi,
+        "dataPositive assignment",
         30
       );
 
-      findAll(
+      search(
+        js,
+        /dataNegative\s*[:=]/gi,
+        "dataNegative assignment",
+        30
+      );
+
+      search(
+        js,
+        /positive\s*[:=]/gi,
+        "positive assignment",
+        30
+      );
+
+      search(
+        js,
+        /negative\s*[:=]/gi,
+        "negative assignment",
+        30
+      );
+
+      search(
         js,
         /\/realtime\/api\/v1/gi,
         "/realtime/api/v1",
         30
       );
-
-      console.log("\n");
-      console.log("##################################################");
-      console.log("LOADCHARTDATA DIAGNOSTIC FINISHED");
-      console.log("##################################################");
-
-      break;
-
     } catch (error) {
       console.log(
         `SCRIPT ERROR: ${url} :: ${error.message}`
@@ -177,10 +189,8 @@ async function main() {
   console.log("==================================================");
   console.log("SUMMARY");
   console.log("==================================================");
-
-  console.log(
-    `LOADCHARTDATA SCRIPT FOUND: ${found}`
-  );
+  console.log(`RELATED SCRIPTS FOUND: ${checked}`);
+  console.log("Yahoo sentimentData source diagnostic finished.");
 }
 
 main().catch(error => {

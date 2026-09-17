@@ -3,18 +3,17 @@ const keyword = "ファナック";
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36";
 
-const pageUrl =
-  `https://search.yahoo.co.jp/realtime/search?p=${encodeURIComponent(keyword)}`;
-
-const targetChunk =
+const chunkUrl =
   "https://s.yimg.jp/images/realtime/fe/assets/_next/static/4.299.2/chunks/612.js";
 
-async function fetchText(url, headers = {}) {
+async function fetchText(url) {
   const res = await fetch(url, {
     headers: {
       "User-Agent": UA,
       "Accept": "*/*",
-      ...headers
+      "Referer":
+        "https://search.yahoo.co.jp/realtime/search?p=" +
+        encodeURIComponent(keyword)
     }
   });
 
@@ -24,7 +23,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function showContext(text, position, before = 5000, after = 7000) {
+function showContext(text, position, before = 1500, after = 5000) {
   console.log("\n");
   console.log("########################################");
   console.log(`POSITION: ${position}`);
@@ -38,77 +37,53 @@ function showContext(text, position, before = 5000, after = 7000) {
   );
 }
 
-function findAll(text, term, limit = 50) {
-  const lower = text.toLowerCase();
-  const needle = term.toLowerCase();
-
-  let pos = 0;
-  let count = 0;
-
-  while (count < limit) {
-    const i = lower.indexOf(needle, pos);
-
-    if (i < 0) break;
-
-    console.log("\n");
-    console.log("========================================");
-    console.log(`FOUND: ${term}`);
-    console.log(`POSITION: ${i}`);
-    console.log("========================================");
-
-    showContext(text, i, 2500, 5000);
-
-    pos = i + needle.length;
-    count++;
-  }
-
-  return count;
-}
-
-function regexAll(text, regex, label, limit = 100) {
+function findAll(text, regex, label, before = 1200, after = 3500) {
   let match;
   let count = 0;
 
-  regex.lastIndex = 0;
-
-  while (
-    (match = regex.exec(text)) !== null &&
-    count < limit
-  ) {
+  while ((match = regex.exec(text)) !== null && count < 20) {
     console.log("\n");
     console.log("========================================");
-    console.log(`REGEX: ${label}`);
-    console.log(`MATCH: ${match[0]}`);
+    console.log(`MATCH: ${label}`);
     console.log(`POSITION: ${match.index}`);
+    console.log(`TEXT: ${match[0]}`);
     console.log("========================================");
 
-    showContext(text, match.index, 3000, 5000);
+    showContext(
+      text,
+      match.index,
+      before,
+      after
+    );
 
     count++;
   }
+
+  console.log(
+    `\n${label} COUNT: ${count}`
+  );
 
   return count;
 }
 
 async function main() {
   console.log("========================================");
-  console.log("Yahoo loadChartData / N.Z diagnostic");
+  console.log("Yahoo module 77507 diagnostic");
   console.log("========================================");
 
   console.log(`KEYWORD: ${keyword}`);
-  console.log(`CHUNK: ${targetChunk}`);
+  console.log(`CHUNK: ${chunkUrl}`);
 
-  const result = await fetchText(targetChunk, {
-    "Accept":
-      "application/javascript,text/javascript,*/*;q=0.1",
-    "Referer": pageUrl
-  });
+  const result = await fetchText(chunkUrl);
 
-  console.log(`\nHTTP STATUS: ${result.status}`);
+  console.log(`HTTP STATUS: ${result.status}`);
   console.log(`JS LENGTH: ${result.text.length}`);
 
   const js = result.text;
 
+  /*
+   * 1. loadChartData
+   */
   console.log("\n");
   console.log("########################################");
   console.log("1. loadChartData");
@@ -116,72 +91,87 @@ async function main() {
 
   findAll(
     js,
+    /loadChartData/g,
     "loadChartData",
-    20
+    2500,
+    8000
   );
 
+  /*
+   * 2. 77507 references
+   */
   console.log("\n");
   console.log("########################################");
-  console.log("2. N.Z");
+  console.log("2. MODULE 77507 REFERENCES");
   console.log("########################################");
 
   findAll(
     js,
+    /77507/g,
+    "77507",
+    2500,
+    6000
+  );
+
+  /*
+   * 3. module definition
+   */
+  console.log("\n");
+  console.log("########################################");
+  console.log("3. POSSIBLE MODULE DEFINITIONS");
+  console.log("########################################");
+
+  findAll(
+    js,
+    /77507\s*:/g,
+    "77507:",
+    1000,
+    12000
+  );
+
+  findAll(
+    js,
+    /77507\s*[,)]/g,
+    "77507 followed by , or )",
+    1000,
+    5000
+  );
+
+  /*
+   * 4. N = s(77507)
+   */
+  console.log("\n");
+  console.log("########################################");
+  console.log("4. N = s(77507)");
+  console.log("########################################");
+
+  findAll(
+    js,
+    /N\s*=\s*s\s*\(\s*77507\s*\)/g,
+    "N = s(77507)",
+    3000,
+    5000
+  );
+
+  /*
+   * 5. N.Z
+   */
+  console.log("\n");
+  console.log("########################################");
+  console.log("5. N.Z");
+  console.log("########################################");
+
+  findAll(
+    js,
+    /N\.Z/g,
     "N.Z",
-    50
+    3000,
+    7000
   );
 
-  console.log("\n");
-  console.log("########################################");
-  console.log("3. N = s(...)");
-  console.log("########################################");
-
-  regexAll(
-    js,
-    /N\s*=\s*s\(\s*\d+\s*\)/g,
-    "N = s(NUMBER)",
-    50
-  );
-
-  console.log("\n");
-  console.log("########################################");
-  console.log("4. s(NUMBER) around loadChartData");
-  console.log("########################################");
-
-  const loadPos =
-    js.indexOf("loadChartData");
-
-  if (loadPos >= 0) {
-    const start =
-      Math.max(0, loadPos - 15000);
-
-    const section =
-      js.slice(
-        start,
-        Math.min(js.length, loadPos + 15000)
-      );
-
-    regexAll(
-      section,
-      /s\(\s*\d+\s*\)/g,
-      "s(NUMBER) near loadChartData",
-      100
-    );
-  } else {
-    console.log("loadChartData not found");
-  }
-
-  console.log("\n");
-  console.log("########################################");
-  console.log("5. tweetTransit");
-  console.log("########################################");
-
-  findAll(
-    js,
-    "tweetTransit",
-    30
-  );
-
+  /*
+   * 6. sentimentData inside module
+   */
   console.log("\n");
   console.log("########################################");
   console.log("6. sentimentData");
@@ -189,65 +179,118 @@ async function main() {
 
   findAll(
     js,
+    /sentimentData/g,
     "sentimentData",
-    30
+    1200,
+    4000
   );
 
+  /*
+   * 7. dataPositive / dataNegative
+   */
   console.log("\n");
   console.log("########################################");
-  console.log("7. dataPositive");
+  console.log("7. dataPositive / dataNegative");
   console.log("########################################");
 
   findAll(
     js,
+    /dataPositive/g,
     "dataPositive",
-    30
+    1500,
+    5000
   );
-
-  console.log("\n");
-  console.log("########################################");
-  console.log("8. dataNegative");
-  console.log("########################################");
 
   findAll(
     js,
+    /dataNegative/g,
     "dataNegative",
-    30
+    1500,
+    5000
   );
 
+  /*
+   * 8. API-looking strings
+   */
   console.log("\n");
   console.log("########################################");
-  console.log("9. fetch / endpoint terms");
+  console.log("8. NETWORK STRINGS");
   console.log("########################################");
 
-  regexAll(
-    js,
-    /fetch\s*\(/g,
-    "fetch(",
-    50
-  );
+  const networkPatterns = [
+    /https?:\/\/[^"'\\\s<>()]+/gi,
+    /\/api\/[^"'\\\s<>()]+/gi,
+    /\/realtime\/[^"'\\\s<>()]+/gi,
+    /\/search\/[^"'\\\s<>()]+/gi,
+    /\/pagination[^"'\\\s<>()]*/gi,
+    /fetch\([^)]{0,500}\)/gi,
+    /axios[^,;]{0,500}/gi,
+    /XMLHttpRequest[^,;]{0,500}/gi
+  ];
 
-  regexAll(
-    js,
-    /XMLHttpRequest/g,
-    "XMLHttpRequest",
-    50
-  );
+  const found = new Set();
 
-  regexAll(
-    js,
-    /\/realtime\/api\/[^"'`\\]*/g,
-    "/realtime/api/...",
-    50
-  );
+  for (const regex of networkPatterns) {
+    let match;
 
-  regexAll(
-    js,
-    /\/api\/v\d+\/[^"'`\\]*/g,
-    "/api/vN/...",
-    50
-  );
+    while ((match = regex.exec(js)) !== null) {
+      const value = match[0];
 
+      if (
+        value.includes("api") ||
+        value.includes("realtime") ||
+        value.includes("search") ||
+        value.includes("pagination") ||
+        value.includes("fetch") ||
+        value.includes("axios") ||
+        value.includes("XMLHttpRequest")
+      ) {
+        found.add(value);
+      }
+
+      if (found.size >= 100) {
+        break;
+      }
+    }
+  }
+
+  if (found.size === 0) {
+    console.log("(none)");
+  } else {
+    for (const value of found) {
+      console.log(value);
+    }
+  }
+
+  /*
+   * 9. exports
+   */
+  console.log("\n");
+  console.log("########################################");
+  console.log("9. EXPORT / MODULE TERMS");
+  console.log("########################################");
+
+  for (const term of [
+    "module.exports",
+    "exports.",
+    ".Z=",
+    "Z:",
+    "default:",
+    "async",
+    "samplingRate",
+    "tweetTransit"
+  ]) {
+    const count =
+      js.toLowerCase().split(
+        term.toLowerCase()
+      ).length - 1;
+
+    console.log(`${term} COUNT: ${count}`);
+  }
+
+  /*
+   * 10. Finish
+   */
   console.log("\n");
   console.log("========================================");
   console.log("DIAGNOSTIC FINISHED");

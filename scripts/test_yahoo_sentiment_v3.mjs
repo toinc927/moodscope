@@ -21,7 +21,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function around(text, pos, before = 5000, after = 8000) {
+function printAround(text, pos, before = 3500, after = 7000) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -30,32 +30,50 @@ function around(text, pos, before = 5000, after = 8000) {
   );
 }
 
-function search(text, regex, label, limit = 30) {
+function findHits(text, regex, label, limit = 20) {
   let count = 0;
-  let m;
+  let match;
 
   regex.lastIndex = 0;
 
-  while ((m = regex.exec(text)) !== null && count < limit) {
+  while ((match = regex.exec(text)) !== null && count < limit) {
     console.log("\n");
     console.log("==================================================");
     console.log(`HIT: ${label}`);
-    console.log(`POSITION: ${m.index}`);
-    console.log(`MATCH: ${m[0]}`);
+    console.log(`POSITION: ${match.index}`);
+    console.log(`MATCH: ${match[0]}`);
     console.log("==================================================");
 
-    around(text, m.index);
+    printAround(text, match.index);
 
     count++;
   }
 
   console.log(`\n${label} COUNT: ${count}`);
+  return count;
+}
+
+function getModuleId(text, position) {
+  const before = text.slice(0, position);
+
+  const matches = [
+    ...before.matchAll(/(?:^|[,{])(\d+):\s*(?:\([^)]*\)|[a-zA-Z_$][\w$]*)\s*=>/g)
+  ];
+
+  if (matches.length === 0) {
+    return null;
+  }
+
+  return matches[matches.length - 1][1];
 }
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo sentimentData source diagnostic");
+  console.log("Yahoo INTERNAL API / SENTIMENT diagnostic");
   console.log("==================================================");
+
+  console.log(`KEYWORD: ${keyword}`);
+  console.log(`PAGE: ${pageUrl}`);
 
   const page = await fetchText(pageUrl, {
     "Accept":
@@ -67,7 +85,7 @@ async function main() {
   console.log(`PAGE HTTP: ${page.status}`);
   console.log(`HTML LENGTH: ${page.text.length}`);
 
-  const scripts = [
+  const scriptUrls = [
     ...page.text.matchAll(
       /<script[^>]+src=["']([^"']+)["']/gi
     )
@@ -79,13 +97,15 @@ async function main() {
         : new URL(src, pageUrl).href
     );
 
-  const uniqueScripts = [...new Set(scripts)];
+  const scripts = [...new Set(scriptUrls)];
 
-  console.log(`SCRIPT COUNT: ${uniqueScripts.length}`);
+  console.log(`SCRIPT COUNT: ${scripts.length}`);
 
-  let checked = 0;
+  let apiHits = 0;
+  let sentimentHits = 0;
+  let loadHits = 0;
 
-  for (const url of uniqueScripts) {
+  for (const url of scripts) {
     try {
       const result = await fetchText(url, {
         "Accept":
@@ -99,85 +119,88 @@ async function main() {
 
       const js = result.text;
 
-      if (
-        !js.includes("dataPositive") &&
-        !js.includes("dataNegative") &&
-        !js.includes("sentimentData")
-      ) {
-        continue;
+      /*
+       * 1. /realtime/api/v1 を使っている場所
+       */
+      if (js.includes("/realtime/api/v1")) {
+        apiHits++;
+
+        console.log("\n");
+        console.log("##################################################");
+        console.log("REALTIME API SCRIPT FOUND");
+        console.log("##################################################");
+        console.log(`URL: ${url}`);
+        console.log(`JS LENGTH: ${js.length}`);
+
+        const positions = [];
+        let p = 0;
+
+        while ((p = js.indexOf("/realtime/api/v1", p)) !== -1) {
+          positions.push(p);
+          p += 5;
+
+          if (positions.length >= 20) {
+            break;
+          }
+        }
+
+        for (const pos of positions) {
+          console.log("\n");
+          console.log("--------------------------------------------------");
+          console.log("REALTIME API OCCURRENCE");
+          console.log(`POSITION: ${pos}`);
+          console.log(`MODULE ID: ${getModuleId(js, pos)}`);
+          console.log("--------------------------------------------------");
+
+          printAround(js, pos, 5000, 10000);
+        }
       }
 
-      checked++;
+      /*
+       * 2. sentimentData とAPIが同じJSにあるか
+       */
+      if (
+        js.includes("sentimentData") &&
+        js.includes("/realtime/api/v1")
+      ) {
+        sentimentHits++;
 
-      console.log("\n");
-      console.log("##################################################");
-      console.log("SENTIMENT-RELATED SCRIPT FOUND");
-      console.log("##################################################");
-      console.log(`URL: ${url}`);
-      console.log(`JS LENGTH: ${js.length}`);
+        console.log("\n");
+        console.log("##################################################");
+        console.log("SENTIMENT + API SAME SCRIPT");
+        console.log("##################################################");
+        console.log(`URL: ${url}`);
+        console.log(`JS LENGTH: ${js.length}`);
 
-      search(
-        js,
-        /dataPositive/gi,
-        "dataPositive",
-        30
-      );
+        findHits(
+          js,
+          /sentimentData/gi,
+          "sentimentData",
+          10
+        );
+      }
 
-      search(
-        js,
-        /dataNegative/gi,
-        "dataNegative",
-        30
-      );
+      /*
+       * 3. loadChartData
+       */
+      if (js.includes("loadChartData")) {
+        loadHits++;
 
-      search(
-        js,
-        /sentimentData/gi,
-        "sentimentData",
-        30
-      );
+        console.log("\n");
+        console.log("##################################################");
+        console.log("LOADCHARTDATA SCRIPT");
+        console.log("##################################################");
+        console.log(`URL: ${url}`);
+        console.log(`JS LENGTH: ${js.length}`);
 
-      search(
-        js,
-        /sentimentData\s*[:=]/gi,
-        "sentimentData assignment",
-        30
-      );
+        findHits(
+          js,
+          /loadChartData/gi,
+          "loadChartData",
+          10
+        );
+      }
 
-      search(
-        js,
-        /dataPositive\s*[:=]/gi,
-        "dataPositive assignment",
-        30
-      );
-
-      search(
-        js,
-        /dataNegative\s*[:=]/gi,
-        "dataNegative assignment",
-        30
-      );
-
-      search(
-        js,
-        /positive\s*[:=]/gi,
-        "positive assignment",
-        30
-      );
-
-      search(
-        js,
-        /negative\s*[:=]/gi,
-        "negative assignment",
-        30
-      );
-
-      search(
-        js,
-        /\/realtime\/api\/v1/gi,
-        "/realtime/api/v1",
-        30
-      );
     } catch (error) {
       console.log(
         `SCRIPT ERROR: ${url} :: ${error.message}`
@@ -189,8 +212,15 @@ async function main() {
   console.log("==================================================");
   console.log("SUMMARY");
   console.log("==================================================");
-  console.log(`RELATED SCRIPTS FOUND: ${checked}`);
-  console.log("Yahoo sentimentData source diagnostic finished.");
+
+  console.log(`REALTIME API SCRIPTS: ${apiHits}`);
+  console.log(`SENTIMENT + API SCRIPTS: ${sentimentHits}`);
+  console.log(`LOADCHARTDATA SCRIPTS: ${loadHits}`);
+
+  console.log("\n");
+  console.log("==================================================");
+  console.log("DIAGNOSTIC FINISHED");
+  console.log("==================================================");
 }
 
 main().catch(error => {

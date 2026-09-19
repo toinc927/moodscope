@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-19T12:22:38.064Z",
+  "updatedAt": "2026-09-19T13:24:38.990Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-09-19",
-      "posts24h": 55,
+      "posts24h": 52,
       "baselinePosts24h": 79,
-      "heat": 37,
+      "heat": 35,
       "status": "計算済み"
     },
     {
       "keyword": "安川電機",
       "date": "2026-09-19",
-      "posts24h": 1282,
+      "posts24h": 1284,
       "baselinePosts24h": 66,
       "heat": 100,
       "status": "計算済み"
@@ -28,9 +28,9 @@
     {
       "keyword": "IHI",
       "date": "2026-09-19",
-      "posts24h": 77,
+      "posts24h": 74,
       "baselinePosts24h": 218,
-      "heat": 12,
+      "heat": 11,
       "status": "計算済み"
     }
   ]

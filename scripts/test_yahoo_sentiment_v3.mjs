@@ -21,33 +21,21 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function findModuleStart(js, moduleId) {
-  const patterns = [
-    new RegExp(`(?:^|[,{])${moduleId}:\\\$begin:math:text$e\,t\,r\\\\\\$end:math:text$=>`, "g"),
-    new RegExp(`(?:^|[,{])${moduleId}:\\\$begin:math:text$e\,t\,r\\\\\\$end:math:text$=>\\\\{`, "g"),
-    new RegExp(`(?:^|[,{])${moduleId}:\\\$begin:math:text$\[\^\)\]\*\\\\\\$end:math:text$=>`, "g")
-  ];
-
-  for (const regex of patterns) {
-    const m = regex.exec(js);
-    if (m) return m.index;
-  }
-
-  return -1;
-}
-
-function printSection(title, text) {
-  console.log("\n");
-  console.log("##################################################");
-  console.log(title);
-  console.log("##################################################");
-  console.log(text);
+function printAround(text, pos, before, after) {
+  console.log(
+    text.slice(
+      Math.max(0, pos - before),
+      Math.min(text.length, pos + after)
+    )
+  );
 }
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo MODULE 2738 diagnostic");
+  console.log("Yahoo loadChartData CALL-SITE diagnostic");
   console.log("==================================================");
+
+  console.log(`KEYWORD: ${keyword}`);
 
   const page = await fetchText(pageUrl, {
     "Accept":
@@ -55,6 +43,9 @@ async function main() {
     "Referer":
       "https://search.yahoo.co.jp/realtime/search"
   });
+
+  console.log(`PAGE HTTP: ${page.status}`);
+  console.log(`HTML LENGTH: ${page.text.length}`);
 
   const scriptUrls = [
     ...page.text.matchAll(
@@ -90,49 +81,50 @@ async function main() {
         continue;
       }
 
-      printSection(
-        "LOADCHARTDATA SCRIPT FOUND",
-        `URL: ${url}\nJS LENGTH: ${js.length}`
-      );
+      console.log("\n");
+      console.log("##################################################");
+      console.log("LOADCHARTDATA SCRIPT FOUND");
+      console.log("##################################################");
+      console.log(`URL: ${url}`);
+      console.log(`JS LENGTH: ${js.length}`);
 
-      // モジュール2738の開始位置を探す
-      const moduleStart = findModuleStart(js, "2738");
-
-      console.log(`MODULE 2738 START: ${moduleStart}`);
-
-      if (moduleStart >= 0) {
-        printSection(
-          "MODULE 2738 BEGINNING",
-          js.slice(
-            moduleStart,
-            Math.min(js.length, moduleStart + 9000)
-          )
-        );
-      }
-
-      // loadChartData の周辺
       let pos = 0;
       let count = 0;
 
       while ((pos = js.indexOf("loadChartData", pos)) !== -1) {
         count++;
 
-        printSection(
-          `LOADCHARTDATA OCCURRENCE ${count}`,
-          js.slice(
-            Math.max(0, pos - 1500),
-            Math.min(js.length, pos + 4000)
-          )
+        console.log("\n");
+        console.log("==================================================");
+        console.log(`LOADCHARTDATA OCCURRENCE ${count}`);
+        console.log(`POSITION: ${pos}`);
+        console.log("==================================================");
+
+        // loadChartDataのかなり前から表示
+        printAround(
+          js,
+          pos,
+          10000,
+          10000
         );
 
         pos += "loadChartData".length;
 
-        if (count >= 5) break;
+        if (count >= 3) {
+          break;
+        }
       }
 
+      console.log("\n");
+      console.log(`LOADCHARTDATA COUNT: ${count}`);
+
+      // 今回は最初に見つかった対象スクリプトだけで終了
       break;
+
     } catch (error) {
-      console.log(`ERROR: ${error.message}`);
+      console.log(
+        `SCRIPT ERROR: ${url} :: ${error.message}`
+      );
     }
   }
 

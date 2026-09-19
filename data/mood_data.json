@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-19T13:34:19.073Z",
+  "updatedAt": "2026-09-19T13:49:45.278Z",
   "stocks": [
     {
       "keyword": "ファナック",
@@ -12,7 +12,7 @@
     {
       "keyword": "安川電機",
       "date": "2026-09-19",
-      "posts24h": 1284,
+      "posts24h": 1282,
       "baselinePosts24h": 66,
       "heat": 100,
       "status": "計算済み"

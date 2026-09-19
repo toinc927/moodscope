@@ -21,7 +21,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, pos, before, after) {
+function printAround(text, pos, before = 3000, after = 5000) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -30,12 +30,24 @@ function printAround(text, pos, before, after) {
   );
 }
 
+function findAll(text, needle, limit = 20) {
+  const positions = [];
+  let pos = 0;
+
+  while ((pos = text.indexOf(needle, pos)) !== -1) {
+    positions.push(pos);
+    pos += needle.length;
+
+    if (positions.length >= limit) break;
+  }
+
+  return positions;
+}
+
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo loadChartData CALL-SITE diagnostic");
+  console.log("Yahoo SENTIMENT API CALL diagnostic");
   console.log("==================================================");
-
-  console.log(`KEYWORD: ${keyword}`);
 
   const page = await fetchText(pageUrl, {
     "Accept":
@@ -43,9 +55,6 @@ async function main() {
     "Referer":
       "https://search.yahoo.co.jp/realtime/search"
   });
-
-  console.log(`PAGE HTTP: ${page.status}`);
-  console.log(`HTML LENGTH: ${page.text.length}`);
 
   const scriptUrls = [
     ...page.text.matchAll(
@@ -83,42 +92,71 @@ async function main() {
 
       console.log("\n");
       console.log("##################################################");
-      console.log("LOADCHARTDATA SCRIPT FOUND");
+      console.log("TARGET SCRIPT");
       console.log("##################################################");
       console.log(`URL: ${url}`);
       console.log(`JS LENGTH: ${js.length}`);
 
-      let pos = 0;
-      let count = 0;
+      // ------------------------------------------------
+      // loadChartData
+      // ------------------------------------------------
 
-      while ((pos = js.indexOf("loadChartData", pos)) !== -1) {
-        count++;
+      const loadPositions = findAll(js, "loadChartData");
 
+      console.log("\n");
+      console.log("LOADCHARTDATA POSITIONS:");
+      console.log(loadPositions);
+
+      for (const pos of loadPositions) {
         console.log("\n");
         console.log("==================================================");
-        console.log(`LOADCHARTDATA OCCURRENCE ${count}`);
+        console.log("LOADCHARTDATA CONTEXT");
         console.log(`POSITION: ${pos}`);
         console.log("==================================================");
 
-        // loadChartDataのかなり前から表示
-        printAround(
-          js,
-          pos,
-          10000,
-          10000
-        );
-
-        pos += "loadChartData".length;
-
-        if (count >= 3) {
-          break;
-        }
+        printAround(js, pos, 5000, 7000);
       }
 
-      console.log("\n");
-      console.log(`LOADCHARTDATA COUNT: ${count}`);
+      // ------------------------------------------------
+      // ta.Z
+      // ------------------------------------------------
 
-      // 今回は最初に見つかった対象スクリプトだけで終了
+      const taZPositions = findAll(js, "ta.Z");
+
+      console.log("\n");
+      console.log("ta.Z POSITIONS:");
+      console.log(taZPositions);
+
+      for (const pos of taZPositions) {
+        console.log("\n");
+        console.log("==================================================");
+        console.log("ta.Z CALL CONTEXT");
+        console.log(`POSITION: ${pos}`);
+        console.log("==================================================");
+
+        printAround(js, pos, 3000, 5000);
+      }
+
+      // ------------------------------------------------
+      // samplingRate
+      // ------------------------------------------------
+
+      const samplingPositions = findAll(js, "samplingRate");
+
+      console.log("\n");
+      console.log("samplingRate POSITIONS:");
+      console.log(samplingPositions);
+
+      for (const pos of samplingPositions) {
+        console.log("\n");
+        console.log("==================================================");
+        console.log("samplingRate CONTEXT");
+        console.log(`POSITION: ${pos}`);
+        console.log("==================================================");
+
+        printAround(js, pos, 3000, 5000);
+      }
+
       break;
 
     } catch (error) {

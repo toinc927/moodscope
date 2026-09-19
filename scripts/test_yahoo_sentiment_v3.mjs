@@ -21,7 +21,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, pos, before = 3500, after = 7000) {
+function printAround(text, pos, before = 2500, after = 4500) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -30,46 +30,59 @@ function printAround(text, pos, before = 3500, after = 7000) {
   );
 }
 
-function findHits(text, regex, label, limit = 20) {
-  let count = 0;
-  let match;
+function findModuleStarts(js) {
+  const results = [];
 
-  regex.lastIndex = 0;
+  const regex =
+    /(?:^|[,{])(\d+):\s*(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>/g;
 
-  while ((match = regex.exec(text)) !== null && count < limit) {
-    console.log("\n");
-    console.log("==================================================");
-    console.log(`HIT: ${label}`);
-    console.log(`POSITION: ${match.index}`);
-    console.log(`MATCH: ${match[0]}`);
-    console.log("==================================================");
+  let m;
 
-    printAround(text, match.index);
-
-    count++;
+  while ((m = regex.exec(js)) !== null) {
+    results.push({
+      id: m[1],
+      pos: m.index
+    });
   }
 
-  console.log(`\n${label} COUNT: ${count}`);
-  return count;
+  return results;
 }
 
-function getModuleId(text, position) {
-  const before = text.slice(0, position);
+function getModuleAtPosition(js, position) {
+  const modules = findModuleStarts(js);
 
-  const matches = [
-    ...before.matchAll(/(?:^|[,{])(\d+):\s*(?:\([^)]*\)|[a-zA-Z_$][\w$]*)\s*=>/g)
-  ];
+  let current = null;
 
-  if (matches.length === 0) {
-    return null;
+  for (const mod of modules) {
+    if (mod.pos <= position) {
+      current = mod;
+    } else {
+      break;
+    }
   }
 
-  return matches[matches.length - 1][1];
+  return current;
+}
+
+function findOccurrences(js, text) {
+  const positions = [];
+  let pos = 0;
+
+  while ((pos = js.indexOf(text, pos)) !== -1) {
+    positions.push(pos);
+    pos += text.length;
+
+    if (positions.length >= 30) {
+      break;
+    }
+  }
+
+  return positions;
 }
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo INTERNAL API / SENTIMENT diagnostic");
+  console.log("Yahoo SENTIMENT CALL-SITE diagnostic");
   console.log("==================================================");
 
   console.log(`KEYWORD: ${keyword}`);
@@ -101,10 +114,6 @@ async function main() {
 
   console.log(`SCRIPT COUNT: ${scripts.length}`);
 
-  let apiHits = 0;
-  let sentimentHits = 0;
-  let loadHits = 0;
-
   for (const url of scripts) {
     try {
       const result = await fetchText(url, {
@@ -119,86 +128,104 @@ async function main() {
 
       const js = result.text;
 
-      /*
-       * 1. /realtime/api/v1 を使っている場所
-       */
-      if (js.includes("/realtime/api/v1")) {
-        apiHits++;
+      // --------------------------------------------------
+      // 75391
+      // --------------------------------------------------
 
+      const hits75391 = findOccurrences(js, "75391");
+
+      if (hits75391.length > 0) {
         console.log("\n");
         console.log("##################################################");
-        console.log("REALTIME API SCRIPT FOUND");
+        console.log("MODULE 75391 REFERENCES");
         console.log("##################################################");
         console.log(`URL: ${url}`);
-        console.log(`JS LENGTH: ${js.length}`);
+        console.log(`HITS: ${hits75391.length}`);
 
-        const positions = [];
-        let p = 0;
+        for (const pos of hits75391) {
+          console.log("\n");
+          console.log("----------------------------------------------");
+          console.log(`POSITION: ${pos}`);
+          console.log("----------------------------------------------");
 
-        while ((p = js.indexOf("/realtime/api/v1", p)) !== -1) {
-          positions.push(p);
-          p += 5;
-
-          if (positions.length >= 20) {
-            break;
-          }
+          printAround(js, pos, 3000, 5000);
         }
+      }
+
+      // --------------------------------------------------
+      // 77507
+      // --------------------------------------------------
+
+      const hits77507 = findOccurrences(js, "77507");
+
+      if (hits77507.length > 0) {
+        console.log("\n");
+        console.log("##################################################");
+        console.log("MODULE 77507 REFERENCES");
+        console.log("##################################################");
+        console.log(`URL: ${url}`);
+        console.log(`HITS: ${hits77507.length}`);
+
+        for (const pos of hits77507) {
+          console.log("\n");
+          console.log("----------------------------------------------");
+          console.log(`POSITION: ${pos}`);
+          console.log("----------------------------------------------");
+
+          printAround(js, pos, 3000, 5000);
+        }
+      }
+
+      // --------------------------------------------------
+      // loadChartData + imports
+      // --------------------------------------------------
+
+      if (js.includes("loadChartData")) {
+        console.log("\n");
+        console.log("##################################################");
+        console.log("LOADCHARTDATA + IMPORT DIAGNOSTIC");
+        console.log("##################################################");
+        console.log(`URL: ${url}`);
+
+        const positions = findOccurrences(js, "loadChartData");
 
         for (const pos of positions) {
-          console.log("\n");
-          console.log("--------------------------------------------------");
-          console.log("REALTIME API OCCURRENCE");
-          console.log(`POSITION: ${pos}`);
-          console.log(`MODULE ID: ${getModuleId(js, pos)}`);
-          console.log("--------------------------------------------------");
+          const mod = getModuleAtPosition(js, pos);
 
-          printAround(js, pos, 5000, 10000);
+          console.log("\n");
+          console.log("----------------------------------------------");
+          console.log(`LOADCHARTDATA POSITION: ${pos}`);
+          console.log(`MODULE AT POSITION: ${mod ? mod.id : "UNKNOWN"}`);
+          console.log("----------------------------------------------");
+
+          printAround(js, pos, 5000, 8000);
         }
       }
 
-      /*
-       * 2. sentimentData とAPIが同じJSにあるか
-       */
-      if (
-        js.includes("sentimentData") &&
-        js.includes("/realtime/api/v1")
-      ) {
-        sentimentHits++;
+      // --------------------------------------------------
+      // sentimentData
+      // --------------------------------------------------
 
+      if (js.includes("sentimentData")) {
         console.log("\n");
         console.log("##################################################");
-        console.log("SENTIMENT + API SAME SCRIPT");
+        console.log("SENTIMENTDATA MODULE INFO");
         console.log("##################################################");
         console.log(`URL: ${url}`);
-        console.log(`JS LENGTH: ${js.length}`);
 
-        findHits(
-          js,
-          /sentimentData/gi,
-          "sentimentData",
-          10
-        );
-      }
+        const positions = findOccurrences(js, "sentimentData");
 
-      /*
-       * 3. loadChartData
-       */
-      if (js.includes("loadChartData")) {
-        loadHits++;
+        for (const pos of positions.slice(0, 8)) {
+          const mod = getModuleAtPosition(js, pos);
 
-        console.log("\n");
-        console.log("##################################################");
-        console.log("LOADCHARTDATA SCRIPT");
-        console.log("##################################################");
-        console.log(`URL: ${url}`);
-        console.log(`JS LENGTH: ${js.length}`);
+          console.log("\n");
+          console.log("----------------------------------------------");
+          console.log(`SENTIMENTDATA POSITION: ${pos}`);
+          console.log(`MODULE AT POSITION: ${mod ? mod.id : "UNKNOWN"}`);
+          console.log("----------------------------------------------");
 
-        findHits(
-          js,
-          /loadChartData/gi,
-          "loadChartData",
-          10
-        );
+          printAround(js, pos, 1800, 3000);
+        }
       }
 
     } catch (error) {
@@ -207,15 +234,6 @@ async function main() {
       );
     }
   }
-
-  console.log("\n");
-  console.log("==================================================");
-  console.log("SUMMARY");
-  console.log("==================================================");
-
-  console.log(`REALTIME API SCRIPTS: ${apiHits}`);
-  console.log(`SENTIMENT + API SCRIPTS: ${sentimentHits}`);
-  console.log(`LOADCHARTDATA SCRIPTS: ${loadHits}`);
 
   console.log("\n");
   console.log("==================================================");

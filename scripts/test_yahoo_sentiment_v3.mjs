@@ -21,72 +21,33 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, pos, before = 2500, after = 4500) {
-  console.log(
-    text.slice(
-      Math.max(0, pos - before),
-      Math.min(text.length, pos + after)
-    )
-  );
-}
+function findModuleStart(js, moduleId) {
+  const patterns = [
+    new RegExp(`(?:^|[,{])${moduleId}:\\\$begin:math:text$e\,t\,r\\\\\\$end:math:text$=>`, "g"),
+    new RegExp(`(?:^|[,{])${moduleId}:\\\$begin:math:text$e\,t\,r\\\\\\$end:math:text$=>\\\\{`, "g"),
+    new RegExp(`(?:^|[,{])${moduleId}:\\\$begin:math:text$\[\^\)\]\*\\\\\\$end:math:text$=>`, "g")
+  ];
 
-function findModuleStarts(js) {
-  const results = [];
-
-  const regex =
-    /(?:^|[,{])(\d+):\s*(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>/g;
-
-  let m;
-
-  while ((m = regex.exec(js)) !== null) {
-    results.push({
-      id: m[1],
-      pos: m.index
-    });
+  for (const regex of patterns) {
+    const m = regex.exec(js);
+    if (m) return m.index;
   }
 
-  return results;
+  return -1;
 }
 
-function getModuleAtPosition(js, position) {
-  const modules = findModuleStarts(js);
-
-  let current = null;
-
-  for (const mod of modules) {
-    if (mod.pos <= position) {
-      current = mod;
-    } else {
-      break;
-    }
-  }
-
-  return current;
-}
-
-function findOccurrences(js, text) {
-  const positions = [];
-  let pos = 0;
-
-  while ((pos = js.indexOf(text, pos)) !== -1) {
-    positions.push(pos);
-    pos += text.length;
-
-    if (positions.length >= 30) {
-      break;
-    }
-  }
-
-  return positions;
+function printSection(title, text) {
+  console.log("\n");
+  console.log("##################################################");
+  console.log(title);
+  console.log("##################################################");
+  console.log(text);
 }
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo SENTIMENT CALL-SITE diagnostic");
+  console.log("Yahoo MODULE 2738 diagnostic");
   console.log("==================================================");
-
-  console.log(`KEYWORD: ${keyword}`);
-  console.log(`PAGE: ${pageUrl}`);
 
   const page = await fetchText(pageUrl, {
     "Accept":
@@ -94,9 +55,6 @@ async function main() {
     "Referer":
       "https://search.yahoo.co.jp/realtime/search"
   });
-
-  console.log(`PAGE HTTP: ${page.status}`);
-  console.log(`HTML LENGTH: ${page.text.length}`);
 
   const scriptUrls = [
     ...page.text.matchAll(
@@ -128,110 +86,53 @@ async function main() {
 
       const js = result.text;
 
-      // --------------------------------------------------
-      // 75391
-      // --------------------------------------------------
-
-      const hits75391 = findOccurrences(js, "75391");
-
-      if (hits75391.length > 0) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("MODULE 75391 REFERENCES");
-        console.log("##################################################");
-        console.log(`URL: ${url}`);
-        console.log(`HITS: ${hits75391.length}`);
-
-        for (const pos of hits75391) {
-          console.log("\n");
-          console.log("----------------------------------------------");
-          console.log(`POSITION: ${pos}`);
-          console.log("----------------------------------------------");
-
-          printAround(js, pos, 3000, 5000);
-        }
+      if (!js.includes("loadChartData")) {
+        continue;
       }
 
-      // --------------------------------------------------
-      // 77507
-      // --------------------------------------------------
-
-      const hits77507 = findOccurrences(js, "77507");
-
-      if (hits77507.length > 0) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("MODULE 77507 REFERENCES");
-        console.log("##################################################");
-        console.log(`URL: ${url}`);
-        console.log(`HITS: ${hits77507.length}`);
-
-        for (const pos of hits77507) {
-          console.log("\n");
-          console.log("----------------------------------------------");
-          console.log(`POSITION: ${pos}`);
-          console.log("----------------------------------------------");
-
-          printAround(js, pos, 3000, 5000);
-        }
-      }
-
-      // --------------------------------------------------
-      // loadChartData + imports
-      // --------------------------------------------------
-
-      if (js.includes("loadChartData")) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("LOADCHARTDATA + IMPORT DIAGNOSTIC");
-        console.log("##################################################");
-        console.log(`URL: ${url}`);
-
-        const positions = findOccurrences(js, "loadChartData");
-
-        for (const pos of positions) {
-          const mod = getModuleAtPosition(js, pos);
-
-          console.log("\n");
-          console.log("----------------------------------------------");
-          console.log(`LOADCHARTDATA POSITION: ${pos}`);
-          console.log(`MODULE AT POSITION: ${mod ? mod.id : "UNKNOWN"}`);
-          console.log("----------------------------------------------");
-
-          printAround(js, pos, 5000, 8000);
-        }
-      }
-
-      // --------------------------------------------------
-      // sentimentData
-      // --------------------------------------------------
-
-      if (js.includes("sentimentData")) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("SENTIMENTDATA MODULE INFO");
-        console.log("##################################################");
-        console.log(`URL: ${url}`);
-
-        const positions = findOccurrences(js, "sentimentData");
-
-        for (const pos of positions.slice(0, 8)) {
-          const mod = getModuleAtPosition(js, pos);
-
-          console.log("\n");
-          console.log("----------------------------------------------");
-          console.log(`SENTIMENTDATA POSITION: ${pos}`);
-          console.log(`MODULE AT POSITION: ${mod ? mod.id : "UNKNOWN"}`);
-          console.log("----------------------------------------------");
-
-          printAround(js, pos, 1800, 3000);
-        }
-      }
-
-    } catch (error) {
-      console.log(
-        `SCRIPT ERROR: ${url} :: ${error.message}`
+      printSection(
+        "LOADCHARTDATA SCRIPT FOUND",
+        `URL: ${url}\nJS LENGTH: ${js.length}`
       );
+
+      // モジュール2738の開始位置を探す
+      const moduleStart = findModuleStart(js, "2738");
+
+      console.log(`MODULE 2738 START: ${moduleStart}`);
+
+      if (moduleStart >= 0) {
+        printSection(
+          "MODULE 2738 BEGINNING",
+          js.slice(
+            moduleStart,
+            Math.min(js.length, moduleStart + 9000)
+          )
+        );
+      }
+
+      // loadChartData の周辺
+      let pos = 0;
+      let count = 0;
+
+      while ((pos = js.indexOf("loadChartData", pos)) !== -1) {
+        count++;
+
+        printSection(
+          `LOADCHARTDATA OCCURRENCE ${count}`,
+          js.slice(
+            Math.max(0, pos - 1500),
+            Math.min(js.length, pos + 4000)
+          )
+        );
+
+        pos += "loadChartData".length;
+
+        if (count >= 5) break;
+      }
+
+      break;
+    } catch (error) {
+      console.log(`ERROR: ${error.message}`);
     }
   }
 

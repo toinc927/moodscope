@@ -21,7 +21,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, pos, before = 5000, after = 8000) {
+function printAround(text, pos, before = 3000, after = 6000) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -30,33 +30,35 @@ function printAround(text, pos, before = 5000, after = 8000) {
   );
 }
 
-function findAll(text, regex, limit = 30) {
-  const hits = [];
-  regex.lastIndex = 0;
-
+function findAll(text, regex, label, limit = 20) {
+  let count = 0;
   let match;
 
-  while ((match = regex.exec(text)) !== null) {
-    hits.push({
-      index: match.index,
-      match: match[0]
-    });
+  regex.lastIndex = 0;
 
-    if (hits.length >= limit) {
-      break;
-    }
+  while ((match = regex.exec(text)) !== null && count < limit) {
+    console.log("\n");
+    console.log("==================================================");
+    console.log(`${label} #${count + 1}`);
+    console.log(`POSITION: ${match.index}`);
+    console.log(`MATCH: ${match[0]}`);
+    console.log("==================================================");
+
+    printAround(text, match.index);
+
+    count++;
   }
 
-  return hits;
+  console.log(`\n${label} COUNT: ${count}`);
+  return count;
 }
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo sentiment CALL-SITE diagnostic");
+  console.log("Yahoo sentiment call-site diagnostic");
   console.log("==================================================");
 
   console.log(`KEYWORD: ${keyword}`);
-  console.log(`PAGE: ${pageUrl}`);
 
   const page = await fetchText(pageUrl, {
     "Accept":
@@ -84,8 +86,6 @@ async function main() {
 
   console.log(`SCRIPT COUNT: ${scripts.length}`);
 
-  let found = 0;
-
   for (const url of scripts) {
     try {
       const result = await fetchText(url, {
@@ -100,78 +100,64 @@ async function main() {
 
       const js = result.text;
 
-      // loadChartData を含むファイルだけを見る
-      if (!js.includes("loadChartData")) {
-        continue;
-      }
-
-      console.log("\n");
-      console.log("##################################################");
-      console.log("LOADCHARTDATA FILE");
-      console.log("##################################################");
-      console.log(`URL: ${url}`);
-      console.log(`JS LENGTH: ${js.length}`);
-
-      // 77507 の利用箇所を探す
-      const moduleHits = findAll(
-        js,
-        /(?:r|s|n|o|a|t|e|i|ta|N)\(77507\)/g,
-        50
-      );
-
-      console.log(`77507 IMPORT-LIKE HITS: ${moduleHits.length}`);
-
-      for (const hit of moduleHits) {
+      // ① 77507を呼び出している場所
+      if (
+        js.includes("77507") &&
+        (
+          js.includes("s(77507)") ||
+          js.includes("r(77507)") ||
+          js.includes("77507)")
+        )
+      ) {
         console.log("\n");
-        console.log("--------------------------------------------------");
-        console.log("77507 IMPORT CONTEXT");
-        console.log(`POSITION: ${hit.index}`);
-        console.log("--------------------------------------------------");
+        console.log("##################################################");
+        console.log("MODULE 77507 IMPORTER");
+        console.log("##################################################");
+        console.log(`URL: ${url}`);
+        console.log(`JS LENGTH: ${js.length}`);
 
-        printAround(js, hit.index, 2500, 5000);
+        findAll(
+          js,
+          /(?:s|r)\(77507\)/g,
+          "77507 IMPORT",
+          10
+        );
       }
 
-      // ta.Z(...) の呼び出しを探す
-      const callHits = findAll(
-        js,
-        /ta\.Z\(/g,
-        50
-      );
-
-      console.log("\n");
-      console.log(`ta.Z CALLS: ${callHits.length}`);
-
-      for (const hit of callHits) {
+      // ② this.loadChartData(...) の実際の呼び出し
+      if (js.includes("this.loadChartData")) {
         console.log("\n");
-        console.log("--------------------------------------------------");
-        console.log("ta.Z CALL");
-        console.log(`POSITION: ${hit.index}`);
-        console.log("--------------------------------------------------");
+        console.log("##################################################");
+        console.log("THIS.LOADCHARTDATA CALL");
+        console.log("##################################################");
+        console.log(`URL: ${url}`);
+        console.log(`JS LENGTH: ${js.length}`);
 
-        printAround(js, hit.index, 3500, 6000);
+        findAll(
+          js,
+          /this\.loadChartData\s*\(/g,
+          "this.loadChartData",
+          20
+        );
       }
 
-      // loadChartData の呼び出しを探す
-      const loadHits = findAll(
-        js,
-        /loadChartData\s*\(/g,
-        50
-      );
-
-      console.log("\n");
-      console.log(`loadChartData CALLS: ${loadHits.length}`);
-
-      for (const hit of loadHits) {
+      // ③ loadChartData(...) の呼び出し
+      if (js.includes("loadChartData(")) {
         console.log("\n");
-        console.log("--------------------------------------------------");
-        console.log("loadChartData CALL");
-        console.log(`POSITION: ${hit.index}`);
-        console.log("--------------------------------------------------");
+        console.log("##################################################");
+        console.log("LOADCHARTDATA CALL-SITES");
+        console.log("##################################################");
+        console.log(`URL: ${url}`);
+        console.log(`JS LENGTH: ${js.length}`);
 
-        printAround(js, hit.index, 3500, 6000);
+        findAll(
+          js,
+          /(?:^|[^\w])loadChartData\s*\(/g,
+          "loadChartData(",
+          30
+        );
       }
 
-      found++;
     } catch (error) {
       console.log(
         `SCRIPT ERROR: ${url} :: ${error.message}`
@@ -181,9 +167,7 @@ async function main() {
 
   console.log("\n");
   console.log("==================================================");
-  console.log("SUMMARY");
-  console.log("==================================================");
-  console.log(`LOADCHARTDATA FILES: ${found}`);
+  console.log("DIAGNOSTIC FINISHED");
   console.log("==================================================");
 }
 

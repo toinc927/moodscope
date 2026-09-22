@@ -1,17 +1,18 @@
-const keyword = "ファナック";
+const pageUrl =
+  "https://search.yahoo.co.jp/realtime/search?p=%E3%83%95%E3%82%A1%E3%83%8A%E3%83%83%E3%82%AF";
+
+const targetUrl =
+  "https://s.yimg.jp/images/realtime/fe/assets/_next/static/4.299.2/chunks/2738.js";
 
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36";
 
-const pageUrl =
-  `https://search.yahoo.co.jp/realtime/search?p=${encodeURIComponent(keyword)}`;
-
-async function fetchText(url, headers = {}) {
+async function fetchText(url) {
   const res = await fetch(url, {
     headers: {
       "User-Agent": UA,
       "Accept": "*/*",
-      ...headers
+      "Referer": pageUrl
     }
   });
 
@@ -21,7 +22,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, pos, before = 3000, after = 6000) {
+function printAround(text, pos, before = 5000, after = 10000) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -30,140 +31,106 @@ function printAround(text, pos, before = 3000, after = 6000) {
   );
 }
 
-function findAll(text, regex, label, limit = 20) {
+function findAll(text, regex, label, before = 5000, after = 10000) {
   let count = 0;
   let match;
 
   regex.lastIndex = 0;
 
-  while ((match = regex.exec(text)) !== null && count < limit) {
+  while ((match = regex.exec(text)) !== null) {
+    count++;
+
     console.log("\n");
     console.log("==================================================");
-    console.log(`${label} #${count + 1}`);
+    console.log(`${label} #${count}`);
     console.log(`POSITION: ${match.index}`);
     console.log(`MATCH: ${match[0]}`);
     console.log("==================================================");
 
-    printAround(text, match.index);
+    printAround(text, match.index, before, after);
 
-    count++;
+    if (count >= 10) {
+      break;
+    }
   }
 
   console.log(`\n${label} COUNT: ${count}`);
+
   return count;
 }
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo sentiment call-site diagnostic");
+  console.log("Yahoo loadChartData CALL-SITE diagnostic");
   console.log("==================================================");
 
-  console.log(`KEYWORD: ${keyword}`);
+  const result = await fetchText(targetUrl);
 
-  const page = await fetchText(pageUrl, {
-    "Accept":
-      "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Referer":
-      "https://search.yahoo.co.jp/realtime/search"
-  });
+  console.log(`HTTP: ${result.status}`);
+  console.log(`JS LENGTH: ${result.text.length}`);
 
-  console.log(`PAGE HTTP: ${page.status}`);
-  console.log(`HTML LENGTH: ${page.text.length}`);
+  const js = result.text;
 
-  const scriptUrls = [
-    ...page.text.matchAll(
-      /<script[^>]+src=["']([^"']+)["']/gi
-    )
-  ]
-    .map(m => m[1])
-    .map(src =>
-      src.startsWith("http")
-        ? src
-        : new URL(src, pageUrl).href
-    );
+  console.log("\n");
+  console.log("##################################################");
+  console.log("1. MODULE 77507 IMPORT");
+  console.log("##################################################");
 
-  const scripts = [...new Set(scriptUrls)];
+  findAll(
+    js,
+    /(?:r|n|a|s|o|i|c|l|u|d|f|p|h|g|m|v|y|w|b|x|k|j|q|z)=r\(77507\)/g,
+    "77507 IMPORT"
+  );
 
-  console.log(`SCRIPT COUNT: ${scripts.length}`);
+  console.log("\n");
+  console.log("##################################################");
+  console.log("2. TA.Z CALL");
+  console.log("##################################################");
 
-  for (const url of scripts) {
-    try {
-      const result = await fetchText(url, {
-        "Accept":
-          "application/javascript,text/javascript,*/*;q=0.1",
-        "Referer": pageUrl
-      });
+  findAll(
+    js,
+    /\(0,[A-Za-z_$][\w$]*\.Z\)\([^)]*/g,
+    "Z CALL"
+  );
 
-      if (result.status < 200 || result.status >= 300) {
-        continue;
-      }
+  console.log("\n");
+  console.log("##################################################");
+  console.log("3. THIS.LOADCHARTDATA CALL");
+  console.log("##################################################");
 
-      const js = result.text;
+  findAll(
+    js,
+    /this\.loadChartData\(/g,
+    "THIS.LOADCHARTDATA CALL",
+    8000,
+    12000
+  );
 
-      // ① 77507を呼び出している場所
-      if (
-        js.includes("77507") &&
-        (
-          js.includes("s(77507)") ||
-          js.includes("r(77507)") ||
-          js.includes("77507)")
-        )
-      ) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("MODULE 77507 IMPORTER");
-        console.log("##################################################");
-        console.log(`URL: ${url}`);
-        console.log(`JS LENGTH: ${js.length}`);
+  console.log("\n");
+  console.log("##################################################");
+  console.log("4. LOADCHARTDATA CALL");
+  console.log("##################################################");
 
-        findAll(
-          js,
-          /(?:s|r)\(77507\)/g,
-          "77507 IMPORT",
-          10
-        );
-      }
+  findAll(
+    js,
+    /loadChartData\(/g,
+    "LOADCHARTDATA CALL",
+    8000,
+    12000
+  );
 
-      // ② this.loadChartData(...) の実際の呼び出し
-      if (js.includes("this.loadChartData")) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("THIS.LOADCHARTDATA CALL");
-        console.log("##################################################");
-        console.log(`URL: ${url}`);
-        console.log(`JS LENGTH: ${js.length}`);
+  console.log("\n");
+  console.log("##################################################");
+  console.log("5. SENTIMENT PIE CHART");
+  console.log("##################################################");
 
-        findAll(
-          js,
-          /this\.loadChartData\s*\(/g,
-          "this.loadChartData",
-          20
-        );
-      }
-
-      // ③ loadChartData(...) の呼び出し
-      if (js.includes("loadChartData(")) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("LOADCHARTDATA CALL-SITES");
-        console.log("##################################################");
-        console.log(`URL: ${url}`);
-        console.log(`JS LENGTH: ${js.length}`);
-
-        findAll(
-          js,
-          /(?:^|[^\w])loadChartData\s*\(/g,
-          "loadChartData(",
-          30
-        );
-      }
-
-    } catch (error) {
-      console.log(
-        `SCRIPT ERROR: ${url} :: ${error.message}`
-      );
-    }
-  }
+  findAll(
+    js,
+    /sentimentPieChart/g,
+    "SENTIMENT PIE CHART",
+    4000,
+    8000
+  );
 
   console.log("\n");
   console.log("==================================================");

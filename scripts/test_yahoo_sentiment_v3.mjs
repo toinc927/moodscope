@@ -20,27 +20,30 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function around(text, pos, before = 5000, after = 10000) {
-  return text.slice(
-    Math.max(0, pos - before),
-    Math.min(text.length, pos + after)
+function printAround(text, pos, before = 10000, after = 15000) {
+  console.log(
+    text.slice(
+      Math.max(0, pos - before),
+      Math.min(text.length, pos + after)
+    )
   );
 }
 
-function printHits(text, regex, label, limit = 20) {
+function find(text, regex, label, limit = 10) {
   regex.lastIndex = 0;
 
   let count = 0;
-  let m;
+  let match;
 
-  while ((m = regex.exec(text)) !== null && count < limit) {
+  while ((match = regex.exec(text)) !== null && count < limit) {
     console.log("\n");
     console.log("==================================================");
     console.log(label);
-    console.log("POSITION:", m.index);
-    console.log("MATCH:", m[0]);
+    console.log("POSITION:", match.index);
+    console.log("MATCH:", match[0]);
     console.log("==================================================");
-    console.log(around(text, m.index));
+
+    printAround(text, match.index);
 
     count++;
   }
@@ -50,7 +53,7 @@ function printHits(text, regex, label, limit = 20) {
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo sentiment PATH diagnostic");
+  console.log("Yahoo sentiment PATH source diagnostic");
   console.log("==================================================");
 
   const page = await fetchText(pageUrl, {
@@ -94,102 +97,87 @@ async function main() {
       const js = result.text;
 
       /*
-       * 1. loadChartData
+       * loadChartData の定義
        */
-      if (js.includes("this.loadChartData")) {
+      if (js.includes("this.loadChartData=async")) {
         console.log("\n");
         console.log("##################################################");
-        console.log("LOADCHARTDATA FOUND");
+        console.log("LOADCHARTDATA DEFINITION");
         console.log("##################################################");
         console.log("URL:", url);
         console.log("JS LENGTH:", js.length);
 
-        printHits(
+        find(
           js,
-          /this\.loadChartData\(/g,
-          "THIS.LOADCHARTDATA"
+          /this\.loadChartData=async/g,
+          "LOADCHARTDATA DEFINITION",
+          5
         );
       }
 
       /*
-       * 2. e.path
+       * e.path を渡している場所
        */
-      if (
-        js.includes("loadChartData(e.path") ||
-        js.includes("loadChartData(e.path,")
-      ) {
+      if (js.includes("loadChartData(e.path")) {
         console.log("\n");
         console.log("##################################################");
-        console.log("LOADCHARTDATA E.PATH FOUND");
+        console.log("E.PATH CALL SITE");
         console.log("##################################################");
         console.log("URL:", url);
 
-        printHits(
+        find(
           js,
           /loadChartData\(e\.path/g,
-          "LOADCHARTDATA(E.PATH)"
+          "E.PATH CALL SITE",
+          5
         );
       }
 
       /*
-       * 3. path: の定義
+       * sentimentPieChart と path が近い場所を探す
        */
       if (
-        js.includes("path:") &&
-        js.includes("sentiment")
+        js.includes("sentimentPieChart") &&
+        js.includes("loadChartData")
       ) {
         console.log("\n");
         console.log("##################################################");
-        console.log("PATH + SENTIMENT SCRIPT");
+        console.log("SENTIMENT + LOADCHARTDATA MODULE");
         console.log("##################################################");
         console.log("URL:", url);
+        console.log("JS LENGTH:", js.length);
 
-        printHits(
-          js,
-          /path\s*:/g,
-          "PATH DEFINITION",
-          30
-        );
-      }
-
-      /*
-       * 4. sentimentPieChart
-       */
-      if (js.includes("sentimentPieChart")) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("SENTIMENT PIE CHART SCRIPT");
-        console.log("##################################################");
-        console.log("URL:", url);
-
-        printHits(
+        find(
           js,
           /sentimentPieChart/g,
           "SENTIMENT PIE CHART",
-          10
+          5
         );
       }
 
       /*
-       * 5. termParams
+       * module 77507 の利用箇所
        */
-      if (js.includes("termParams")) {
+      if (
+        js.includes("77507)") ||
+        js.includes("77507,")
+      ) {
         console.log("\n");
         console.log("##################################################");
-        console.log("TERMPARAMS SCRIPT");
+        console.log("MODULE 77507 IMPORT / USE");
         console.log("##################################################");
         console.log("URL:", url);
 
-        printHits(
+        find(
           js,
-          /termParams/g,
-          "TERMPARAMS",
-          10
+          /77507/g,
+          "MODULE 77507",
+          20
         );
       }
 
       /*
-       * 6. API wrapper
+       * API wrapper
        */
       if (js.includes("/realtime/api/v1")) {
         console.log("\n");
@@ -198,11 +186,11 @@ async function main() {
         console.log("##################################################");
         console.log("URL:", url);
 
-        printHits(
+        find(
           js,
           /\/realtime\/api\/v1/g,
           "REALTIME API",
-          10
+          5
         );
       }
     } catch (error) {

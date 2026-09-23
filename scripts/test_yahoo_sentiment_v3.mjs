@@ -1,16 +1,14 @@
-const pageUrl =
-  "https://search.yahoo.co.jp/realtime/search?p=" +
-  encodeURIComponent("ファナック");
+const chunkUrl =
+  "https://s.yimg.jp/images/realtime/fe/assets/_next/static/4.299.2/chunks/2738.js";
 
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36";
 
-async function fetchText(url, headers = {}) {
+async function fetchText(url) {
   const res = await fetch(url, {
     headers: {
       "User-Agent": UA,
-      "Accept": "*/*",
-      ...headers
+      "Accept": "*/*"
     }
   });
 
@@ -20,7 +18,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, pos, before = 10000, after = 15000) {
+function printAround(text, pos, before = 2500, after = 5000) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -29,18 +27,18 @@ function printAround(text, pos, before = 10000, after = 15000) {
   );
 }
 
-function find(text, regex, label, limit = 10) {
-  regex.lastIndex = 0;
-
+function findAll(text, pattern, label, limit = 30) {
   let count = 0;
   let match;
 
-  while ((match = regex.exec(text)) !== null && count < limit) {
+  pattern.lastIndex = 0;
+
+  while ((match = pattern.exec(text)) !== null && count < limit) {
     console.log("\n");
     console.log("==================================================");
     console.log(label);
-    console.log("POSITION:", match.index);
-    console.log("MATCH:", match[0]);
+    console.log(`POSITION: ${match.index}`);
+    console.log(`MATCH: ${match[0]}`);
     console.log("==================================================");
 
     printAround(text, match.index);
@@ -48,159 +46,95 @@ function find(text, regex, label, limit = 10) {
     count++;
   }
 
-  console.log(`${label} COUNT: ${count}`);
+  console.log(`\n${label} COUNT: ${count}`);
 }
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo sentiment PATH source diagnostic");
+  console.log("Yahoo sentiment API call-site diagnostic");
   console.log("==================================================");
 
-  const page = await fetchText(pageUrl, {
-    "Accept":
-      "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Referer":
-      "https://search.yahoo.co.jp/realtime/search"
-  });
+  console.log(`URL: ${chunkUrl}`);
 
-  console.log("PAGE HTTP:", page.status);
-  console.log("HTML LENGTH:", page.text.length);
+  const result = await fetchText(chunkUrl);
 
-  const scriptUrls = [
-    ...page.text.matchAll(
-      /<script[^>]+src=["']([^"']+)["']/gi
-    )
-  ]
-    .map(m => m[1])
-    .map(src =>
-      src.startsWith("http")
-        ? src
-        : new URL(src, pageUrl).href
-    );
+  console.log(`HTTP: ${result.status}`);
+  console.log(`JS LENGTH: ${result.text.length}`);
 
-  const scripts = [...new Set(scriptUrls)];
+  const js = result.text;
 
-  console.log("SCRIPT COUNT:", scripts.length);
+  // --------------------------------------------------
+  // 1. module 77507 import
+  // --------------------------------------------------
 
-  for (const url of scripts) {
-    try {
-      const result = await fetchText(url, {
-        "Accept":
-          "application/javascript,text/javascript,*/*;q=0.1",
-        "Referer": pageUrl
-      });
+  findAll(
+    js,
+    /[A-Za-z_$][\w$]*=s\(77507\)/g,
+    "MODULE 77507 IMPORT",
+    20
+  );
 
-      if (result.status < 200 || result.status >= 300) {
-        continue;
-      }
+  // --------------------------------------------------
+  // 2. ta.Z / module 77507 の実際の呼び出し
+  // --------------------------------------------------
 
-      const js = result.text;
+  findAll(
+    js,
+    /\(0,[A-Za-z_$][\w$]*\.Z\)\(/g,
+    "API WRAPPER CALL",
+    50
+  );
 
-      /*
-       * loadChartData の定義
-       */
-      if (js.includes("this.loadChartData=async")) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("LOADCHARTDATA DEFINITION");
-        console.log("##################################################");
-        console.log("URL:", url);
-        console.log("JS LENGTH:", js.length);
+  // --------------------------------------------------
+  // 3. ta.Z に関係する loadChartData
+  // --------------------------------------------------
 
-        find(
-          js,
-          /this\.loadChartData=async/g,
-          "LOADCHARTDATA DEFINITION",
-          5
-        );
-      }
+  const loadPos = js.indexOf("this.loadChartData=async");
 
-      /*
-       * e.path を渡している場所
-       */
-      if (js.includes("loadChartData(e.path")) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("E.PATH CALL SITE");
-        console.log("##################################################");
-        console.log("URL:", url);
+  if (loadPos !== -1) {
+    console.log("\n");
+    console.log("##################################################");
+    console.log("LOADCHARTDATA DEFINITION");
+    console.log("##################################################");
+    console.log(`POSITION: ${loadPos}`);
 
-        find(
-          js,
-          /loadChartData\(e\.path/g,
-          "E.PATH CALL SITE",
-          5
-        );
-      }
-
-      /*
-       * sentimentPieChart と path が近い場所を探す
-       */
-      if (
-        js.includes("sentimentPieChart") &&
-        js.includes("loadChartData")
-      ) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("SENTIMENT + LOADCHARTDATA MODULE");
-        console.log("##################################################");
-        console.log("URL:", url);
-        console.log("JS LENGTH:", js.length);
-
-        find(
-          js,
-          /sentimentPieChart/g,
-          "SENTIMENT PIE CHART",
-          5
-        );
-      }
-
-      /*
-       * module 77507 の利用箇所
-       */
-      if (
-        js.includes("77507)") ||
-        js.includes("77507,")
-      ) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("MODULE 77507 IMPORT / USE");
-        console.log("##################################################");
-        console.log("URL:", url);
-
-        find(
-          js,
-          /77507/g,
-          "MODULE 77507",
-          20
-        );
-      }
-
-      /*
-       * API wrapper
-       */
-      if (js.includes("/realtime/api/v1")) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("REALTIME API WRAPPER");
-        console.log("##################################################");
-        console.log("URL:", url);
-
-        find(
-          js,
-          /\/realtime\/api\/v1/g,
-          "REALTIME API",
-          5
-        );
-      }
-    } catch (error) {
-      console.log(
-        "SCRIPT ERROR:",
-        url,
-        error.message
-      );
-    }
+    printAround(js, loadPos, 1000, 9000);
+  } else {
+    console.log("LOADCHARTDATA DEFINITION NOT FOUND");
   }
+
+  // --------------------------------------------------
+  // 4. sentimentPieChart
+  // --------------------------------------------------
+
+  findAll(
+    js,
+    /sentimentPieChart/g,
+    "SENTIMENT PIE CHART",
+    20
+  );
+
+  // --------------------------------------------------
+  // 5. tweetTransition
+  // --------------------------------------------------
+
+  findAll(
+    js,
+    /tweetTransition/g,
+    "TWEET TRANSITION",
+    20
+  );
+
+  // --------------------------------------------------
+  // 6. path: の候補
+  // --------------------------------------------------
+
+  findAll(
+    js,
+    /path\s*:/g,
+    "PATH PROPERTY",
+    50
+  );
 
   console.log("\n");
   console.log("==================================================");

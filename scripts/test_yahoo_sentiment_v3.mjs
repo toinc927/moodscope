@@ -22,7 +22,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, pos, before = 5000, after = 12000) {
+function printAround(text, pos, before = 2500, after = 5000) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -31,35 +31,10 @@ function printAround(text, pos, before = 5000, after = 12000) {
   );
 }
 
-function printHits(text, regex, label, limit = 20) {
-  regex.lastIndex = 0;
-
-  let count = 0;
-  let match;
-
-  while ((match = regex.exec(text)) !== null && count < limit) {
-    console.log("\n");
-    console.log("==================================================");
-    console.log(label);
-    console.log("==================================================");
-    console.log(`POSITION: ${match.index}`);
-    console.log(`MATCH: ${match[0]}`);
-    console.log("--------------------------------------------------");
-
-    printAround(text, match.index);
-
-    count++;
-  }
-
-  console.log(`\n${label} COUNT: ${count}`);
-}
-
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo sentiment API call-site diagnostic");
+  console.log("Yahoo loadChartData call-site diagnostic");
   console.log("==================================================");
-
-  console.log(`PAGE: ${pageUrl}`);
 
   const page = await fetchText(pageUrl, {
     "Accept":
@@ -101,52 +76,116 @@ async function main() {
 
       const js = result.text;
 
-      // 感情データを扱っている可能性が高いチャンクだけを見る
       if (
-        js.includes("loadChartData") ||
-        js.includes("sentimentPieChart") ||
-        js.includes("sentimentData")
+        !js.includes("loadChartData") &&
+        !js.includes("sentimentPieChart")
       ) {
-        console.log("\n");
-        console.log("##################################################");
-        console.log("SENTIMENT RELATED SCRIPT");
-        console.log("##################################################");
-        console.log(`URL: ${url}`);
-        console.log(`JS LENGTH: ${js.length}`);
-
-        if (js.includes("ta=s(77507)")) {
-          console.log("\n*** MODULE 77507 IMPORT FOUND ***");
-        }
-
-        printHits(
-          js,
-          /(?:this\.)?loadChartData\s*\(/g,
-          "LOADCHARTDATA CALLS",
-          20
-        );
-
-        printHits(
-          js,
-          /sentimentPieChart/g,
-          "SENTIMENT PIE CHART",
-          10
-        );
-
-        printHits(
-          js,
-          /ta=s\(77507\)/g,
-          "MODULE 77507 IMPORT",
-          10
-        );
-
-        printHits(
-          js,
-          /sentimentUntil/g,
-          "SENTIMENT UNTIL",
-          10
-        );
+        continue;
       }
 
+      console.log("\n");
+      console.log("##################################################");
+      console.log("TARGET SCRIPT");
+      console.log("##################################################");
+      console.log(`URL: ${url}`);
+      console.log(`JS LENGTH: ${js.length}`);
+
+      /*
+       * loadChartData の全出現箇所を調査
+       */
+      let regex = /loadChartData/g;
+      let match;
+      let count = 0;
+
+      while ((match = regex.exec(js)) !== null) {
+        count++;
+
+        console.log("\n");
+        console.log("==================================================");
+        console.log(`LOADCHARTDATA OCCURRENCE #${count}`);
+        console.log("==================================================");
+        console.log(`POSITION: ${match.index}`);
+
+        const start = Math.max(0, match.index - 800);
+        const end = Math.min(js.length, match.index + 1800);
+
+        console.log(js.slice(start, end));
+
+        if (count >= 20) {
+          break;
+        }
+      }
+
+      console.log(`\nTOTAL SHOWN: ${count}`);
+
+      /*
+       * .loadChartData(
+       * を直接探す
+       */
+      regex = /\.loadChartData\s*\(/g;
+      count = 0;
+
+      while ((match = regex.exec(js)) !== null) {
+        count++;
+
+        console.log("\n");
+        console.log("##################################################");
+        console.log(`DIRECT CALL #${count}`);
+        console.log("##################################################");
+        console.log(`POSITION: ${match.index}`);
+
+        printAround(js, match.index, 1500, 5000);
+
+        if (count >= 20) {
+          break;
+        }
+      }
+
+      console.log(`\nDIRECT CALLS SHOWN: ${count}`);
+
+      /*
+       * loadChartData.call / apply
+       */
+      regex = /loadChartData\s*\.\s*(call|apply)\s*\(/g;
+      count = 0;
+
+      while ((match = regex.exec(js)) !== null) {
+        count++;
+
+        console.log("\n");
+        console.log("##################################################");
+        console.log(`CALL/APPLY #${count}`);
+        console.log("##################################################");
+        console.log(`POSITION: ${match.index}`);
+
+        printAround(js, match.index, 1500, 5000);
+
+        if (count >= 20) {
+          break;
+        }
+      }
+
+      /*
+       * sentimentPieChart 周辺
+       */
+      regex = /sentimentPieChart/g;
+      count = 0;
+
+      while ((match = regex.exec(js)) !== null) {
+        count++;
+
+        console.log("\n");
+        console.log("==================================================");
+        console.log(`SENTIMENT PIE #${count}`);
+        console.log("==================================================");
+        console.log(`POSITION: ${match.index}`);
+
+        printAround(js, match.index, 1500, 4000);
+
+        if (count >= 10) {
+          break;
+        }
+      }
     } catch (error) {
       console.log(
         `SCRIPT ERROR: ${url} :: ${error.message}`

@@ -1,15 +1,18 @@
-const TARGET =
-  "https://s.yimg.jp/images/realtime/fe/assets/_next/static/4.299.2/chunks/2738.js";
+const pageUrl =
+  "https://search.yahoo.co.jp/realtime/search?p=" +
+  encodeURIComponent("ファナック");
 
 const UA =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+  "AppleWebKit/537.36 (KHTML, like Gecko) " +
+  "Chrome/131.0.0.0 Safari/537.36";
 
-async function fetchText(url) {
+async function fetchText(url, headers = {}) {
   const res = await fetch(url, {
     headers: {
       "User-Agent": UA,
       "Accept": "*/*",
-      "Referer": "https://search.yahoo.co.jp/realtime/search"
+      ...headers
     }
   });
 
@@ -19,7 +22,7 @@ async function fetchText(url) {
   };
 }
 
-function around(text, pos, before = 1500, after = 4000) {
+function printAround(text, pos, before = 5000, after = 12000) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -28,100 +31,132 @@ function around(text, pos, before = 1500, after = 4000) {
   );
 }
 
-function find(text, regex, label, limit = 20) {
-  let count = 0;
-  let m;
-
+function printHits(text, regex, label, limit = 20) {
   regex.lastIndex = 0;
 
-  while ((m = regex.exec(text)) !== null && count < limit) {
-    console.log("");
+  let count = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null && count < limit) {
+    console.log("\n");
     console.log("==================================================");
     console.log(label);
-    console.log(`POSITION: ${m.index}`);
-    console.log(`MATCH: ${m[0]}`);
     console.log("==================================================");
+    console.log(`POSITION: ${match.index}`);
+    console.log(`MATCH: ${match[0]}`);
+    console.log("--------------------------------------------------");
 
-    around(text, m.index);
+    printAround(text, match.index);
 
     count++;
   }
 
-  console.log("");
-  console.log(`${label} COUNT: ${count}`);
+  console.log(`\n${label} COUNT: ${count}`);
 }
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo SENTIMENT CALL SITE FINAL DIAGNOSTIC");
+  console.log("Yahoo sentiment API call-site diagnostic");
   console.log("==================================================");
 
-  const result = await fetchText(TARGET);
+  console.log(`PAGE: ${pageUrl}`);
 
-  console.log(`HTTP: ${result.status}`);
-  console.log(`JS LENGTH: ${result.text.length}`);
+  const page = await fetchText(pageUrl, {
+    "Accept":
+      "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Referer":
+      "https://search.yahoo.co.jp/realtime/search"
+  });
 
-  const js = result.text;
+  console.log(`PAGE HTTP: ${page.status}`);
+  console.log(`HTML LENGTH: ${page.text.length}`);
 
-  // 1. ta=s(77507)
-  find(
-    js,
-    /ta\s*=\s*s\(77507\)/g,
-    "MODULE 77507 IMPORT",
-    10
-  );
+  const scriptUrls = [
+    ...page.text.matchAll(
+      /<script[^>]+src=["']([^"']+)["']/gi
+    )
+  ]
+    .map(m => m[1])
+    .map(src =>
+      src.startsWith("http")
+        ? src
+        : new URL(src, pageUrl).href
+    );
 
-  // 2. 実際の ta.Z(...) 呼び出しだけを探す
-  find(
-    js,
-    /ta\.Z\s*\(/g,
-    "ACTUAL ta.Z(...) CALL",
-    30
-  );
+  const scripts = [...new Set(scriptUrls)];
 
-  // 3. (0,ta.Z)(...) 形式
-  find(
-    js,
-    /\(0,\s*ta\.Z\)\s*\(/g,
-    "ACTUAL (0,ta.Z)(...) CALL",
-    30
-  );
+  console.log(`SCRIPT COUNT: ${scripts.length}`);
 
-  // 4. sentimentSince / sentimentUntil
-  find(
-    js,
-    /sentimentSince|sentimentUntil/g,
-    "SENTIMENT PARAMETER",
-    30
-  );
+  for (const url of scripts) {
+    try {
+      const result = await fetchText(url, {
+        "Accept":
+          "application/javascript,text/javascript,*/*;q=0.1",
+        "Referer": pageUrl
+      });
 
-  // 5. loadChartData の定義
-  find(
-    js,
-    /this\.loadChartData\s*=\s*async/g,
-    "LOADCHARTDATA DEFINITION",
-    10
-  );
+      if (result.status < 200 || result.status >= 300) {
+        continue;
+      }
 
-  // 6. loadChartData の呼び出し
-  find(
-    js,
-    /loadChartData\s*\(/g,
-    "LOADCHARTDATA CALL",
-    30
-  );
+      const js = result.text;
 
-  // 7. API pathらしい文字列
-  find(
-    js,
-    /["'`](\/[^"'`]*(?:sentiment|chart|timeline)[^"'`]*)["'`]/gi,
-    "POSSIBLE API PATH",
-    50
-  );
+      // 感情データを扱っている可能性が高いチャンクだけを見る
+      if (
+        js.includes("loadChartData") ||
+        js.includes("sentimentPieChart") ||
+        js.includes("sentimentData")
+      ) {
+        console.log("\n");
+        console.log("##################################################");
+        console.log("SENTIMENT RELATED SCRIPT");
+        console.log("##################################################");
+        console.log(`URL: ${url}`);
+        console.log(`JS LENGTH: ${js.length}`);
 
-  console.log("");
+        if (js.includes("ta=s(77507)")) {
+          console.log("\n*** MODULE 77507 IMPORT FOUND ***");
+        }
+
+        printHits(
+          js,
+          /(?:this\.)?loadChartData\s*\(/g,
+          "LOADCHARTDATA CALLS",
+          20
+        );
+
+        printHits(
+          js,
+          /sentimentPieChart/g,
+          "SENTIMENT PIE CHART",
+          10
+        );
+
+        printHits(
+          js,
+          /ta=s\(77507\)/g,
+          "MODULE 77507 IMPORT",
+          10
+        );
+
+        printHits(
+          js,
+          /sentimentUntil/g,
+          "SENTIMENT UNTIL",
+          10
+        );
+      }
+
+    } catch (error) {
+      console.log(
+        `SCRIPT ERROR: ${url} :: ${error.message}`
+      );
+    }
+  }
+
+  console.log("\n");
   console.log("==================================================");
-  console.log("FINAL DIAGNOSTIC FINISHED");
+  console.log("FINISHED");
   console.log("==================================================");
 }
 

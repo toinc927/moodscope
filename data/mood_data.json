@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-09-25T13:52:37.208Z",
+  "updatedAt": "2026-09-25T14:00:31.693Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-09-25",
-      "posts24h": 73,
+      "posts24h": 72,
       "baselinePosts24h": 91,
       "heat": 42,
       "status": "計算済み"
@@ -28,9 +28,9 @@
     {
       "keyword": "IHI",
       "date": "2026-09-25",
-      "posts24h": 102,
+      "posts24h": 103,
       "baselinePosts24h": 145,
-      "heat": 37,
+      "heat": 38,
       "status": "計算済み"
     }
   ]

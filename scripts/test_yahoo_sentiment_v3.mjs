@@ -22,7 +22,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, pos, before = 2500, after = 5000) {
+function printAround(text, pos, before = 3000, after = 6000) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -33,7 +33,7 @@ function printAround(text, pos, before = 2500, after = 5000) {
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo loadChartData call-site diagnostic");
+  console.log("Yahoo loadChartData caller diagnostic");
   console.log("==================================================");
 
   const page = await fetchText(pageUrl, {
@@ -78,7 +78,7 @@ async function main() {
 
       if (
         !js.includes("loadChartData") &&
-        !js.includes("sentimentPieChart")
+        !js.includes("changeTerm")
       ) {
         continue;
       }
@@ -91,7 +91,7 @@ async function main() {
       console.log(`JS LENGTH: ${js.length}`);
 
       /*
-       * loadChartData の全出現箇所を調査
+       * loadChartData の全出現箇所
        */
       let regex = /loadChartData/g;
       let match;
@@ -102,27 +102,21 @@ async function main() {
 
         console.log("\n");
         console.log("==================================================");
-        console.log(`LOADCHARTDATA OCCURRENCE #${count}`);
+        console.log(`LOADCHARTDATA #${count}`);
         console.log("==================================================");
         console.log(`POSITION: ${match.index}`);
 
-        const start = Math.max(0, match.index - 800);
-        const end = Math.min(js.length, match.index + 1800);
+        printAround(js, match.index, 1200, 3500);
 
-        console.log(js.slice(start, end));
-
-        if (count >= 20) {
+        if (count >= 10) {
           break;
         }
       }
 
-      console.log(`\nTOTAL SHOWN: ${count}`);
-
       /*
-       * .loadChartData(
-       * を直接探す
+       * changeTerm の全出現箇所
        */
-      regex = /\.loadChartData\s*\(/g;
+      regex = /changeTerm/g;
       count = 0;
 
       while ((match = regex.exec(js)) !== null) {
@@ -130,23 +124,22 @@ async function main() {
 
         console.log("\n");
         console.log("##################################################");
-        console.log(`DIRECT CALL #${count}`);
+        console.log(`CHANGETERM #${count}`);
         console.log("##################################################");
         console.log(`POSITION: ${match.index}`);
 
         printAround(js, match.index, 1500, 5000);
 
-        if (count >= 20) {
+        if (count >= 10) {
           break;
         }
       }
 
-      console.log(`\nDIRECT CALLS SHOWN: ${count}`);
-
       /*
-       * loadChartData.call / apply
+       * this.loadChartData の代わりに、
+       * loadChartData を含む「呼び出しっぽい場所」を探す
        */
-      regex = /loadChartData\s*\.\s*(call|apply)\s*\(/g;
+      regex = /(?:this|[A-Za-z_$][\w$]*)\.loadChartData\s*\(/g;
       count = 0;
 
       while ((match = regex.exec(js)) !== null) {
@@ -154,21 +147,24 @@ async function main() {
 
         console.log("\n");
         console.log("##################################################");
-        console.log(`CALL/APPLY #${count}`);
+        console.log(`LOADCHARTDATA METHOD CALL #${count}`);
         console.log("##################################################");
         console.log(`POSITION: ${match.index}`);
+        console.log(`MATCH: ${match[0]}`);
 
-        printAround(js, match.index, 1500, 5000);
+        printAround(js, match.index, 2500, 7000);
 
-        if (count >= 20) {
+        if (count >= 10) {
           break;
         }
       }
 
+      console.log(`\nMETHOD CALLS SHOWN: ${count}`);
+
       /*
-       * sentimentPieChart 周辺
+       * API wrapper module 77507 の使用箇所
        */
-      regex = /sentimentPieChart/g;
+      regex = /77507/g;
       count = 0;
 
       while ((match = regex.exec(js)) !== null) {
@@ -176,11 +172,11 @@ async function main() {
 
         console.log("\n");
         console.log("==================================================");
-        console.log(`SENTIMENT PIE #${count}`);
+        console.log(`MODULE 77507 #${count}`);
         console.log("==================================================");
         console.log(`POSITION: ${match.index}`);
 
-        printAround(js, match.index, 1500, 4000);
+        printAround(js, match.index, 1200, 3000);
 
         if (count >= 10) {
           break;

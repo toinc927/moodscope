@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-09-26T14:13:43.431Z",
+  "updatedAt": "2026-09-26T14:57:47.066Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-09-26",
-      "posts24h": 2245,
+      "posts24h": 2246,
       "baselinePosts24h": 86,
       "heat": 100,
       "status": "計算済み"

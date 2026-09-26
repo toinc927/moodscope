@@ -22,7 +22,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, pos, before = 3000, after = 6000) {
+function printContext(text, pos, before = 700, after = 1800) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -33,7 +33,7 @@ function printAround(text, pos, before = 3000, after = 6000) {
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo loadChartData caller diagnostic");
+  console.log("Yahoo loadChartData COMPLETE SEARCH");
   console.log("==================================================");
 
   const page = await fetchText(pageUrl, {
@@ -76,24 +76,22 @@ async function main() {
 
       const js = result.text;
 
-      if (
-        !js.includes("loadChartData") &&
-        !js.includes("changeTerm")
-      ) {
+      if (!js.includes("loadChartData")) {
         continue;
       }
 
       console.log("\n");
       console.log("##################################################");
-      console.log("TARGET SCRIPT");
+      console.log("SCRIPT CONTAINS loadChartData");
       console.log("##################################################");
       console.log(`URL: ${url}`);
       console.log(`JS LENGTH: ${js.length}`);
 
       /*
-       * loadChartData の全出現箇所
+       * loadChartData の全出現箇所を一つずつ表示
        */
-      let regex = /loadChartData/g;
+      const regex = /loadChartData/g;
+
       let match;
       let count = 0;
 
@@ -102,85 +100,67 @@ async function main() {
 
         console.log("\n");
         console.log("==================================================");
-        console.log(`LOADCHARTDATA #${count}`);
+        console.log(`LOADCHARTDATA OCCURRENCE #${count}`);
         console.log("==================================================");
-        console.log(`POSITION: ${match.index}`);
-
-        printAround(js, match.index, 1200, 3500);
-
-        if (count >= 10) {
-          break;
-        }
-      }
-
-      /*
-       * changeTerm の全出現箇所
-       */
-      regex = /changeTerm/g;
-      count = 0;
-
-      while ((match = regex.exec(js)) !== null) {
-        count++;
-
-        console.log("\n");
-        console.log("##################################################");
-        console.log(`CHANGETERM #${count}`);
-        console.log("##################################################");
-        console.log(`POSITION: ${match.index}`);
-
-        printAround(js, match.index, 1500, 5000);
-
-        if (count >= 10) {
-          break;
-        }
-      }
-
-      /*
-       * this.loadChartData の代わりに、
-       * loadChartData を含む「呼び出しっぽい場所」を探す
-       */
-      regex = /(?:this|[A-Za-z_$][\w$]*)\.loadChartData\s*\(/g;
-      count = 0;
-
-      while ((match = regex.exec(js)) !== null) {
-        count++;
-
-        console.log("\n");
-        console.log("##################################################");
-        console.log(`LOADCHARTDATA METHOD CALL #${count}`);
-        console.log("##################################################");
         console.log(`POSITION: ${match.index}`);
         console.log(`MATCH: ${match[0]}`);
+        console.log("--------------------------------------------------");
 
-        printAround(js, match.index, 2500, 7000);
+        printContext(js, match.index);
 
-        if (count >= 10) {
+        if (count >= 30) {
+          console.log("STOP: 30 occurrences reached");
           break;
         }
       }
 
-      console.log(`\nMETHOD CALLS SHOWN: ${count}`);
+      console.log("\n");
+      console.log("==================================================");
+      console.log(`TOTAL LOADCHARTDATA OCCURRENCES: ${count}`);
+      console.log("==================================================");
 
       /*
-       * API wrapper module 77507 の使用箇所
+       * 「loadChartData」の前後に何があるかをさらに分類
        */
-      regex = /77507/g;
-      count = 0;
+      console.log("\n");
+      console.log("==================================================");
+      console.log("POSSIBLE CALL PATTERNS");
+      console.log("==================================================");
 
-      while ((match = regex.exec(js)) !== null) {
-        count++;
+      const patterns = [
+        /this\.loadChartData/g,
+        /\.loadChartData/g,
+        /loadChartData\s*\(/g,
+        /loadChartData\s*=/g,
+        /loadChartData\s*:/g,
+        /loadChartData\s*,/g
+      ];
 
-        console.log("\n");
-        console.log("==================================================");
-        console.log(`MODULE 77507 #${count}`);
-        console.log("==================================================");
-        console.log(`POSITION: ${match.index}`);
+      for (const pattern of patterns) {
+        pattern.lastIndex = 0;
 
-        printAround(js, match.index, 1200, 3000);
+        let n = 0;
 
-        if (count >= 10) {
-          break;
+        while ((match = pattern.exec(js)) !== null) {
+          n++;
+
+          console.log(
+            `PATTERN ${pattern} #${n} POSITION ${match.index}`
+          );
+
+          console.log(
+            js.slice(
+              Math.max(0, match.index - 300),
+              Math.min(js.length, match.index + 700)
+            )
+          );
+
+          if (n >= 10) {
+            break;
+          }
         }
+
+        console.log(`PATTERN COUNT: ${n}`);
       }
     } catch (error) {
       console.log(

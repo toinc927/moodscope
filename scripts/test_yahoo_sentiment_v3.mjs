@@ -22,7 +22,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printContext(text, pos, before = 700, after = 1800) {
+function printAround(text, pos, before = 2500, after = 5000) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -31,10 +31,35 @@ function printContext(text, pos, before = 700, after = 1800) {
   );
 }
 
+function printHits(text, regex, label, limit = 30) {
+  regex.lastIndex = 0;
+
+  let count = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null && count < limit) {
+    console.log("\n");
+    console.log("==================================================");
+    console.log(label);
+    console.log("==================================================");
+    console.log(`POSITION: ${match.index}`);
+    console.log(`MATCH: ${match[0]}`);
+    console.log("--------------------------------------------------");
+
+    printAround(text, match.index);
+
+    count++;
+  }
+
+  console.log(`\n${label} COUNT: ${count}`);
+}
+
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo loadChartData COMPLETE SEARCH");
+  console.log("Yahoo transition path diagnostic");
   console.log("==================================================");
+
+  console.log(`PAGE: ${pageUrl}`);
 
   const page = await fetchText(pageUrl, {
     "Accept":
@@ -76,92 +101,69 @@ async function main() {
 
       const js = result.text;
 
-      if (!js.includes("loadChartData")) {
-        continue;
-      }
-
-      console.log("\n");
-      console.log("##################################################");
-      console.log("SCRIPT CONTAINS loadChartData");
-      console.log("##################################################");
-      console.log(`URL: ${url}`);
-      console.log(`JS LENGTH: ${js.length}`);
-
-      /*
-       * loadChartData の全出現箇所を一つずつ表示
-       */
-      const regex = /loadChartData/g;
-
-      let match;
-      let count = 0;
-
-      while ((match = regex.exec(js)) !== null) {
-        count++;
-
+      if (
+        js.includes("sentimentSince") ||
+        js.includes("sentimentUntil") ||
+        js.includes("this.loadChartData") ||
+        js.includes("transition")
+      ) {
         console.log("\n");
-        console.log("==================================================");
-        console.log(`LOADCHARTDATA OCCURRENCE #${count}`);
-        console.log("==================================================");
-        console.log(`POSITION: ${match.index}`);
-        console.log(`MATCH: ${match[0]}`);
-        console.log("--------------------------------------------------");
+        console.log("##################################################");
+        console.log("TRANSITION RELATED SCRIPT");
+        console.log("##################################################");
+        console.log(`URL: ${url}`);
+        console.log(`JS LENGTH: ${js.length}`);
 
-        printContext(js, match.index);
+        printHits(
+          js,
+          /sentimentSince/g,
+          "SENTIMENT SINCE",
+          10
+        );
 
-        if (count >= 30) {
-          console.log("STOP: 30 occurrences reached");
-          break;
-        }
+        printHits(
+          js,
+          /sentimentUntil/g,
+          "SENTIMENT UNTIL",
+          10
+        );
+
+        printHits(
+          js,
+          /path\s*:/g,
+          "PATH PROPERTY",
+          30
+        );
+
+        printHits(
+          js,
+          /transition\s*:/g,
+          "TRANSITION PROPERTY",
+          30
+        );
+
+        printHits(
+          js,
+          /path\s*:\s*["'`]/g,
+          "PATH STRING",
+          30
+        );
+
+        printHits(
+          js,
+          /\/realtime\/api\/v1/g,
+          "REALTIME API PATH",
+          30
+        );
+
+        printHits(
+          js,
+          /loadChartData\s*\(\s*e\.path/g,
+          "LOADCHARTDATA E.PATH",
+          10
+        );
       }
 
-      console.log("\n");
-      console.log("==================================================");
-      console.log(`TOTAL LOADCHARTDATA OCCURRENCES: ${count}`);
-      console.log("==================================================");
-
-      /*
-       * 「loadChartData」の前後に何があるかをさらに分類
-       */
-      console.log("\n");
-      console.log("==================================================");
-      console.log("POSSIBLE CALL PATTERNS");
-      console.log("==================================================");
-
-      const patterns = [
-        /this\.loadChartData/g,
-        /\.loadChartData/g,
-        /loadChartData\s*\(/g,
-        /loadChartData\s*=/g,
-        /loadChartData\s*:/g,
-        /loadChartData\s*,/g
-      ];
-
-      for (const pattern of patterns) {
-        pattern.lastIndex = 0;
-
-        let n = 0;
-
-        while ((match = pattern.exec(js)) !== null) {
-          n++;
-
-          console.log(
-            `PATTERN ${pattern} #${n} POSITION ${match.index}`
-          );
-
-          console.log(
-            js.slice(
-              Math.max(0, match.index - 300),
-              Math.min(js.length, match.index + 700)
-            )
-          );
-
-          if (n >= 10) {
-            break;
-          }
-        }
-
-        console.log(`PATTERN COUNT: ${n}`);
-      }
     } catch (error) {
       console.log(
         `SCRIPT ERROR: ${url} :: ${error.message}`

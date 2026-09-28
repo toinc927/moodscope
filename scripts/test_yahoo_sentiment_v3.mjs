@@ -22,7 +22,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, pos, before = 4000, after = 8000) {
+function printAround(text, pos, before = 2500, after = 5000) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -31,16 +31,16 @@ function printAround(text, pos, before = 4000, after = 8000) {
   );
 }
 
-function printHits(text, regex, label, limit = 20) {
+function printHits(text, regex, label, limit = 30) {
   regex.lastIndex = 0;
 
   let count = 0;
   let match;
 
   while ((match = regex.exec(text)) !== null && count < limit) {
-    console.log("\n");
+    console.log("");
     console.log("==================================================");
-    console.log(label);
+    console.log(`${label} #${count + 1}`);
     console.log("==================================================");
     console.log(`POSITION: ${match.index}`);
     console.log(`MATCH: ${match[0]}`);
@@ -51,13 +51,16 @@ function printHits(text, regex, label, limit = 20) {
     count++;
   }
 
-  console.log(`\n${label} COUNT: ${count}`);
+  console.log("");
+  console.log(`${label} COUNT: ${count}`);
 }
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo transition object diagnostic");
+  console.log("Yahoo transition.path diagnostic");
   console.log("==================================================");
+
+  console.log(`PAGE: ${pageUrl}`);
 
   const page = await fetchText(pageUrl, {
     "Accept":
@@ -100,28 +103,21 @@ async function main() {
       const js = result.text;
 
       if (
-        js.includes("sentimentSince") ||
-        js.includes("sentimentUntil") ||
-        js.includes("loadChartData")
+        js.includes("loadChartData") ||
+        js.includes("sentimentPieChart") ||
+        js.includes("this.props.transition")
       ) {
-        console.log("\n");
+        console.log("");
         console.log("##################################################");
-        console.log("RELEVANT SCRIPT");
+        console.log("TARGET SCRIPT");
         console.log("##################################################");
         console.log(`URL: ${url}`);
         console.log(`JS LENGTH: ${js.length}`);
 
         printHits(
           js,
-          /sentimentSince/g,
-          "SENTIMENT SINCE",
-          10
-        );
-
-        printHits(
-          js,
-          /sentimentUntil/g,
-          "SENTIMENT UNTIL",
+          /this\.loadChartData\s*\(\s*e\.path/g,
+          "LOADCHARTDATA E.PATH",
           10
         );
 
@@ -134,36 +130,29 @@ async function main() {
 
         printHits(
           js,
-          /transition\.path/g,
-          "TRANSITION.PATH",
-          20
+          /transition\s*:/g,
+          "TRANSITION PROPERTY",
+          30
         );
 
         printHits(
           js,
-          /transition\.params/g,
-          "TRANSITION.PARAMS",
-          20
+          /path\s*:/g,
+          "PATH PROPERTY",
+          50
         );
 
         printHits(
           js,
-          /e\.path/g,
-          "E.PATH",
-          20
+          /\.path\b/g,
+          "DOT PATH",
+          50
         );
 
         printHits(
           js,
-          /e\.params/g,
-          "E.PARAMS",
-          20
-        );
-
-        printHits(
-          js,
-          /sentimentPieChart/g,
-          "SENTIMENT PIE CHART",
+          /loadChartData\s*\(\s*e\.path/g,
+          "LOADCHARTDATA E.PATH DIRECT",
           10
         );
       }
@@ -175,7 +164,7 @@ async function main() {
     }
   }
 
-  console.log("\n");
+  console.log("");
   console.log("==================================================");
   console.log("FINISHED");
   console.log("==================================================");

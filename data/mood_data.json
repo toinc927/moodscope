@@ -1,36 +1,36 @@
 {
-  "updatedAt": "2026-09-27T14:13:04.824Z",
+  "updatedAt": "2026-09-28T08:32:30.376Z",
   "stocks": [
     {
       "keyword": "ファナック",
-      "date": "2026-09-27",
-      "posts24h": 2204,
-      "baselinePosts24h": 91,
-      "heat": 100,
+      "date": "2026-09-28",
+      "posts24h": 73,
+      "baselinePosts24h": 93,
+      "heat": 41,
       "status": "計算済み"
     },
     {
       "keyword": "安川電機",
-      "date": "2026-09-27",
-      "posts24h": 1168,
-      "baselinePosts24h": 1188,
-      "heat": 49,
+      "date": "2026-09-28",
+      "posts24h": 1171,
+      "baselinePosts24h": 1178,
+      "heat": 50,
       "status": "計算済み"
     },
     {
       "keyword": "ハーモニック・ドライブ",
-      "date": "2026-09-27",
-      "posts24h": 96,
-      "baselinePosts24h": 91,
+      "date": "2026-09-28",
+      "posts24h": 97,
+      "baselinePosts24h": 92,
       "heat": 52,
       "status": "計算済み"
     },
     {
       "keyword": "IHI",
-      "date": "2026-09-27",
-      "posts24h": 78,
-      "baselinePosts24h": 106,
-      "heat": 39,
+      "date": "2026-09-28",
+      "posts24h": 95,
+      "baselinePosts24h": 104,
+      "heat": 47,
       "status": "計算済み"
     }
   ]

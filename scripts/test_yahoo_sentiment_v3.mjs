@@ -22,7 +22,7 @@ async function fetchText(url, headers = {}) {
   };
 }
 
-function printAround(text, pos, before = 2500, after = 5000) {
+function printAround(text, pos, before = 4000, after = 8000) {
   console.log(
     text.slice(
       Math.max(0, pos - before),
@@ -31,7 +31,7 @@ function printAround(text, pos, before = 2500, after = 5000) {
   );
 }
 
-function printHits(text, regex, label, limit = 30) {
+function printHits(text, regex, label, limit = 20) {
   regex.lastIndex = 0;
 
   let count = 0;
@@ -56,10 +56,8 @@ function printHits(text, regex, label, limit = 30) {
 
 async function main() {
   console.log("==================================================");
-  console.log("Yahoo transition path diagnostic");
+  console.log("Yahoo transition object diagnostic");
   console.log("==================================================");
-
-  console.log(`PAGE: ${pageUrl}`);
 
   const page = await fetchText(pageUrl, {
     "Accept":
@@ -104,12 +102,11 @@ async function main() {
       if (
         js.includes("sentimentSince") ||
         js.includes("sentimentUntil") ||
-        js.includes("this.loadChartData") ||
-        js.includes("transition")
+        js.includes("loadChartData")
       ) {
         console.log("\n");
         console.log("##################################################");
-        console.log("TRANSITION RELATED SCRIPT");
+        console.log("RELEVANT SCRIPT");
         console.log("##################################################");
         console.log(`URL: ${url}`);
         console.log(`JS LENGTH: ${js.length}`);
@@ -130,36 +127,43 @@ async function main() {
 
         printHits(
           js,
-          /path\s*:/g,
-          "PATH PROPERTY",
-          30
+          /this\.props\.transition/g,
+          "THIS.PROPS.TRANSITION",
+          20
         );
 
         printHits(
           js,
-          /transition\s*:/g,
-          "TRANSITION PROPERTY",
-          30
+          /transition\.path/g,
+          "TRANSITION.PATH",
+          20
         );
 
         printHits(
           js,
-          /path\s*:\s*["'`]/g,
-          "PATH STRING",
-          30
+          /transition\.params/g,
+          "TRANSITION.PARAMS",
+          20
         );
 
         printHits(
           js,
-          /\/realtime\/api\/v1/g,
-          "REALTIME API PATH",
-          30
+          /e\.path/g,
+          "E.PATH",
+          20
         );
 
         printHits(
           js,
-          /loadChartData\s*\(\s*e\.path/g,
-          "LOADCHARTDATA E.PATH",
+          /e\.params/g,
+          "E.PARAMS",
+          20
+        );
+
+        printHits(
+          js,
+          /sentimentPieChart/g,
+          "SENTIMENT PIE CHART",
           10
         );
       }

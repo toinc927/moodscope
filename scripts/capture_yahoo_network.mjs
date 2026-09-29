@@ -7,9 +7,10 @@ const url =
   encodeURIComponent(keyword);
 
 console.log("==================================================");
-console.log("Yahoo network capture");
+console.log("Yahoo sentiment API capture");
 console.log("==================================================");
-console.log(`URL: ${url}`);
+console.log(`KEYWORD: ${keyword}`);
+console.log(`PAGE URL: ${url}`);
 
 const browser = await chromium.launch({
   headless: true
@@ -17,18 +18,34 @@ const browser = await chromium.launch({
 
 const page = await browser.newPage();
 
-const captured = [];
+let foundTransition = false;
 
-page.on("response", async (response) => {
-  const responseUrl = response.url();
+page.on("request", (request) => {
+  const requestUrl = request.url();
 
-  if (!responseUrl.includes("/realtime/api/v1/")) {
+  if (!requestUrl.includes("/realtime/api/v1/transition")) {
     return;
   }
 
   console.log("");
   console.log("##################################################");
-  console.log("REALTIME API RESPONSE");
+  console.log("TRANSITION API REQUEST");
+  console.log("##################################################");
+  console.log(requestUrl);
+});
+
+page.on("response", async (response) => {
+  const responseUrl = response.url();
+
+  if (!responseUrl.includes("/realtime/api/v1/transition")) {
+    return;
+  }
+
+  foundTransition = true;
+
+  console.log("");
+  console.log("##################################################");
+  console.log("TRANSITION API RESPONSE");
   console.log("##################################################");
   console.log(`STATUS: ${response.status()}`);
   console.log(`URL: ${responseUrl}`);
@@ -36,33 +53,88 @@ page.on("response", async (response) => {
   try {
     const text = await response.text();
 
-    console.log("");
-    console.log("RESPONSE BODY:");
-    console.log(text.slice(0, 20000));
+    let data;
 
-    captured.push({
-      url: responseUrl,
-      status: response.status(),
-      body: text
-    });
+    try {
+      data = JSON.parse(text);
+    } catch (error) {
+      console.log("");
+      console.log("JSON PARSE: FAILED");
+      console.log("");
+      console.log(text.slice(0, 5000));
+      return;
+    }
+
+    console.log("");
+    console.log("==================================================");
+    console.log("TOP LEVEL KEYS");
+    console.log("==================================================");
+
+    console.log(Object.keys(data));
+
+    console.log("");
+    console.log("==================================================");
+    console.log("SENTIMENT PIE CHART");
+    console.log("==================================================");
+
+    if (data.sentimentPieChart) {
+      console.log(">>> SENTIMENT PIE CHART FOUND <<<");
+
+      console.log(
+        JSON.stringify(
+          data.sentimentPieChart,
+          null,
+          2
+        )
+      );
+    } else {
+      console.log(">>> sentimentPieChart NOT FOUND <<<");
+    }
+
+    console.log("");
+    console.log("==================================================");
+    console.log("SENTIMENT RELATED KEYS");
+    console.log("==================================================");
+
+    const keys = Object.keys(data);
+
+    const sentimentKeys = keys.filter(key =>
+      key.toLowerCase().includes("sentiment")
+    );
+
+    if (sentimentKeys.length > 0) {
+      console.log(sentimentKeys);
+    } else {
+      console.log("No top-level sentiment keys found.");
+    }
+
+    console.log("");
+    console.log("==================================================");
+    console.log("POSITIVE / NEGATIVE SEARCH");
+    console.log("==================================================");
+
+    const jsonText = JSON.stringify(data);
+
+    console.log(
+      `contains "positive": ${jsonText.includes("positive")}`
+    );
+
+    console.log(
+      `contains "negative": ${jsonText.includes("negative")}`
+    );
+
+    console.log(
+      `contains "dataPositive": ${jsonText.includes("dataPositive")}`
+    );
+
+    console.log(
+      `contains "dataNegative": ${jsonText.includes("dataNegative")}`
+    );
 
   } catch (error) {
-    console.log(`BODY ERROR: ${error.message}`);
+    console.log("");
+    console.log(`RESPONSE ERROR: ${error.message}`);
   }
-});
-
-page.on("request", (request) => {
-  const requestUrl = request.url();
-
-  if (!requestUrl.includes("/realtime/api/v1/")) {
-    return;
-  }
-
-  console.log("");
-  console.log("==================================================");
-  console.log("REALTIME API REQUEST");
-  console.log("==================================================");
-  console.log(requestUrl);
 });
 
 try {
@@ -83,22 +155,13 @@ try {
 
 console.log("");
 console.log("==================================================");
-console.log("CAPTURE SUMMARY");
+console.log("FINAL RESULT");
 console.log("==================================================");
-console.log(`CAPTURED API RESPONSES: ${captured.length}`);
 
-for (const item of captured) {
-  console.log("");
-  console.log(`URL: ${item.url}`);
-  console.log(`STATUS: ${item.status}`);
-
-  if (
-    item.body.includes("sentimentPieChart") ||
-    item.body.includes("positive") ||
-    item.body.includes("negative")
-  ) {
-    console.log(">>> SENTIMENT DATA FOUND <<<");
-  }
+if (foundTransition) {
+  console.log("TRANSITION API: FOUND");
+} else {
+  console.log("TRANSITION API: NOT FOUND");
 }
 
 await browser.close();

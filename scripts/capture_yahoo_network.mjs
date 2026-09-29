@@ -2,15 +2,10 @@ import { chromium } from "playwright";
 
 const keyword = "ファナック";
 
-const url =
-  "https://search.yahoo.co.jp/realtime/search?p=" +
-  encodeURIComponent(keyword);
-
-console.log("==================================================");
-console.log("Yahoo sentiment API capture");
-console.log("==================================================");
-console.log(`KEYWORD: ${keyword}`);
-console.log(`PAGE URL: ${url}`);
+console.log("====================================");
+console.log("Yahoo sentiment period test");
+console.log("keyword:", keyword);
+console.log("====================================");
 
 const browser = await chromium.launch({
   headless: true
@@ -18,155 +13,141 @@ const browser = await chromium.launch({
 
 const page = await browser.newPage();
 
-let foundTransition = false;
-
-page.on("request", (request) => {
-  const requestUrl = request.url();
-
-  if (!requestUrl.includes("/realtime/api/v1/transition")) {
-    return;
-  }
-
-  console.log("");
-  console.log("##################################################");
-  console.log("TRANSITION API REQUEST");
-  console.log("##################################################");
-  console.log(requestUrl);
-});
+let transitionResponse = null;
 
 page.on("response", async (response) => {
-  const responseUrl = response.url();
+  const url = response.url();
 
-  if (!responseUrl.includes("/realtime/api/v1/transition")) {
-    return;
-  }
-
-  foundTransition = true;
-
-  console.log("");
-  console.log("##################################################");
-  console.log("TRANSITION API RESPONSE");
-  console.log("##################################################");
-  console.log(`STATUS: ${response.status()}`);
-  console.log(`URL: ${responseUrl}`);
-
-  try {
-    const text = await response.text();
-
-    let data;
-
+  if (
+    url.includes("/realtime/api/v1/transition") &&
+    url.includes("sentiment")
+  ) {
     try {
-      data = JSON.parse(text);
-    } catch (error) {
+      const data = await response.json();
+
+      transitionResponse = {
+        url,
+        status: response.status(),
+        data
+      };
+
       console.log("");
-      console.log("JSON PARSE: FAILED");
+      console.log(">>> TRANSITION API FOUND <<<");
+      console.log("STATUS:", response.status());
+      console.log("URL:");
+      console.log(url);
+
       console.log("");
-      console.log(text.slice(0, 5000));
-      return;
-    }
+      console.log("SENTIMENT PIE CHART:");
 
-    console.log("");
-    console.log("==================================================");
-    console.log("TOP LEVEL KEYS");
-    console.log("==================================================");
-
-    console.log(Object.keys(data));
-
-    console.log("");
-    console.log("==================================================");
-    console.log("SENTIMENT PIE CHART");
-    console.log("==================================================");
-
-    if (data.sentimentPieChart) {
-      console.log(">>> SENTIMENT PIE CHART FOUND <<<");
-
-      console.log(
-        JSON.stringify(
+      if (data.sentimentPieChart) {
+        console.log(JSON.stringify(
           data.sentimentPieChart,
           null,
           2
-        )
-      );
-    } else {
-      console.log(">>> sentimentPieChart NOT FOUND <<<");
+        ));
+      } else {
+        console.log("NOT FOUND");
+      }
+
+      console.log("");
+      console.log("TOP LEVEL KEYS:");
+      console.log(Object.keys(data));
+
+    } catch (error) {
+      console.log("Response JSON parse error");
+      console.log(error.message);
     }
-
-    console.log("");
-    console.log("==================================================");
-    console.log("SENTIMENT RELATED KEYS");
-    console.log("==================================================");
-
-    const keys = Object.keys(data);
-
-    const sentimentKeys = keys.filter(key =>
-      key.toLowerCase().includes("sentiment")
-    );
-
-    if (sentimentKeys.length > 0) {
-      console.log(sentimentKeys);
-    } else {
-      console.log("No top-level sentiment keys found.");
-    }
-
-    console.log("");
-    console.log("==================================================");
-    console.log("POSITIVE / NEGATIVE SEARCH");
-    console.log("==================================================");
-
-    const jsonText = JSON.stringify(data);
-
-    console.log(
-      `contains "positive": ${jsonText.includes("positive")}`
-    );
-
-    console.log(
-      `contains "negative": ${jsonText.includes("negative")}`
-    );
-
-    console.log(
-      `contains "dataPositive": ${jsonText.includes("dataPositive")}`
-    );
-
-    console.log(
-      `contains "dataNegative": ${jsonText.includes("dataNegative")}`
-    );
-
-  } catch (error) {
-    console.log("");
-    console.log(`RESPONSE ERROR: ${error.message}`);
   }
 });
 
-try {
-  await page.goto(url, {
-    waitUntil: "domcontentloaded",
-    timeout: 30000
-  });
+const yahooUrl =
+  "https://search.yahoo.co.jp/realtime/search?p=" +
+  encodeURIComponent(keyword);
 
-  console.log("");
-  console.log("PAGE LOADED");
+console.log("");
+console.log("Opening:");
+console.log(yahooUrl);
 
-  await page.waitForTimeout(10000);
+await page.goto(yahooUrl, {
+  waitUntil: "networkidle",
+  timeout: 60000
+});
 
-} catch (error) {
-  console.log("");
-  console.log(`PAGE ERROR: ${error.message}`);
+await page.waitForTimeout(5000);
+
+console.log("");
+console.log("PAGE TITLE:");
+console.log(await page.title());
+
+console.log("");
+console.log("PAGE TEXT SENTIMENT SEARCH:");
+
+const bodyText = await page.locator("body").innerText();
+
+const lines = bodyText
+  .split("\n")
+  .map(x => x.trim())
+  .filter(x =>
+    x.includes("ポジティブ") ||
+    x.includes("ネガティブ") ||
+    x.includes("感情の割合")
+  );
+
+if (lines.length > 0) {
+  for (const line of lines) {
+    console.log(line);
+  }
+} else {
+  console.log("No visible sentiment text found.");
 }
 
 console.log("");
-console.log("==================================================");
+console.log("====================================");
 console.log("FINAL RESULT");
-console.log("==================================================");
+console.log("====================================");
 
-if (foundTransition) {
-  console.log("TRANSITION API: FOUND");
+if (transitionResponse) {
+  console.log("Transition API: FOUND");
+
+  const sentiment =
+    transitionResponse.data.sentimentPieChart;
+
+  if (sentiment) {
+    console.log(
+      "positive:",
+      sentiment.positive
+    );
+
+    console.log(
+      "negative:",
+      sentiment.negative
+    );
+
+    console.log(
+      "shouldRender:",
+      sentiment.shouldRender
+    );
+  }
+
+  console.log("");
+  console.log("Request parameters:");
+
+  const apiUrl = new URL(
+    transitionResponse.url
+  );
+
+  for (const [key, value] of apiUrl.searchParams.entries()) {
+    console.log(`${key}: ${value}`);
+  }
+
 } else {
-  console.log("TRANSITION API: NOT FOUND");
+  console.log("Transition API: NOT FOUND");
 }
 
 await browser.close();
 
 console.log("");
-console.log("==================================================");
-console.log("FINISHED");
-console.log("==================================================");
+console.log("====================================");
+console.log("TEST FINISHED");
+console.log("====================================");

@@ -1,37 +1,37 @@
 {
-  "updatedAt": "2026-10-01T12:38:13.014Z",
+  "updatedAt": "2026-10-01T12:45:21.360Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-10-01",
-      "posts24h": 153,
+      "posts24h": 156,
       "baselinePosts24h": 93,
-      "heat": 68,
+      "heat": 69,
       "status": "計算済み"
     },
     {
-      "keyword": "安川電機",
-      "date": "2026-09-30",
-      "posts24h": 43,
-      "baselinePosts24h": 1171,
-      "heat": 0,
-      "status": "計算済み"
+      "keyword": "ソフトバンクグループ",
+      "date": "2026-10-01",
+      "posts24h": 214,
+      "baselinePosts24h": null,
+      "heat": null,
+      "status": "蓄積中"
     },
     {
-      "keyword": "ハーモニック・ドライブ",
-      "date": "2026-09-30",
-      "posts24h": 102,
-      "baselinePosts24h": 92,
-      "heat": 54,
-      "status": "計算済み"
+      "keyword": "メタプラネット",
+      "date": "2026-10-01",
+      "posts24h": 219,
+      "baselinePosts24h": null,
+      "heat": null,
+      "status": "蓄積中"
     },
     {
-      "keyword": "IHI",
-      "date": "2026-09-30",
-      "posts24h": 121,
-      "baselinePosts24h": 104,
-      "heat": 55,
-      "status": "計算済み"
+      "keyword": "データセクション",
+      "date": "2026-10-01",
+      "posts24h": 246,
+      "baselinePosts24h": null,
+      "heat": null,
+      "status": "蓄積中"
     }
   ]
 }

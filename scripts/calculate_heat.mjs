@@ -2,6 +2,7 @@ import fs from "fs";
 
 const inputFile = "data/yahoo_posts.json";
 const outputFile = "data/mood_data.json";
+const stocksFile = "config/stocks.json";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -23,14 +24,27 @@ if (!fs.existsSync(inputFile)) {
   process.exit(0);
 }
 
-const records = JSON.parse(fs.readFileSync(inputFile, "utf8"));
+if (!fs.existsSync(stocksFile)) {
+  throw new Error(`${stocksFile} がありません。`);
+}
 
-const keywords = [
-  "ファナック",
-  "安川電機",
-  "ハーモニック・ドライブ",
-  "IHI"
-];
+const records = JSON.parse(
+  fs.readFileSync(inputFile, "utf8")
+);
+
+const keywords = JSON.parse(
+  fs.readFileSync(stocksFile, "utf8")
+);
+
+if (!Array.isArray(keywords) || keywords.length === 0) {
+  throw new Error("銘柄設定が空です");
+}
+
+console.log("Heat計算対象:");
+
+for (const keyword of keywords) {
+  console.log(`- ${keyword}`);
+}
 
 const results = [];
 
@@ -47,6 +61,7 @@ for (const keyword of keywords) {
       status: "データなし",
       heat: null
     });
+
     continue;
   }
 
@@ -55,7 +70,11 @@ for (const keyword of keywords) {
     .slice(0, -1)
     .slice(-30)
     .map(row => Number(row.posts24h))
-    .filter(value => Number.isFinite(value) && value >= 0);
+    .filter(
+      value =>
+        Number.isFinite(value) &&
+        value >= 0
+    );
 
   // 過去7日分未満ならまだHeatを計算しない
   if (previous.length < 7) {
@@ -67,20 +86,26 @@ for (const keyword of keywords) {
       heat: null,
       status: "蓄積中"
     });
+
     continue;
   }
 
   const baseline = median(previous);
-
   const posts = Number(latest.posts24h);
 
   let heat = 50;
 
   if (baseline > 0 && posts > 0) {
-    heat = 50 + 25 * Math.log2(posts / baseline);
+    heat =
+      50 +
+      25 * Math.log2(posts / baseline);
   }
 
-  heat = clamp(Math.round(heat), 0, 100);
+  heat = clamp(
+    Math.round(heat),
+    0,
+    100
+  );
 
   results.push({
     keyword,
@@ -97,7 +122,9 @@ const output = {
   stocks: results
 };
 
-fs.mkdirSync("data", { recursive: true });
+fs.mkdirSync("data", {
+  recursive: true
+});
 
 fs.writeFileSync(
   outputFile,
@@ -105,4 +132,6 @@ fs.writeFileSync(
   "utf8"
 );
 
-console.log(`Heat計算完了: ${outputFile}`);
+console.log(
+  `Heat計算完了: ${outputFile}`
+);

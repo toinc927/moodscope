@@ -1,17 +1,35 @@
 // MoodScope: Yahoo!リアルタイム検索から複数銘柄の24時間投稿数を取得
-const keywords = [
-
-  "ファナック",
-
-  "安川電機",
-
-  "ハーモニック・ドライブ",
-
-  "IHI"
-
-];
+// 銘柄は config/stocks.json から読み込む
 
 const fs = await import("node:fs/promises");
+
+const stocksFile = "config/stocks.json";
+
+let keywords;
+
+try {
+  keywords = JSON.parse(
+    await fs.readFile(stocksFile, "utf8")
+  );
+
+  if (!Array.isArray(keywords) || keywords.length === 0) {
+    throw new Error("銘柄リストが空です");
+  }
+
+  if (!keywords.every(x => typeof x === "string" && x.trim() !== "")) {
+    throw new Error("銘柄リストに不正な値があります");
+  }
+
+} catch (e) {
+  throw new Error(
+    `銘柄設定ファイルを読み込めませんでした: ${e.message}`
+  );
+}
+
+console.log("取得対象銘柄:");
+for (const keyword of keywords) {
+  console.log(`- ${keyword}`);
+}
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -52,11 +70,20 @@ const results = [];
 for (const keyword of keywords) {
   try {
     const posts24h = await fetchPosts24h(keyword);
-    results.push({ date, fetchedAt, keyword, posts24h });
+
+    results.push({
+      date,
+      fetchedAt,
+      keyword,
+      posts24h
+    });
+
     console.log(`${keyword}: ${posts24h}`);
+
   } catch (e) {
     console.error(String(e));
   }
+
   await sleep(800);
 }
 
@@ -67,9 +94,16 @@ if (results.length === 0) {
 const file = "data/yahoo_posts.json";
 
 let history = [];
+
 try {
-  history = JSON.parse(await fs.readFile(file, "utf8"));
-  if (!Array.isArray(history)) history = [];
+  history = JSON.parse(
+    await fs.readFile(file, "utf8")
+  );
+
+  if (!Array.isArray(history)) {
+    history = [];
+  }
+
 } catch {
   history = [];
 }
@@ -77,18 +111,33 @@ try {
 // 同一銘柄・同一日の重複は最新値で置き換える
 for (const row of results) {
   const idx = history.findIndex(
-    x => x.keyword === row.keyword && x.date === row.date
+    x =>
+      x.keyword === row.keyword &&
+      x.date === row.date
   );
-  if (idx >= 0) history[idx] = row;
-  else history.push(row);
+
+  if (idx >= 0) {
+    history[idx] = row;
+  } else {
+    history.push(row);
+  }
 }
 
 history.sort((a, b) => {
-  if (a.date !== b.date) return a.date.localeCompare(b.date);
+  if (a.date !== b.date) {
+    return a.date.localeCompare(b.date);
+  }
+
   return a.keyword.localeCompare(b.keyword);
 });
 
 await fs.mkdir("data", { recursive: true });
-await fs.writeFile(file, JSON.stringify(history, null, 2) + "\n");
 
-console.log(`保存完了: ${file} / ${results.length}銘柄`);
+await fs.writeFile(
+  file,
+  JSON.stringify(history, null, 2) + "\n"
+);
+
+console.log(
+  `保存完了: ${file} / ${results.length}銘柄`
+);

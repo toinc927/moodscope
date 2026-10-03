@@ -1,1414 +1,561 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f5f6f8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>MoodScope</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-:root{
-  --bg:#f5f6f8;
-  --panel:#ffffff;
-  --panel2:#f0f2f5;
-  --line:#dfe3e8;
-  --text:#111827;
-  --muted:#667085;
-  --blue:#3b82f6;
-  --green:#169b68;
-  --red:#dc4b5a;
-  --yellow:#a77b00;
-}
+  <title>MoodScope</title>
 
-*{
-  box-sizing:border-box
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-html,body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hiragino Sans",sans-serif
-}
+    body {
+      margin: 0;
+      background: #f5f6f8;
+      color: #202124;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Sans",
+        "Yu Gothic",
+        sans-serif;
+    }
 
-body{
-  min-height:100vh
-}
+    header {
+      background: #ffffff;
+      padding: 24px 18px 18px;
+      border-bottom: 1px solid #e5e7eb;
+    }
 
-.app{
-  max-width:760px;
-  margin:auto;
-  padding-bottom:86px
-}
+    .title {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
 
-.top{
-  padding:18px 16px 10px;
-  position:sticky;
-  top:0;
-  background:rgba(245,246,248,.94);
-  backdrop-filter:blur(14px);
-  z-index:10;
-  border-bottom:1px solid rgba(255,255,255,.04)
-}
+    .subtitle {
+      font-size: 13px;
+      color: #6b7280;
+    }
 
-.brand{
-  display:flex;
-  align-items:center;
-  justify-content:space-between
-}
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 16px;
+    }
 
-.brand h1{
-  font-size:24px;
-  margin:0;
-  font-weight:800;
-  letter-spacing:-.5px
-}
+    .top-info {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      border: 1px solid #e5e7eb;
+    }
 
-.sub{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:2px
-}
+    .updated {
+      font-size: 12px;
+      color: #6b7280;
+    }
 
-.iconbtn{
-  border:1px solid var(--line);
-  background:var(--panel);
-  color:var(--text);
-  border-radius:11px;
-  padding:9px 11px
-}
+    .loading {
+      text-align: center;
+      padding: 40px 10px;
+      color: #6b7280;
+    }
 
-.search{
-  margin-top:12px;
-  display:flex;
-  gap:8px
-}
+    .error {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      color: #be123c;
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
 
-.search input{
-  flex:1;
-  background:var(--panel);
-  border:1px solid var(--line);
-  color:var(--text);
-  border-radius:12px;
-  padding:12px;
-  font-size:15px;
-  outline:none
-}
+    .stock-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
 
-.search button{
-  background:var(--blue);
-  color:#07111f;
-  border:0;
-  border-radius:12px;
-  padding:0 14px;
-  font-weight:800
-}
+    .stock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
 
-.section{
-  padding:12px 16px
-}
+    .stock-name {
+      font-size: 20px;
+      font-weight: 800;
+    }
 
-.row{
-  display:flex;
-  gap:8px;
-  overflow:auto;
-  scrollbar-width:none
-}
+    .symbol {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 3px;
+    }
 
-.row::-webkit-scrollbar{
-  display:none
-}
+    .direction {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      white-space: nowrap;
+    }
 
-.chip{
-  white-space:nowrap;
-  border:1px solid var(--line);
-  background:var(--panel);
-  color:var(--muted);
-  border-radius:999px;
-  padding:8px 12px;
-  font-size:12px
-}
+    .direction.up {
+      background: #ecfdf5;
+      color: #047857;
+    }
 
-.chip.active{
-  background:#eaf2ff;
-  color:#1d4ed8;
-  border-color:#9fc3ff
-}
+    .direction.down {
+      background: #fff1f2;
+      color: #be123c;
+    }
 
-.card{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:16px;
-  margin-bottom:10px;
-  padding:14px
-}
+    .direction.flat {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
 
-.stock{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px
-}
+    .price-area {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
 
-.name{
-  font-weight:750
-}
+    .price {
+      font-size: 28px;
+      font-weight: 800;
+    }
 
-.code{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:3px
-}
+    .change {
+      font-size: 16px;
+      font-weight: 700;
+    }
 
-.mood{
-  font-size:25px;
-  font-weight:850;
-  letter-spacing:-1px
-}
+    .change.up {
+      color: #047857;
+    }
 
-.positive{
-  color:var(--green)
-}
+    .change.down {
+      color: #be123c;
+    }
 
-.negative{
-  color:var(--red)
-}
+    .change.flat {
+      color: #6b7280;
+    }
 
-.neutral{
-  color:var(--yellow)
-}
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
 
-.meta{
-  display:flex;
-  justify-content:space-between;
-  color:var(--muted);
-  font-size:11px;
-  margin-top:10px
-}
+    .metric {
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 10px;
+    }
 
-.bar{
-  height:5px;
-  background:#e6e9ee;
-  border-radius:9px;
-  overflow:hidden;
-  margin-top:8px
-}
+    .metric-label {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
 
-.bar>i{
-  display:block;
-  height:100%;
-  background:var(--blue);
-  border-radius:9px
-}
+    .metric-value {
+      font-size: 17px;
+      font-weight: 800;
+    }
 
-.twocol{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px
-}
+    .mood-box {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px dashed #d1d5db;
+    }
 
-.metric{
-  background:var(--panel2);
-  border-radius:13px;
-  padding:12px
-}
+    .mood-title {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
 
-.metric .v{
-  font-size:20px;
-  font-weight:800
-}
+    .mood-value {
+      font-size: 18px;
+      font-weight: 800;
+    }
 
-.metric .l{
-  font-size:10px;
-  color:var(--muted);
-  margin-bottom:4px
-}
+    .mood-note {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 3px;
+    }
 
-h2{
-  font-size:14px;
-  margin:8px 0 10px
-}
+    .signal {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f8fafc;
+      font-size: 13px;
+      font-weight: 700;
+    }
 
-.hint{
-  font-size:11px;
-  color:var(--muted);
-  line-height:1.55
-}
+    .footer-note {
+      text-align: center;
+      color: #9ca3af;
+      font-size: 11px;
+      padding: 20px 0 40px;
+      line-height: 1.6;
+    }
 
-.small{
-  font-size:10px;
-  color:var(--muted)
-}
+    @media (max-width: 520px) {
+      .metrics {
+        grid-template-columns: 1fr 1fr;
+      }
 
-.bottom{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  background:rgba(255,255,255,.97);
-  backdrop-filter:blur(16px);
-  border-top:1px solid var(--line);
-  z-index:30
-}
+      .metrics .metric:last-child {
+        grid-column: span 2;
+      }
 
-.bottomin{
-  max-width:760px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:repeat(5,1fr)
-}
-
-.nav{
-  padding:9px 2px 10px;
-  text-align:center;
-  color:var(--muted);
-  font-size:10px;
-  border:0;
-  background:none
-}
-
-.nav b{
-  display:block;
-  font-size:17px;
-  margin-bottom:2px
-}
-
-.nav.active{
-  color:#1d4ed8
-}
-
-.page{
-  display:none
-}
-
-.page.active{
-  display:block
-}
-
-.overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(17,24,39,.28);
-  z-index:50;
-  align-items:flex-end
-}
-
-.overlay.show{
-  display:flex
-}
-
-.sheet{
-  width:100%;
-  max-width:760px;
-  margin:auto;
-  background:#ffffff;
-  border:1px solid var(--line);
-  border-radius:22px 22px 0 0;
-  max-height:92vh;
-  overflow:auto;
-  padding:18px 16px 28px
-}
-
-.sheethead{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:12px
-}
-
-.close{
-  background:var(--panel);
-  border:1px solid var(--line);
-  color:var(--text);
-  border-radius:10px;
-  padding:8px 12px
-}
-
-.alert{
-  padding:11px;
-  border-radius:12px;
-  background:#f3f5f7;
-  border:1px solid var(--line);
-  font-size:11px;
-  margin-bottom:8px
-}
-
-.statusok{
-  color:var(--green);
-  font-weight:700
-}
-
-.statuswait{
-  color:var(--yellow);
-  font-weight:700
-}
-
-.error{
-  color:var(--red);
-  font-weight:700
-}
-
-.historybox{
-  margin-top:14px;
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:12px
-}
-
-@media(min-width:700px){
-  .bottom{
-    left:50%;
-    right:auto;
-    width:760px;
-    transform:translateX(-50%)
-  }
-}
-</style>
+      .price {
+        font-size: 24px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="app">
-
-<header class="top">
-
-  <div class="brand">
-    <div>
-      <h1>MoodScope</h1>
-      <div class="sub">SNS投資心理・独自分析</div>
-    </div>
-
-    <button class="iconbtn" id="settingsBtn">
-      設定
-    </button>
-  </div>
-
-  <div class="search">
-    <input
-      id="search"
-      placeholder="銘柄名を検索"
-    >
-    <button id="watchBtn">
-      監視
-    </button>
-  </div>
-
+<header>
+  <div class="title">MoodScope</div>
+  <div class="subtitle">SNS投資心理・独自分析</div>
 </header>
 
-<main>
+<main class="container">
 
-<section id="page-today" class="page active">
+  <div id="error"></div>
 
-  <div class="section">
-
-    <div class="row" id="sortRow">
-
-      <button class="chip active" data-sort="registered">
-        登録順
-      </button>
-
-      <button class="chip" data-sort="heat">
-        加熱度
-      </button>
-
-      <button class="chip" data-sort="posts">
-        投稿数
-      </button>
-
+  <div class="top-info">
+    <div id="updated" class="updated">
+      データ読み込み中...
     </div>
-
   </div>
 
-  <div class="section">
-
-    <div class="row" id="dirRow">
-
-      <button class="chip active" data-dir="all">
-        全銘柄
-      </button>
-
-      <button class="chip" data-dir="hot">
-        高加熱
-      </button>
-
-      <button class="chip" data-dir="building">
-        蓄積中
-      </button>
-
-    </div>
-
+  <div id="loading" class="loading">
+    データを読み込んでいます...
   </div>
 
-  <div class="section">
+  <div id="stocks"></div>
 
-    <h2>
-      監視銘柄
-      <span class="small" id="count"></span>
-    </h2>
-
-    <div id="stockList"></div>
-
+  <div class="footer-note">
+    株価データ：Yahoo! Finance<br>
+    投稿数：Yahoo!リアルタイム検索<br>
+    Moodは感情データ取得方式を確認後に実装予定
   </div>
-
-</section>
-
-
-<section id="page-fields" class="page">
-
-  <div class="section">
-
-    <h2>テーマ・分野</h2>
-
-    <div class="alert">
-      現在、テーマ集約は準備中です。
-      まず個別銘柄のYahoo投稿データを安定取得します。
-    </div>
-
-  </div>
-
-</section>
-
-
-<section id="page-search" class="page">
-
-  <div class="section">
-
-    <h2>検索結果</h2>
-
-    <div id="searchResults"></div>
-
-  </div>
-
-</section>
-
-
-<section id="page-favorites" class="page">
-
-  <div class="section">
-
-    <h2>お気に入り</h2>
-
-    <div id="favList"></div>
-
-  </div>
-
-</section>
-
-
-<section id="page-status" class="page">
-
-  <div class="section">
-
-    <h2>取得・分析状況</h2>
-
-    <div class="twocol">
-
-      <div class="metric">
-        <div class="l">登録銘柄</div>
-        <div class="v" id="statusStocks">0</div>
-      </div>
-
-      <div class="metric">
-        <div class="l">データ更新</div>
-        <div class="v" id="statusDate">—</div>
-      </div>
-
-      <div class="metric">
-        <div class="l">履歴ポイント</div>
-        <div class="v" id="statusHistory">—</div>
-      </div>
-
-      <div class="metric">
-        <div class="l">データ源</div>
-        <div class="v">Yahoo</div>
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="section">
-
-    <div class="alert">
-
-      <b>現在の取得状況</b>
-
-      <br><br>
-
-      Yahooリアルタイム検索から
-      24時間投稿数を自動取得しています。
-
-    </div>
-
-    <div class="alert">
-
-      <b>感情データ</b>
-
-      <br><br>
-
-      Yahoo内部の感情APIは確認済みですが、
-      現時点では期間の仕様が確定していないため、
-      Mood計算には使用していません。
-
-    </div>
-
-  </div>
-
-</section>
 
 </main>
 
-</div>
-
-
-<nav class="bottom">
-
-  <div class="bottomin">
-
-    <button class="nav active" data-page="today">
-      <b>◉</b>
-      今日
-    </button>
-
-    <button class="nav" data-page="fields">
-      <b>◈</b>
-      分野
-    </button>
-
-    <button class="nav" data-page="search">
-      <b>⌕</b>
-      検索
-    </button>
-
-    <button class="nav" data-page="favorites">
-      <b>★</b>
-      お気に入り
-    </button>
-
-    <button class="nav" data-page="status">
-      <b>≡</b>
-      状況
-    </button>
-
-  </div>
-
-</nav>
-
-
-<div class="overlay" id="detailOverlay">
-
-  <div class="sheet" id="detailSheet"></div>
-
-</div>
-
-
-<div class="overlay" id="settingsOverlay">
-
-  <div class="sheet">
-
-    <div class="sheethead">
-
-      <h2>設定</h2>
-
-      <button
-        class="close"
-        data-close="settingsOverlay"
-      >
-        閉じる
-      </button>
-
-    </div>
-
-    <div class="alert">
-
-      <b>MoodScopeについて</b>
-
-      <br><br>
-
-      現在はYahooリアルタイム検索の
-      24時間投稿数とHeatを中心に開発しています。
-
-      <br><br>
-
-      Moodは感情データの仕様確認後に追加します。
-
-    </div>
-
-  </div>
-
-</div>
-
-
 <script>
 
-let data = [];
-let sortMode = "registered";
-let dir = "all";
-let query = "";
-
-const $ = selector =>
-  document.querySelector(selector);
-
-const $$ = selector =>
-  [...document.querySelectorAll(selector)];
-
-
-function clamp(x, min, max) {
-  return Math.max(min, Math.min(max, x));
-}
-
-
-function heatLabel(heat) {
-
-  if (heat === null || heat === undefined) {
-    return "蓄積中";
-  }
-
-  if (heat >= 75) {
-    return "高加熱";
-  }
-
-  if (heat >= 60) {
-    return "やや加熱";
-  }
-
-  if (heat <= 30) {
-    return "低加熱";
-  }
-
-  return "通常";
-}
-
-
-function heatClass(heat) {
-
-  if (heat === null || heat === undefined) {
-    return "neutral";
-  }
-
-  if (heat >= 75) {
-    return "negative";
-  }
-
-  if (heat <= 30) {
-    return "positive";
-  }
-
-  return "neutral";
-}
-
-
-function formatNumber(value) {
-
-  if (
-    value === null ||
-    value === undefined ||
-    !Number.isFinite(Number(value))
-  ) {
-    return "—";
-  }
-
-  return Number(value).toLocaleString();
-}
-
-
-function card(x) {
-
-  const heat =
-    x.heat === null ||
-    x.heat === undefined
-      ? null
-      : Number(x.heat);
-
-  const posts =
-    x.posts24h === null ||
-    x.posts24h === undefined
-      ? null
-      : Number(x.posts24h);
-
-  const baseline =
-    x.baselinePosts24h === null ||
-    x.baselinePosts24h === undefined
-      ? null
-      : Number(x.baselinePosts24h);
-
-  const status =
-    x.status || "不明";
-
-  const heatText =
-    heat === null
-      ? "—"
-      : heat;
-
-  const heatWidth =
-    heat === null
-      ? 0
-      : clamp(heat, 0, 100);
-
-  const statusClass =
-    status === "計算済み"
-      ? "statusok"
-      : "statuswait";
-
-  return `
-
-  <div
-    class="card"
-    data-keyword="${escapeHtml(x.keyword)}"
-  >
-
-    <div class="stock">
-
-      <div>
-
-        <div class="name">
-          ${escapeHtml(x.keyword)}
-        </div>
-
-        <div class="code">
-          Yahooリアルタイム検索
-        </div>
-
-      </div>
-
-      <div style="text-align:right">
-
-        <div class="mood neutral">
-          —
-        </div>
-
-        <div class="small">
-          Mood準備中
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="meta">
-
-      <span>
-        投稿数24h
-        ${formatNumber(posts)}件
-      </span>
-
-      <span class="${heatClass(heat)}">
-        加熱度 ${heatText}
-      </span>
-
-    </div>
-
-
-    <div class="bar">
-
-      <i style="width:${heatWidth}%"></i>
-
-    </div>
-
-
-    <div class="meta">
-
-      <span>
-        ${heatLabel(heat)}
-      </span>
-
-      <span class="${statusClass}">
-        ${escapeHtml(status)}
-      </span>
-
-    </div>
-
-
-    <div class="meta">
-
-      <span>
-        通常投稿数
-        ${formatNumber(baseline)}
-      </span>
-
-      <span>
-        ${escapeHtml(x.date || "—")}
-      </span>
-
-    </div>
-
-  </div>
-
-  `;
-}
-
+const moodUrl =
+  "./data/mood_data.json?ts=" + Date.now();
+
+const priceUrl =
+  "./data/price_signal.json?ts=" + Date.now();
 
 function escapeHtml(value) {
-
   return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-
 }
 
+function formatNumber(value) {
+  if (value == null) return "—";
 
-function filtered() {
-
-  let result = [...data];
-
-  if (query) {
-
-    result =
-      result.filter(x =>
-        String(x.keyword)
-          .toLowerCase()
-          .includes(query.toLowerCase())
-      );
-
-  }
-
-
-  if (dir === "hot") {
-
-    result =
-      result.filter(x =>
-        x.heat !== null &&
-        x.heat !== undefined &&
-        Number(x.heat) >= 75
-      );
-
-  }
-
-
-  if (dir === "building") {
-
-    result =
-      result.filter(x =>
-        x.status === "蓄積中"
-      );
-
-  }
-
-
-  if (sortMode === "heat") {
-
-    result.sort(
-      (a,b) =>
-        Number(b.heat ?? -1) -
-        Number(a.heat ?? -1)
-    );
-
-  }
-
-
-  if (sortMode === "posts") {
-
-    result.sort(
-      (a,b) =>
-        Number(b.posts24h ?? -1) -
-        Number(a.posts24h ?? -1)
-    );
-
-  }
-
-
-  return result;
-
+  return Number(value).toLocaleString("ja-JP");
 }
 
+function formatPercent(value) {
+  if (value == null) return "—";
 
-function render() {
+  const sign = value > 0 ? "+" : "";
 
-  const result = filtered();
-
-  $("#stockList").innerHTML =
-    result.length
-      ? result.map(card).join("")
-      : `<div class="hint">
-           該当する銘柄がありません。
-         </div>`;
-
-
-  $("#count").textContent =
-    `${data.length}銘柄`;
-
-
-  $("#favList").innerHTML =
-    result.length
-      ? result.map(card).join("")
-      : `<div class="hint">
-           データがありません。
-         </div>`;
-
-
-  $("#searchResults").innerHTML =
-    query
-      ? (
-          result.length
-            ? result.map(card).join("")
-            : `<div class="hint">
-                 検索結果なし
-               </div>`
-        )
-      : `<div class="hint">
-           上の検索欄から銘柄名を検索してください。
-         </div>`;
-
-
-  $("#statusStocks").textContent =
-    data.length;
-
-
-  const latestDate =
-    data
-      .map(x => x.date)
-      .filter(Boolean)
-      .sort()
-      .pop();
-
-
-  $("#statusDate").textContent =
-    latestDate || "—";
-
-
-  $("#statusHistory").textContent =
-    data.length
-      ? `${data.length}銘柄`
-      : "0";
-
+  return sign +
+    Number(value).toFixed(2) +
+    "%";
 }
 
+function getDirectionClass(direction) {
+  if (direction === "上昇") return "up";
+  if (direction === "下落") return "down";
+  return "flat";
+}
 
-function openDetail(keyword) {
+function createStockCard(mood, price) {
 
-  const x =
-    data.find(
-      item => item.keyword === keyword
-    );
+  const keyword =
+    price?.keyword ||
+    mood?.keyword ||
+    "不明";
 
-  if (!x) return;
+  const symbol =
+    price?.symbol ||
+    "—";
 
+  const close =
+    price?.close ?? null;
 
-  const heat =
-    x.heat === null ||
-    x.heat === undefined
-      ? "—"
-      : x.heat;
+  const changePct =
+    price?.changePct ?? null;
 
+  const direction =
+    price?.direction || "判定不可";
+
+  const directionClass =
+    getDirectionClass(direction);
 
   const posts =
-    formatNumber(x.posts24h);
-
+    mood?.posts24h ?? null;
 
   const baseline =
-    formatNumber(x.baselinePosts24h);
+    mood?.baselinePosts24h ?? null;
 
+  const heat =
+    mood?.heat ?? null;
 
-  $("#detailSheet").innerHTML = `
+  const heatText =
+    heat == null ? "—" : heat;
 
-    <div class="sheethead">
+  return `
+    <section class="stock-card">
 
-      <div>
+      <div class="stock-header">
 
-        <h2>
-          ${escapeHtml(x.keyword)}
-        </h2>
+        <div>
+          <div class="stock-name">
+            ${escapeHtml(keyword)}
+          </div>
 
-        <div class="small">
-          Yahooリアルタイム検索
+          <div class="symbol">
+            ${escapeHtml(symbol)}
+          </div>
+        </div>
+
+        <div class="direction ${directionClass}">
+          ${escapeHtml(direction)}
         </div>
 
       </div>
 
-      <button
-        class="close"
-        id="closeDetail"
-      >
-        閉じる
-      </button>
+      <div class="price-area">
 
-    </div>
-
-
-    <div class="bigscore neutral">
-      —
-    </div>
-
-    <div class="alert">
-      <b>Mood：準備中</b>
-      <br><br>
-      Yahooの感情データは取得経路を確認済みですが、
-      期間仕様を確定するまでMood計算には使用しません。
-    </div>
-
-
-    <div class="twocol">
-
-      <div class="metric">
-
-        <div class="l">
-          加熱度
+        <div class="price">
+          ${formatNumber(close)}円
         </div>
 
-        <div class="v">
-          ${heat}
+        <div class="change ${directionClass}">
+          ${formatPercent(changePct)}
         </div>
 
       </div>
 
+      <div class="metrics">
 
-      <div class="metric">
+        <div class="metric">
+          <div class="metric-label">
+            投稿数24h
+          </div>
 
-        <div class="l">
-          24時間投稿数
+          <div class="metric-value">
+            ${formatNumber(posts)}
+          </div>
         </div>
 
-        <div class="v">
-          ${posts}
+        <div class="metric">
+          <div class="metric-label">
+            基準投稿数
+          </div>
+
+          <div class="metric-value">
+            ${formatNumber(baseline)}
+          </div>
         </div>
 
-      </div>
+        <div class="metric">
+          <div class="metric-label">
+            Heat
+          </div>
 
-
-      <div class="metric">
-
-        <div class="l">
-          通常投稿数
-        </div>
-
-        <div class="v">
-          ${baseline}
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="l">
-          状態
-        </div>
-
-        <div class="v">
-          ${escapeHtml(x.status || "—")}
+          <div class="metric-value">
+            ${heatText}
+          </div>
         </div>
 
       </div>
 
-    </div>
+      <div class="mood-box">
 
+        <div class="mood-title">
+          Mood
+        </div>
 
-    <div class="historybox">
+        <div class="mood-value">
+          —
+        </div>
 
-      <b>データ更新日</b>
+        <div class="mood-note">
+          感情データ取得方式を確認中
+        </div>
 
-      <div class="small" style="margin-top:6px">
-        ${escapeHtml(x.date || "—")}
       </div>
 
-    </div>
+      ${
+        direction === "上昇"
+          ? `
+            <div class="signal">
+              株価上昇
+            </div>
+          `
+          : ""
+      }
 
+    </section>
   `;
-
-
-  $("#detailOverlay")
-    .classList
-    .add("show");
-
-
-  $("#closeDetail").onclick =
-    () =>
-      $("#detailOverlay")
-        .classList
-        .remove("show");
-
 }
-
 
 async function loadData() {
 
-  $("#stockList").innerHTML =
-    `<div class="hint">
-      データを読み込んでいます…
-    </div>`;
+  const loading =
+    document.getElementById("loading");
 
+  const stocksElement =
+    document.getElementById("stocks");
+
+  const errorElement =
+    document.getElementById("error");
 
   try {
 
-    const response =
-      await fetch(
-        "./data/mood_data.json?ts=" +
-        Date.now(),
-        {
-          cache:"no-store"
-        }
-      );
+    const [
+      moodResponse,
+      priceResponse
+    ] = await Promise.all([
 
+      fetch(moodUrl, {
+        cache: "no-store"
+      }),
 
-    if (!response.ok) {
+      fetch(priceUrl, {
+        cache: "no-store"
+      })
 
+    ]);
+
+    if (!moodResponse.ok) {
       throw new Error(
-        `HTTP ${response.status}`
+        "mood_data.json の取得に失敗しました"
       );
-
     }
 
-
-    const json =
-      await response.json();
-
-
-    if (!json || !Array.isArray(json.stocks)) {
-
+    if (!priceResponse.ok) {
       throw new Error(
-        "mood_data.jsonの形式が正しくありません"
+        "price_signal.json の取得に失敗しました"
       );
-
     }
 
+    const moodData =
+      await moodResponse.json();
 
-    data =
-      json.stocks.map(x => ({
-        keyword:x.keyword,
-        date:x.date ?? null,
-        posts24h:
-          x.posts24h ?? null,
-        baselinePosts24h:
-          x.baselinePosts24h ?? null,
-        heat:
-          x.heat ?? null,
-        status:
-          x.status ?? "不明"
-      }));
+    const priceData =
+      await priceResponse.json();
 
+    const moodMap = new Map();
 
-    render();
+    for (const stock of (
+      moodData.stocks || []
+    )) {
+      moodMap.set(
+        stock.keyword,
+        stock
+      );
+    }
 
+    const priceStocks =
+      priceData.stocks || [];
 
-    console.log(
-      "MoodScope data loaded:",
-      data
-    );
+    stocksElement.innerHTML =
+      priceStocks.map(price => {
 
+        const mood =
+          moodMap.get(price.keyword) || null;
+
+        return createStockCard(
+          mood,
+          price
+        );
+
+      }).join("");
+
+    loading.style.display = "none";
+
+    const updated =
+      document.getElementById("updated");
+
+    const date =
+      priceData.updatedAt ||
+      moodData.updatedAt;
+
+    if (date) {
+
+      const d =
+        new Date(date);
+
+      updated.textContent =
+        "最終更新: " +
+        d.toLocaleString(
+          "ja-JP",
+          {
+            timeZone: "Asia/Tokyo"
+          }
+        );
+    }
+
+    if (priceStocks.length === 0) {
+
+      stocksElement.innerHTML =
+        `<div class="loading">
+          株価データがありません
+        </div>`;
+    }
 
   } catch (error) {
 
     console.error(error);
 
+    loading.style.display = "none";
 
-    data = [];
-
-
-    $("#stockList").innerHTML =
-      `<div class="alert error">
-        データを読み込めませんでした。<br><br>
-        ${escapeHtml(error.message)}
+    errorElement.innerHTML =
+      `<div class="error">
+        データ取得エラー：${escapeHtml(error.message)}
       </div>`;
-
-
-    $("#count").textContent =
-      "読み込みエラー";
-
   }
-
 }
-
-
-function showPage(page) {
-
-  $$(".page")
-    .forEach(x =>
-      x.classList.remove("active")
-    );
-
-
-  const target =
-    $(`#page-${page}`);
-
-
-  if (target) {
-    target.classList.add("active");
-  }
-
-
-  $$(".nav")
-    .forEach(x =>
-      x.classList.toggle(
-        "active",
-        x.dataset.page === page
-      )
-    );
-
-
-  render();
-
-}
-
-
-$$(".nav").forEach(button => {
-
-  button.onclick =
-    () =>
-      showPage(
-        button.dataset.page
-      );
-
-});
-
-
-$$("[data-sort]").forEach(button => {
-
-  button.onclick = () => {
-
-    $$("[data-sort]")
-      .forEach(x =>
-        x.classList.remove("active")
-      );
-
-
-    button.classList.add("active");
-
-
-    sortMode =
-      button.dataset.sort;
-
-
-    render();
-
-  };
-
-});
-
-
-$$("[data-dir]").forEach(button => {
-
-  button.onclick = () => {
-
-    $$("[data-dir]")
-      .forEach(x =>
-        x.classList.remove("active")
-      );
-
-
-    button.classList.add("active");
-
-
-    dir =
-      button.dataset.dir;
-
-
-    render();
-
-  };
-
-});
-
-
-$("#search").oninput =
-  event => {
-
-    query =
-      event.target.value;
-
-
-    if (query) {
-
-      showPage("search");
-
-    } else {
-
-      showPage("today");
-
-    }
-
-  };
-
-
-$("#watchBtn").onclick = () => {
-
-  showPage("favorites");
-
-};
-
-
-$("#settingsBtn").onclick = () => {
-
-  $("#settingsOverlay")
-    .classList
-    .add("show");
-
-};
-
-
-$$("[data-close]").forEach(button => {
-
-  button.onclick = () => {
-
-    $("#" + button.dataset.close)
-      .classList
-      .remove("show");
-
-  };
-
-});
-
-
-$("#settingsOverlay").onclick =
-  event => {
-
-    if (
-      event.target.id ===
-      "settingsOverlay"
-    ) {
-
-      event.currentTarget
-        .classList
-        .remove("show");
-
-    }
-
-  };
-
-
-$("#detailOverlay").onclick =
-  event => {
-
-    if (
-      event.target.id ===
-      "detailOverlay"
-    ) {
-
-      event.currentTarget
-        .classList
-        .remove("show");
-
-    }
-
-  };
-
-
-document.addEventListener(
-  "click",
-  event => {
-
-    const cardElement =
-      event.target.closest(".card");
-
-    if (!cardElement) return;
-
-    const keyword =
-      cardElement.dataset.keyword;
-
-    if (keyword) {
-      openDetail(keyword);
-    }
-
-  }
-);
-
 
 loadData();
 

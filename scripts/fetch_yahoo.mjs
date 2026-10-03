@@ -1,143 +1,156 @@
-// MoodScope: Yahoo!リアルタイム検索から複数銘柄の24時間投稿数を取得
-// 銘柄は config/stocks.json から読み込む
+import fs from "fs";
 
-const fs = await import("node:fs/promises");
+const STOCKS_FILE = "./config/stocks.json";
+const OUTPUT_FILE = "./data/yahoo_posts.json";
 
-const stocksFile = "config/stocks.json";
+const stocks = JSON.parse(
+  fs.readFileSync(STOCKS_FILE, "utf8")
+);
 
-let keywords;
+const sleep = (ms) =>
+  new Promise(resolve => setTimeout(resolve, ms));
 
-try {
-  keywords = JSON.parse(
-    await fs.readFile(stocksFile, "utf8")
-  );
-
-  if (!Array.isArray(keywords) || keywords.length === 0) {
-    throw new Error("銘柄リストが空です");
+function normalizeStock(stock) {
+  if (typeof stock === "string") {
+    return {
+      keyword: stock
+    };
   }
 
-  if (!keywords.every(x => typeof x === "string" && x.trim() !== "")) {
-    throw new Error("銘柄リストに不正な値があります");
-  }
+  return {
+    keyword: stock.keyword
+  };
+}
 
-} catch (e) {
-  throw new Error(
-    `銘柄設定ファイルを読み込めませんでした: ${e.message}`
+function getTodayJST() {
+  const now = new Date();
+
+  const jst = new Date(
+    now.toLocaleString("en-US", {
+      timeZone: "Asia/Tokyo"
+    })
   );
+
+  const yyyy = jst.getFullYear();
+  const mm = String(jst.getMonth() + 1).padStart(2, "0");
+  const dd = String(jst.getDate()).padStart(2, "0");
+
+  return `${yyyy}-${mm}-${dd}`;
 }
 
-console.log("取得対象銘柄:");
-for (const keyword of keywords) {
-  console.log(`- ${keyword}`);
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function fetchPosts24h(keyword) {
+async function fetchYahooPosts(keyword) {
   const url =
-    "https://search.yahoo.co.jp/realtime/api/v1/pagination" +
-    "?p=" + encodeURIComponent(keyword) +
-    "&md=h&results=40";
+    `https://search.yahoo.co.jp/realtime/api/v1/pagination` +
+    `?p=${encodeURIComponent(keyword)}` +
+    `&md=h` +
+    `&results=40`;
 
-  const res = await fetch(url, {
+  console.log(`Fetching Yahoo realtime: ${keyword}`);
+
+  const response = await fetch(url, {
     headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; MoodScope/0.2)"
+      "User-Agent": "Mozilla/5.0"
     }
   });
 
-  if (!res.ok) {
-    throw new Error(`${keyword}: Yahoo HTTP ${res.status}`);
+  if (!response.ok) {
+    throw new Error(
+      `${keyword}: HTTP ${response.status}`
+    );
   }
 
-  const data = await res.json();
-  const total = data?.timeline?.head?.totalResultsAvailable;
+  const json = await response.json();
+
+  const total =
+    json?.timeline?.head?.totalResultsAvailable;
 
   if (typeof total !== "number") {
-    throw new Error(`${keyword}: 投稿数を取得できませんでした`);
+    throw new Error(
+      `${keyword}: totalResultsAvailable not found`
+    );
   }
 
   return total;
 }
 
-const now = new Date();
-const date = now.toISOString().slice(0, 10);
-const fetchedAt = now.toISOString();
+let oldData = [];
 
-const results = [];
-
-for (const keyword of keywords) {
+if (fs.existsSync(OUTPUT_FILE)) {
   try {
-    const posts24h = await fetchPosts24h(keyword);
+    oldData = JSON.parse(
+      fs.readFileSync(OUTPUT_FILE, "utf8")
+    );
+  } catch {
+    oldData = [];
+  }
+}
 
-    results.push({
-      date,
-      fetchedAt,
-      keyword,
-      posts24h
+const today = getTodayJST();
+
+const newData = [];
+
+for (const rawStock of stocks) {
+  const stock = normalizeStock(rawStock);
+
+  if (!stock.keyword) {
+    console.log(
+      `Skip invalid stock: ${JSON.stringify(stock)}`
+    );
+    continue;
+  }
+
+  try {
+    const posts24h =
+      await fetchYahooPosts(stock.keyword);
+
+    newData.push({
+      keyword: stock.keyword,
+      date: today,
+      posts24h,
+      fetchedAt: new Date().toISOString()
     });
 
-    console.log(`${keyword}: ${posts24h}`);
-
-  } catch (e) {
-    console.error(String(e));
+    console.log(
+      `${stock.keyword}: ${posts24h} posts`
+    );
+  } catch (error) {
+    console.error(
+      `ERROR ${stock.keyword}:`,
+      error.message
+    );
   }
 
-  await sleep(800);
+  await sleep(1000);
 }
 
-if (results.length === 0) {
-  throw new Error("全銘柄の取得に失敗しました");
+const merged = [
+  ...oldData,
+  ...newData
+];
+
+const unique = new Map();
+
+for (const row of merged) {
+  const key = `${row.keyword}|${row.date}`;
+
+  unique.set(key, row);
 }
 
-const file = "data/yahoo_posts.json";
+const finalData = Array.from(unique.values())
+  .sort((a, b) => {
+    if (a.keyword !== b.keyword) {
+      return a.keyword.localeCompare(b.keyword);
+    }
 
-let history = [];
-
-try {
-  history = JSON.parse(
-    await fs.readFile(file, "utf8")
-  );
-
-  if (!Array.isArray(history)) {
-    history = [];
-  }
-
-} catch {
-  history = [];
-}
-
-// 同一銘柄・同一日の重複は最新値で置き換える
-for (const row of results) {
-  const idx = history.findIndex(
-    x =>
-      x.keyword === row.keyword &&
-      x.date === row.date
-  );
-
-  if (idx >= 0) {
-    history[idx] = row;
-  } else {
-    history.push(row);
-  }
-}
-
-history.sort((a, b) => {
-  if (a.date !== b.date) {
     return a.date.localeCompare(b.date);
-  }
+  });
 
-  return a.keyword.localeCompare(b.keyword);
-});
-
-await fs.mkdir("data", { recursive: true });
-
-await fs.writeFile(
-  file,
-  JSON.stringify(history, null, 2) + "\n"
+fs.writeFileSync(
+  OUTPUT_FILE,
+  JSON.stringify(finalData, null, 2),
+  "utf8"
 );
 
 console.log(
-  `保存完了: ${file} / ${results.length}銘柄`
+  `Saved ${finalData.length} records to ${OUTPUT_FILE}`
 );

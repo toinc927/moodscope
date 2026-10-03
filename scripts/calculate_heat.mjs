@@ -1,84 +1,110 @@
 import fs from "fs";
 
-const inputFile = "data/yahoo_posts.json";
-const outputFile = "data/mood_data.json";
-const stocksFile = "config/stocks.json";
+const STOCKS_FILE = "./config/stocks.json";
+const INPUT_FILE = "./data/yahoo_posts.json";
+const OUTPUT_FILE = "./data/mood_data.json";
 
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
+const stocks = JSON.parse(
+  fs.readFileSync(STOCKS_FILE, "utf8")
+);
+
+const postsData = JSON.parse(
+  fs.readFileSync(INPUT_FILE, "utf8")
+);
+
+function getKeyword(stock) {
+  if (typeof stock === "string") {
+    return stock;
+  }
+
+  return stock.keyword;
 }
 
 function median(values) {
-  const sorted = [...values].sort((a, b) => a - b);
-  const middle = Math.floor(sorted.length / 2);
+  if (values.length === 0) {
+    return null;
+  }
+
+  const sorted = [...values].sort(
+    (a, b) => a - b
+  );
+
+  const middle = Math.floor(
+    sorted.length / 2
+  );
 
   if (sorted.length % 2 === 0) {
-    return (sorted[middle - 1] + sorted[middle]) / 2;
+    return (
+      (sorted[middle - 1] + sorted[middle]) / 2
+    );
   }
 
   return sorted[middle];
 }
 
-if (!fs.existsSync(inputFile)) {
-  console.log(`${inputFile} がまだありません。`);
-  process.exit(0);
+function calculateHeat(posts, baseline) {
+  if (
+    posts == null ||
+    baseline == null ||
+    baseline <= 0
+  ) {
+    return null;
+  }
+
+  const heat =
+    50 +
+    25 *
+      Math.log2(posts / baseline);
+
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      Math.round(heat)
+    )
+  );
 }
 
-if (!fs.existsSync(stocksFile)) {
-  throw new Error(`${stocksFile} がありません。`);
-}
+const output = [];
 
-const records = JSON.parse(
-  fs.readFileSync(inputFile, "utf8")
-);
+for (const rawStock of stocks) {
+  const keyword = getKeyword(rawStock);
 
-const keywords = JSON.parse(
-  fs.readFileSync(stocksFile, "utf8")
-);
-
-if (!Array.isArray(keywords) || keywords.length === 0) {
-  throw new Error("銘柄設定が空です");
-}
-
-console.log("Heat計算対象:");
-
-for (const keyword of keywords) {
-  console.log(`- ${keyword}`);
-}
-
-const results = [];
-
-for (const keyword of keywords) {
-  const rows = records
+  const rows = postsData
     .filter(row => row.keyword === keyword)
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .sort((a, b) =>
+      a.date.localeCompare(b.date)
+    );
 
-  const latest = rows[rows.length - 1];
-
-  if (!latest) {
-    results.push({
+  if (rows.length === 0) {
+    output.push({
       keyword,
-      status: "データなし",
-      heat: null
+      date: null,
+      posts24h: null,
+      baselinePosts24h: null,
+      heat: null,
+      status: "データなし"
     });
 
     continue;
   }
 
-  // 現在の日を含めず、過去30日分を基準値にする
-  const previous = rows
+  const latest = rows[rows.length - 1];
+
+  const previousRows = rows
     .slice(0, -1)
-    .slice(-30)
-    .map(row => Number(row.posts24h))
+    .slice(-30);
+
+  const previousPosts = previousRows
+    .map(row => row.posts24h)
     .filter(
       value =>
-        Number.isFinite(value) &&
-        value >= 0
+        typeof value === "number" &&
+        value > 0
     );
 
-  // 過去7日分未満ならまだHeatを計算しない
-  if (previous.length < 7) {
-    results.push({
+  if (previousPosts.length < 7) {
+    output.push({
       keyword,
       date: latest.date,
       posts24h: latest.posts24h,
@@ -90,48 +116,46 @@ for (const keyword of keywords) {
     continue;
   }
 
-  const baseline = median(previous);
-  const posts = Number(latest.posts24h);
+  const baseline =
+    median(previousPosts);
 
-  let heat = 50;
+  const heat =
+    calculateHeat(
+      latest.posts24h,
+      baseline
+    );
 
-  if (baseline > 0 && posts > 0) {
-    heat =
-      50 +
-      25 * Math.log2(posts / baseline);
-  }
-
-  heat = clamp(
-    Math.round(heat),
-    0,
-    100
-  );
-
-  results.push({
+  output.push({
     keyword,
     date: latest.date,
-    posts24h: posts,
-    baselinePosts24h: Math.round(baseline),
+    posts24h: latest.posts24h,
+    baselinePosts24h: Math.round(
+      baseline
+    ),
     heat,
     status: "計算済み"
   });
 }
 
-const output = {
+const result = {
   updatedAt: new Date().toISOString(),
-  stocks: results
+  stocks: output
 };
 
-fs.mkdirSync("data", {
-  recursive: true
-});
-
 fs.writeFileSync(
-  outputFile,
-  JSON.stringify(output, null, 2),
+  OUTPUT_FILE,
+  JSON.stringify(
+    result,
+    null,
+    2
+  ),
   "utf8"
 );
 
 console.log(
-  `Heat計算完了: ${outputFile}`
+  JSON.stringify(
+    result,
+    null,
+    2
+  )
 );

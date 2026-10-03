@@ -25,6 +25,9 @@ jobs:
       - name: Run Yahoo price fetch
         run: node scripts/fetch_prices.mjs
 
+      - name: Calculate Price Signal
+        run: node scripts/calculate_price_signal.mjs
+
       - name: Test Yahoo sentiment data
         run: node scripts/test_yahoo_sentiment.mjs
 
@@ -49,6 +52,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/yahoo_posts.json data/mood_data.json data/yahoo_prices.json
+          git add data/yahoo_posts.json data/mood_data.json data/yahoo_prices.json data/price_signal.json
           git diff --cached --quiet || git commit -m "Update Yahoo mood and price data"
           git push

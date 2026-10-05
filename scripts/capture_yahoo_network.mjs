@@ -1,23 +1,34 @@
 import { chromium } from "playwright";
 
-const keyword = "ファナック";
+const stocks = [
+  "ファナック",
+  "ソフトバンクグループ",
+  "メタプラネット",
+  "データセクション"
+];
 
 console.log("====================================");
-console.log("Yahoo sentiment period test");
+console.log("Yahoo 24-hour sentiment test");
 console.log("====================================");
-console.log("keyword:", keyword);
 console.log("");
 
 const browser = await chromium.launch({
   headless: true
 });
 
-const page = await browser.newPage();
+for (const keyword of stocks) {
 
-const captured = [];
+  console.log("");
+  console.log("====================================");
+  console.log("STOCK:", keyword);
+  console.log("====================================");
 
-async function captureTransition(label) {
+  const page = await browser.newPage();
+
+  const captured = [];
+
   page.on("response", async (response) => {
+
     const url = response.url();
 
     if (!url.includes("/realtime/api/v1/transition")) {
@@ -25,187 +36,175 @@ async function captureTransition(label) {
     }
 
     try {
+
       const parsed = new URL(url);
       const data = await response.json();
 
-      const sentiment =
-        data?.sentimentPieChart;
+      const sentiment = data?.sentimentPieChart;
+
+      if (!sentiment) {
+        return;
+      }
+
+      const parameters =
+        Object.fromEntries(
+          parsed.searchParams.entries()
+        );
 
       console.log("");
       console.log(">>> TRANSITION API <<<");
-      console.log("LABEL:", label);
-      console.log("STATUS:", response.status());
 
-      console.log("");
-      console.log("PARAMETERS:");
+      console.log(
+        "span:",
+        parameters.span
+      );
 
-      for (
-        const [key, value]
-        of parsed.searchParams.entries()
-      ) {
-        console.log(
-          `${key}: ${value}`
-        );
-      }
+      console.log(
+        "samplingRate:",
+        parameters.samplingRate
+      );
 
-      console.log("");
-      console.log("SENTIMENT:");
+      console.log(
+        "negative:",
+        sentiment.negative
+      );
 
-      if (sentiment) {
-        console.log(
-          JSON.stringify(
-            sentiment,
-            null,
-            2
-          )
-        );
+      console.log(
+        "positive:",
+        sentiment.positive
+      );
 
-        captured.push({
-          label,
-          url,
-          parameters:
-            Object.fromEntries(
-              parsed.searchParams.entries()
-            ),
-          sentiment
-        });
-      } else {
-        console.log("NOT FOUND");
-      }
+      captured.push({
+        parameters,
+        sentiment
+      });
 
     } catch (error) {
+
       console.log(
         "Response parse error:",
         error.message
       );
+
     }
+
   });
-}
 
-await captureTransition("initial");
+  const yahooUrl =
+    "https://search.yahoo.co.jp/realtime/search?p=" +
+    encodeURIComponent(keyword);
 
-const yahooUrl =
-  "https://search.yahoo.co.jp/realtime/search?p=" +
-  encodeURIComponent(keyword);
+  console.log("");
+  console.log("Opening Yahoo...");
 
-console.log("");
-console.log("Opening Yahoo:");
-console.log(yahooUrl);
-
-await page.goto(
-  yahooUrl,
-  {
-    waitUntil: "networkidle",
-    timeout: 60000
-  }
-);
-
-await page.waitForTimeout(5000);
-
-console.log("");
-console.log("====================================");
-console.log("LOOKING FOR 24-HOUR CONTROL");
-console.log("====================================");
-
-const candidates = await page
-  .locator("text=24時間")
-  .all();
-
-console.log(
-  "24-hour text candidates:",
-  candidates.length
-);
-
-let clicked = false;
-
-for (const candidate of candidates) {
-
-  try {
-
-    if (await candidate.isVisible()) {
-
-      console.log(
-        "Clicking visible 24-hour control"
-      );
-
-      await candidate.click();
-
-      clicked = true;
-
-      break;
+  await page.goto(
+    yahooUrl,
+    {
+      waitUntil: "networkidle",
+      timeout: 60000
     }
-
-  } catch (error) {
-
-    console.log(
-      "Candidate click failed:",
-      error.message
-    );
-
-  }
-}
-
-if (!clicked) {
-
-  console.log(
-    "24-hour control was NOT found."
-  );
-
-  console.log("");
-  console.log("Visible buttons:");
-
-  const buttons =
-    await page.locator("button").allTextContents();
-
-  for (const text of buttons) {
-    console.log(
-      JSON.stringify(text)
-    );
-  }
-
-} else {
-
-  console.log("");
-  console.log(
-    "24-hour control clicked."
   );
 
   await page.waitForTimeout(5000);
-}
-
-console.log("");
-console.log("====================================");
-console.log("CAPTURE SUMMARY");
-console.log("====================================");
-
-console.log(
-  "Transition responses:",
-  captured.length
-);
-
-for (
-  let i = 0;
-  i < captured.length;
-  i++
-) {
 
   console.log("");
-  console.log(
-    `--- RESULT ${i + 1} ---`
-  );
+  console.log("Looking for 24-hour control...");
+
+  const candidates =
+    await page
+      .locator("text=24時間")
+      .all();
 
   console.log(
-    JSON.stringify(
-      captured[i],
-      null,
-      2
-    )
+    "24-hour candidates:",
+    candidates.length
   );
+
+  let clicked = false;
+
+  for (const candidate of candidates) {
+
+    try {
+
+      if (await candidate.isVisible()) {
+
+        await candidate.click();
+
+        clicked = true;
+
+        console.log(
+          "24-hour control clicked."
+        );
+
+        break;
+      }
+
+    } catch (error) {
+
+      console.log(
+        "Click failed:",
+        error.message
+      );
+
+    }
+
+  }
+
+  if (!clicked) {
+
+    console.log(
+      "ERROR: 24-hour control was NOT found."
+    );
+
+  } else {
+
+    await page.waitForTimeout(5000);
+
+  }
+
+  console.log("");
+  console.log("RESULT:");
+
+  if (captured.length === 0) {
+
+    console.log(
+      "No sentiment response captured."
+    );
+
+  } else {
+
+    const latest =
+      captured[captured.length - 1];
+
+    console.log(
+      "span:",
+      latest.parameters.span
+    );
+
+    console.log(
+      "samplingRate:",
+      latest.parameters.samplingRate
+    );
+
+    console.log(
+      "negative:",
+      latest.sentiment.negative
+    );
+
+    console.log(
+      "positive:",
+      latest.sentiment.positive
+    );
+
+  }
+
+  await page.close();
+
 }
 
 console.log("");
 console.log("====================================");
-console.log("TEST FINISHED");
+console.log("ALL STOCKS TEST FINISHED");
 console.log("====================================");
 
 await browser.close();

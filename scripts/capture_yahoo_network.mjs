@@ -3,7 +3,7 @@ import { chromium } from "playwright";
 const keyword = "メタプラネット";
 
 console.log("====================================");
-console.log("Yahoo 24-hour control diagnostic");
+console.log("Yahoo 24-hour sentiment final test");
 console.log("====================================");
 console.log("STOCK:", keyword);
 console.log("");
@@ -98,154 +98,83 @@ await page.waitForTimeout(5000);
 
 console.log("");
 console.log("====================================");
-console.log("24-HOUR ELEMENT DIAGNOSTIC");
+console.log("CLICKING REAL 24-HOUR LINK");
 console.log("====================================");
 
-const candidates =
-  await page
-    .locator("text=24時間")
-    .all();
+const links =
+  page
+    .locator("a")
+    .filter({
+      hasText: "24時間"
+    });
 
 console.log(
-  "Candidates:",
-  candidates.length
+  "24-hour links:",
+  await links.count()
 );
 
-for (let i = 0; i < candidates.length; i++) {
+if (await links.count() === 0) {
 
-  const candidate = candidates[i];
+  console.log(
+    "ERROR: 24-hour link not found."
+  );
 
-  try {
+} else {
 
-    console.log("");
-    console.log(
-      "--- CANDIDATE",
-      i + 1,
-      "---"
-    );
+  console.log(
+    "Clicking first 24-hour link..."
+  );
 
-    console.log(
-      "visible:",
-      await candidate.isVisible()
-    );
+  await links.first().click();
 
-    console.log(
-      "text:",
-      JSON.stringify(
-        await candidate.textContent()
-      )
-    );
+  console.log(
+    "24-hour link clicked."
+  );
 
-    console.log(
-      "tag:",
-      await candidate.evaluate(
-        el => el.tagName
-      )
-    );
+  await page.waitForTimeout(5000);
+}
 
-    console.log(
-      "class:",
-      await candidate.getAttribute(
-        "class"
-      )
-    );
+console.log("");
+console.log("====================================");
+console.log("FINAL RESULT");
+console.log("====================================");
 
-    console.log(
-      "role:",
-      await candidate.getAttribute(
-        "role"
-      )
-    );
+if (captured.length === 0) {
 
-    console.log(
-      "aria-label:",
-      await candidate.getAttribute(
-        "aria-label"
-      )
-    );
+  console.log(
+    "No sentiment response captured."
+  );
 
-    console.log(
-      "parent:",
-      await candidate.evaluate(
-        el => el.parentElement?.outerHTML?.slice(
-          0,
-          1000
-        )
-      )
-    );
+} else {
 
-  } catch (error) {
+  const latest =
+    captured[captured.length - 1];
 
-    console.log(
-      "Diagnostic error:",
-      error.message
-    );
+  console.log(
+    "span:",
+    latest.parameters.span
+  );
 
-  }
+  console.log(
+    "samplingRate:",
+    latest.parameters.samplingRate
+  );
+
+  console.log(
+    "negative:",
+    latest.sentiment.negative
+  );
+
+  console.log(
+    "positive:",
+    latest.sentiment.positive
+  );
 
 }
 
 console.log("");
 console.log("====================================");
-console.log("BUTTON LIST");
+console.log("TEST FINISHED");
 console.log("====================================");
-
-const buttons =
-  await page.locator("button").all();
-
-console.log(
-  "button count:",
-  buttons.length
-);
-
-for (let i = 0; i < buttons.length; i++) {
-
-  try {
-
-    const button = buttons[i];
-
-    console.log("");
-    console.log(
-      "--- BUTTON",
-      i + 1,
-      "---"
-    );
-
-    console.log(
-      "visible:",
-      await button.isVisible()
-    );
-
-    console.log(
-      "text:",
-      JSON.stringify(
-        await button.textContent()
-      )
-    );
-
-    console.log(
-      "aria-label:",
-      await button.getAttribute(
-        "aria-label"
-      )
-    );
-
-  } catch (error) {
-
-    console.log(
-      "Button diagnostic error:",
-      error.message
-    );
-
-  }
-
-}
-
-console.log("");
-console.log("====================================");
-console.log("DIAGNOSTIC FINISHED");
-console.log("====================================");
-
-await page.waitForTimeout(2000);
 
 await browser.close();

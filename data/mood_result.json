@@ -1,17 +1,17 @@
 {
-  "updatedAt": "2026-10-05T14:04:06.565Z",
+  "updatedAt": "2026-10-05T14:21:16.113Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "negative": 50,
       "positive": 50,
       "polarity": 0,
-      "confidence": 0.967,
+      "confidence": 0.965,
       "mood": 0,
       "label": "中立",
-      "posts24h": 85,
+      "posts24h": 84,
       "baselinePosts24h": 99,
-      "heat": 45,
+      "heat": 44,
       "date": "2026-10-05"
     },
     {
@@ -22,20 +22,20 @@
       "confidence": 0.55,
       "mood": -9,
       "label": "中立",
-      "posts24h": 155,
+      "posts24h": 154,
       "baselinePosts24h": 0,
       "heat": null,
       "date": "2026-10-05"
     },
     {
       "keyword": "メタプラネット",
-      "negative": 15,
-      "positive": 85,
-      "polarity": 70,
+      "negative": 18,
+      "positive": 82,
+      "polarity": 64,
       "confidence": 0.55,
-      "mood": 39,
+      "mood": 35,
       "label": "楽観",
-      "posts24h": 359,
+      "posts24h": 366,
       "baselinePosts24h": 0,
       "heat": null,
       "date": "2026-10-05"

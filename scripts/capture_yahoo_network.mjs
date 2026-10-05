@@ -3,9 +3,10 @@ import { chromium } from "playwright";
 const keyword = "ファナック";
 
 console.log("====================================");
-console.log("Yahoo sentiment 6h vs 24h test");
-console.log("keyword:", keyword);
+console.log("Yahoo sentiment network capture");
 console.log("====================================");
+console.log("keyword:", keyword);
+console.log("");
 
 const browser = await chromium.launch({
   headless: true
@@ -13,43 +14,69 @@ const browser = await chromium.launch({
 
 const page = await browser.newPage();
 
-let originalUrl = null;
-let originalData = null;
+const captured = [];
 
 page.on("response", async (response) => {
   const url = response.url();
 
   if (
-    url.includes("/realtime/api/v1/transition") &&
-    url.includes("span=21600")
+    url.includes("/realtime/api/v1/transition")
   ) {
+    console.log("");
+    console.log(">>> TRANSITION API FOUND <<<");
+    console.log("STATUS:", response.status());
+    console.log("URL:");
+    console.log(url);
+
     try {
+      const parsed = new URL(url);
+
+      console.log("");
+      console.log("PARAMETERS:");
+
+      for (
+        const [key, value]
+        of parsed.searchParams.entries()
+      ) {
+        console.log(
+          `${key}: ${value}`
+        );
+      }
+
       const data = await response.json();
 
-      originalUrl = url;
-      originalData = data;
+      const sentiment =
+        data?.sentimentPieChart;
 
-      console.log("");
-      console.log(">>> ORIGINAL 6-HOUR API FOUND <<<");
-      console.log("STATUS:", response.status());
-      console.log("");
-      console.log("6-HOUR SENTIMENT:");
+      if (sentiment) {
+        console.log("");
+        console.log("SENTIMENT:");
 
-      if (data.sentimentPieChart) {
         console.log(
           JSON.stringify(
-            data.sentimentPieChart,
+            sentiment,
             null,
             2
           )
         );
+
+        captured.push({
+          url,
+          parameters:
+            Object.fromEntries(
+              parsed.searchParams.entries()
+            ),
+          sentiment
+        });
       } else {
-        console.log("NOT FOUND");
+        console.log(
+          "sentimentPieChart: NOT FOUND"
+        );
       }
 
     } catch (error) {
       console.log(
-        "6-hour response parse error:",
+        "Response parse error:",
         error.message
       );
     }
@@ -63,172 +90,53 @@ const yahooUrl =
 console.log("");
 console.log("Opening Yahoo:");
 console.log(yahooUrl);
+console.log("");
 
-await page.goto(yahooUrl, {
-  waitUntil: "networkidle",
-  timeout: 60000
-});
+await page.goto(
+  yahooUrl,
+  {
+    waitUntil: "networkidle",
+    timeout: 60000
+  }
+);
 
-await page.waitForTimeout(5000);
+await page.waitForTimeout(10000);
 
 console.log("");
 console.log("====================================");
-console.log("ORIGINAL REQUEST");
+console.log("CAPTURE SUMMARY");
 console.log("====================================");
 
-if (!originalUrl) {
-  console.log("Original 6-hour transition API was not captured.");
+console.log(
+  "Transition responses:",
+  captured.length
+);
+
+for (let i = 0; i < captured.length; i++) {
+
+  console.log("");
+  console.log(
+    `--- RESULT ${i + 1} ---`
+  );
+
+  console.log(
+    JSON.stringify(
+      captured[i],
+      null,
+      2
+    )
+  );
+}
+
+if (captured.length === 0) {
+
+  console.log("");
+  console.log(
+    "No transition API was captured."
+  );
+
   await browser.close();
   process.exit(1);
-}
-
-console.log(originalUrl);
-
-const originalParsed = new URL(originalUrl);
-
-console.log("");
-console.log("Original parameters:");
-
-for (const [key, value] of originalParsed.searchParams.entries()) {
-  console.log(`${key}: ${value}`);
-}
-
-console.log("");
-console.log("====================================");
-console.log("REQUESTING 24-HOUR VERSION");
-console.log("====================================");
-
-const url24 = new URL(originalUrl);
-
-url24.searchParams.set("span", "86400");
-
-console.log("");
-console.log("24-hour URL:");
-console.log(url24.toString());
-
-try {
-  const response24 = await page.request.get(
-    url24.toString(),
-    {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
-      }
-    }
-  );
-
-  console.log("");
-  console.log("24-hour HTTP STATUS:");
-  console.log(response24.status());
-
-  const data24 = await response24.json();
-
-  console.log("");
-  console.log("====================================");
-  console.log("6-HOUR RESULT");
-  console.log("====================================");
-
-  if (originalData?.sentimentPieChart) {
-    console.log(
-      JSON.stringify(
-        originalData.sentimentPieChart,
-        null,
-        2
-      )
-    );
-  } else {
-    console.log("NOT FOUND");
-  }
-
-  console.log("");
-  console.log("====================================");
-  console.log("24-HOUR RESULT");
-  console.log("====================================");
-
-  if (data24.sentimentPieChart) {
-    console.log(
-      JSON.stringify(
-        data24.sentimentPieChart,
-        null,
-        2
-      )
-    );
-  } else {
-    console.log("NOT FOUND");
-  }
-
-  console.log("");
-  console.log("====================================");
-  console.log("COMPARISON");
-  console.log("====================================");
-
-  const sixHour =
-    originalData?.sentimentPieChart;
-
-  const twentyFourHour =
-    data24?.sentimentPieChart;
-
-  console.log("");
-  console.log("6-hour:");
-  console.log(
-    "positive =",
-    sixHour?.positive
-  );
-  console.log(
-    "negative =",
-    sixHour?.negative
-  );
-
-  console.log("");
-  console.log("24-hour:");
-  console.log(
-    "positive =",
-    twentyFourHour?.positive
-  );
-  console.log(
-    "negative =",
-    twentyFourHour?.negative
-  );
-
-  console.log("");
-  console.log("====================================");
-
-  if (
-    sixHour &&
-    twentyFourHour &&
-    (
-      sixHour.positive !== twentyFourHour.positive ||
-      sixHour.negative !== twentyFourHour.negative
-    )
-  ) {
-    console.log(
-      "RESULT: 6-hour and 24-hour data are DIFFERENT."
-    );
-    console.log(
-      "The span parameter changes the sentiment period."
-    );
-  } else if (
-    sixHour &&
-    twentyFourHour &&
-    sixHour.positive === twentyFourHour.positive &&
-    sixHour.negative === twentyFourHour.negative
-  ) {
-    console.log(
-      "RESULT: 6-hour and 24-hour data are IDENTICAL."
-    );
-    console.log(
-      "The period behavior needs further investigation."
-    );
-  } else {
-    console.log(
-      "RESULT: Could not compare both sentiment results."
-    );
-  }
-
-} catch (error) {
-  console.log("");
-  console.log("24-hour request failed.");
-  console.log(error.message);
 }
 
 console.log("");

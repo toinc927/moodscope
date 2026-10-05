@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-10-05T12:45:29.322Z",
+  "updatedAt": "2026-10-05T12:49:43.845Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-10-05",
-      "posts24h": 83,
+      "posts24h": 82,
       "baselinePosts24h": 99,
-      "heat": 44,
+      "heat": 43,
       "status": "計算済み"
     },
     {
@@ -20,7 +20,7 @@
     {
       "keyword": "メタプラネット",
       "date": "2026-10-05",
-      "posts24h": 319,
+      "posts24h": 320,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"

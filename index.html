@@ -2,7 +2,11 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>MoodScope</title>
 
@@ -13,83 +17,74 @@
 
     body {
       margin: 0;
-      background: #f5f6f8;
-      color: #202124;
+      background: #f5f7fa;
+      color: #172033;
       font-family:
         -apple-system,
         BlinkMacSystemFont,
-        "Hiragino Sans",
-        "Yu Gothic",
+        "Helvetica Neue",
+        Arial,
         sans-serif;
     }
 
     header {
       background: #ffffff;
-      padding: 24px 18px 18px;
+      padding: 28px 18px 22px;
       border-bottom: 1px solid #e5e7eb;
     }
 
-    .title {
-      font-size: 28px;
+    header h1 {
+      margin: 0;
+      font-size: 30px;
       font-weight: 800;
-      margin-bottom: 4px;
     }
 
-    .subtitle {
-      font-size: 13px;
+    header p {
+      margin: 7px 0 0;
       color: #6b7280;
+      font-size: 14px;
     }
 
-    .container {
+    main {
       max-width: 760px;
       margin: 0 auto;
       padding: 16px;
     }
 
-    .top-info {
+    .summary {
       background: #ffffff;
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 14px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .updated {
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px 10px;
-      color: #6b7280;
-    }
-
-    .error {
-      background: #fff1f2;
-      border: 1px solid #fecdd3;
-      color: #be123c;
-      padding: 14px;
-      border-radius: 12px;
-      margin-bottom: 14px;
-      font-size: 14px;
-    }
-
-    .stock-card {
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
       border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .summary-title {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .summary-text {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
       padding: 18px;
       margin-bottom: 14px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.05);
     }
 
     .stock-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 12px;
     }
 
     .stock-name {
@@ -97,141 +92,173 @@
       font-weight: 800;
     }
 
-    .symbol {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-top: 3px;
-    }
-
-    .direction {
-      font-size: 12px;
-      font-weight: 700;
-      padding: 6px 9px;
-      border-radius: 999px;
-      background: #f3f4f6;
+    .price {
+      text-align: right;
+      font-size: 21px;
+      font-weight: 800;
       white-space: nowrap;
     }
 
-    .direction.up {
-      background: #ecfdf5;
-      color: #047857;
-    }
-
-    .direction.down {
-      background: #fff1f2;
-      color: #be123c;
-    }
-
-    .direction.flat {
-      background: #f3f4f6;
-      color: #6b7280;
-    }
-
-    .price-area {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .price {
-      font-size: 28px;
-      font-weight: 800;
-    }
-
     .change {
-      font-size: 16px;
+      margin-top: 3px;
+      font-size: 14px;
       font-weight: 700;
     }
 
-    .change.up {
-      color: #047857;
+    .up {
+      color: #16803c;
     }
 
-    .change.down {
-      color: #be123c;
+    .down {
+      color: #c62828;
     }
 
-    .change.flat {
+    .flat {
       color: #6b7280;
     }
 
-    .metrics {
+    .mood-box {
+      margin-top: 18px;
+      padding: 15px;
+      border-radius: 14px;
+      background: #f7f8fb;
+    }
+
+    .mood-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mood-label {
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    .mood-value {
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .mood-status {
+      margin-top: 2px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .stats {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 14px;
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
     }
 
-    .metric {
+    .stat {
       background: #f8fafc;
-      border-radius: 10px;
-      padding: 10px;
+      border-radius: 12px;
+      padding: 11px;
     }
 
-    .metric-label {
-      font-size: 11px;
+    .stat-name {
       color: #6b7280;
-      margin-bottom: 4px;
+      font-size: 12px;
     }
 
-    .metric-value {
+    .stat-value {
+      margin-top: 3px;
       font-size: 17px;
       font-weight: 800;
     }
 
-    .mood-box {
-      background: #f8fafc;
-      border-radius: 12px;
-      padding: 12px;
-      border: 1px dashed #d1d5db;
+    .sentiment {
+      margin-top: 13px;
     }
 
-    .mood-title {
+    .sentiment-title {
+      color: #6b7280;
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    .bar {
+      height: 12px;
+      display: flex;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e5e7eb;
+    }
+
+    .negative-bar {
+      background: #d64545;
+    }
+
+    .positive-bar {
+      background: #3b82f6;
+    }
+
+    .sentiment-values {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
       font-size: 12px;
       color: #6b7280;
-      margin-bottom: 4px;
-    }
-
-    .mood-value {
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .mood-note {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-top: 3px;
     }
 
     .signal {
-      margin-top: 12px;
+      margin-top: 13px;
       padding: 10px 12px;
       border-radius: 10px;
-      background: #f8fafc;
+      background: #fff7ed;
+      color: #9a3412;
       font-size: 13px;
       font-weight: 700;
     }
 
-    .footer-note {
+    .signal.normal {
+      background: #f8fafc;
+      color: #6b7280;
+    }
+
+    .updated {
+      margin-top: 16px;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 12px;
+    }
+
+    footer {
+      padding: 25px 16px 40px;
       text-align: center;
       color: #9ca3af;
       font-size: 11px;
-      padding: 20px 0 40px;
       line-height: 1.6;
     }
 
-    @media (max-width: 520px) {
-      .metrics {
-        grid-template-columns: 1fr 1fr;
+    .error {
+      background: #fff1f2;
+      color: #be123c;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 480px) {
+
+      .stock-header {
+        align-items: center;
       }
 
-      .metrics .metric:last-child {
-        grid-column: span 2;
+      .stock-name {
+        font-size: 18px;
       }
 
       .price {
-        font-size: 24px;
+        font-size: 18px;
+      }
+
+      .mood-value {
+        font-size: 27px;
       }
     }
   </style>
@@ -240,324 +267,581 @@
 <body>
 
 <header>
-  <div class="title">MoodScope</div>
-  <div class="subtitle">SNS投資心理・独自分析</div>
+  <h1>MoodScope</h1>
+  <p>SNS投資心理・独自分析</p>
 </header>
 
-<main class="container">
+<main>
 
-  <div id="error"></div>
+  <div class="summary">
+    <div class="summary-title">
+      現在の分析対象
+    </div>
 
-  <div class="top-info">
-    <div id="updated" class="updated">
-      データ読み込み中...
+    <div class="summary-text">
+      4銘柄
     </div>
   </div>
 
-  <div id="loading" class="loading">
-    データを読み込んでいます...
+  <div id="app">
+    読み込み中...
   </div>
 
-  <div id="stocks"></div>
-
-  <div class="footer-note">
-    株価データ：Yahoo! Finance<br>
-    投稿数：Yahoo!リアルタイム検索<br>
-    Moodは感情データ取得方式を確認後に実装予定
+  <div
+    id="updated"
+    class="updated"
+  >
   </div>
 
 </main>
 
+<footer>
+  Yahoo! Finance / Yahoo!リアルタイムの公開データを利用<br>
+  MoodScope独自ロジックによる分析
+</footer>
+
 <script>
 
-const moodUrl =
-  "./data/mood_data.json?ts=" + Date.now();
+const stockOrder = [
+  "ファナック",
+  "ソフトバンクグループ",
+  "メタプラネット",
+  "データセクション"
+];
 
-const priceUrl =
-  "./data/price_signal.json?ts=" + Date.now();
+async function loadJson(path) {
 
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+  const response =
+    await fetch(
+      path + "?ts=" + Date.now()
+    );
+
+  if (!response.ok) {
+    throw new Error(
+      path + " の取得に失敗しました"
+    );
+  }
+
+  return response.json();
 }
 
-function formatNumber(value) {
-  if (value == null) return "—";
+function formatPrice(value) {
 
-  return Number(value).toLocaleString("ja-JP");
+  if (
+    value === null ||
+    value === undefined ||
+    !Number.isFinite(Number(value))
+  ) {
+    return "—";
+  }
+
+  return Number(value)
+    .toLocaleString("ja-JP") + "円";
 }
 
 function formatPercent(value) {
-  if (value == null) return "—";
 
-  const sign = value > 0 ? "+" : "";
+  if (
+    value === null ||
+    value === undefined ||
+    !Number.isFinite(Number(value))
+  ) {
+    return "—";
+  }
+
+  const number =
+    Number(value);
+
+  const sign =
+    number > 0
+      ? "+"
+      : "";
 
   return sign +
-    Number(value).toFixed(2) +
+    number.toFixed(2) +
     "%";
 }
 
-function getDirectionClass(direction) {
-  if (direction === "上昇") return "up";
-  if (direction === "下落") return "down";
+function changeClass(value) {
+
+  if (
+    value === null ||
+    value === undefined
+  ) {
+    return "flat";
+  }
+
+  if (Number(value) > 0) {
+    return "up";
+  }
+
+  if (Number(value) < 0) {
+    return "down";
+  }
+
   return "flat";
 }
 
-function createStockCard(mood, price) {
+function moodClass(value) {
 
-  const keyword =
-    price?.keyword ||
-    mood?.keyword ||
-    "不明";
+  if (
+    value === null ||
+    value === undefined
+  ) {
+    return "flat";
+  }
 
-  const symbol =
-    price?.symbol ||
-    "—";
+  if (Number(value) > 0) {
+    return "up";
+  }
 
-  const close =
-    price?.close ?? null;
+  if (Number(value) < 0) {
+    return "down";
+  }
 
-  const changePct =
-    price?.changePct ?? null;
-
-  const direction =
-    price?.direction || "判定不可";
-
-  const directionClass =
-    getDirectionClass(direction);
-
-  const posts =
-    mood?.posts24h ?? null;
-
-  const baseline =
-    mood?.baselinePosts24h ?? null;
-
-  const heat =
-    mood?.heat ?? null;
-
-  const heatText =
-    heat == null ? "—" : heat;
-
-  return `
-    <section class="stock-card">
-
-      <div class="stock-header">
-
-        <div>
-          <div class="stock-name">
-            ${escapeHtml(keyword)}
-          </div>
-
-          <div class="symbol">
-            ${escapeHtml(symbol)}
-          </div>
-        </div>
-
-        <div class="direction ${directionClass}">
-          ${escapeHtml(direction)}
-        </div>
-
-      </div>
-
-      <div class="price-area">
-
-        <div class="price">
-          ${formatNumber(close)}円
-        </div>
-
-        <div class="change ${directionClass}">
-          ${formatPercent(changePct)}
-        </div>
-
-      </div>
-
-      <div class="metrics">
-
-        <div class="metric">
-          <div class="metric-label">
-            投稿数24h
-          </div>
-
-          <div class="metric-value">
-            ${formatNumber(posts)}
-          </div>
-        </div>
-
-        <div class="metric">
-          <div class="metric-label">
-            基準投稿数
-          </div>
-
-          <div class="metric-value">
-            ${formatNumber(baseline)}
-          </div>
-        </div>
-
-        <div class="metric">
-          <div class="metric-label">
-            Heat
-          </div>
-
-          <div class="metric-value">
-            ${heatText}
-          </div>
-        </div>
-
-      </div>
-
-      <div class="mood-box">
-
-        <div class="mood-title">
-          Mood
-        </div>
-
-        <div class="mood-value">
-          —
-        </div>
-
-        <div class="mood-note">
-          感情データ取得方式を確認中
-        </div>
-
-      </div>
-
-      ${
-        direction === "上昇"
-          ? `
-            <div class="signal">
-              株価上昇
-            </div>
-          `
-          : ""
-      }
-
-    </section>
-  `;
+  return "flat";
 }
 
-async function loadData() {
+function formatMood(value) {
 
-  const loading =
-    document.getElementById("loading");
+  if (
+    value === null ||
+    value === undefined ||
+    !Number.isFinite(Number(value))
+  ) {
+    return "—";
+  }
 
-  const stocksElement =
-    document.getElementById("stocks");
+  const number =
+    Number(value);
 
-  const errorElement =
-    document.getElementById("error");
+  if (number > 0) {
+    return "+" + number;
+  }
+
+  return String(number);
+}
+
+function createSignal(
+  mood,
+  priceChange
+) {
+
+  if (
+    mood === null ||
+    mood === undefined ||
+    priceChange === null ||
+    priceChange === undefined
+  ) {
+    return {
+      text: "分析中",
+      normal: true
+    };
+  }
+
+  const m =
+    Number(mood);
+
+  const p =
+    Number(priceChange);
+
+  /*
+   * Moodがやや弱いのに
+   * 株価が上昇しているケース
+   *
+   * Mood <= -20
+   * かつ株価 > 0
+   */
+  if (
+    m <= -20 &&
+    p > 0
+  ) {
+
+    return {
+      text:
+        "警戒気味なのに株価上昇",
+      normal: false
+    };
+  }
+
+  /*
+   * 悲観が強く、
+   * Moodが急落しているケースは
+   * 将来の寄り底候補分析につなげる
+   */
+  if (m <= -40) {
+
+    return {
+      text:
+        "悲観ゾーン",
+      normal: false
+    };
+  }
+
+  return {
+    text: "通常",
+    normal: true
+  };
+}
+
+async function render() {
+
+  const app =
+    document.getElementById(
+      "app"
+    );
 
   try {
 
     const [
-      moodResponse,
-      priceResponse
+      moodData,
+      priceData
     ] = await Promise.all([
 
-      fetch(moodUrl, {
-        cache: "no-store"
-      }),
+      loadJson(
+        "./data/mood_result.json"
+      ),
 
-      fetch(priceUrl, {
-        cache: "no-store"
-      })
+      loadJson(
+        "./data/price_signal.json"
+      )
 
     ]);
 
-    if (!moodResponse.ok) {
-      throw new Error(
-        "mood_data.json の取得に失敗しました"
-      );
-    }
+    const moods =
+      moodData.stocks || [];
 
-    if (!priceResponse.ok) {
-      throw new Error(
-        "price_signal.json の取得に失敗しました"
-      );
-    }
-
-    const moodData =
-      await moodResponse.json();
-
-    const priceData =
-      await priceResponse.json();
-
-    const moodMap = new Map();
-
-    for (const stock of (
-      moodData.stocks || []
-    )) {
-      moodMap.set(
-        stock.keyword,
-        stock
-      );
-    }
-
-    const priceStocks =
+    const prices =
       priceData.stocks || [];
 
-    stocksElement.innerHTML =
-      priceStocks.map(price => {
+    const cards = [];
 
-        const mood =
-          moodMap.get(price.keyword) || null;
+    for (
+      const keyword
+      of stockOrder
+    ) {
 
-        return createStockCard(
-          mood,
-          price
+      const mood =
+        moods.find(
+          item =>
+            item.keyword === keyword
         );
 
-      }).join("");
-
-    loading.style.display = "none";
-
-    const updated =
-      document.getElementById("updated");
-
-    const date =
-      priceData.updatedAt ||
-      moodData.updatedAt;
-
-    if (date) {
-
-      const d =
-        new Date(date);
-
-      updated.textContent =
-        "最終更新: " +
-        d.toLocaleString(
-          "ja-JP",
-          {
-            timeZone: "Asia/Tokyo"
-          }
+      const price =
+        prices.find(
+          item =>
+            item.keyword === keyword
         );
+
+      if (!mood) {
+        continue;
+      }
+
+      const moodValue =
+        mood.mood;
+
+      const priceChange =
+        price
+          ? price.changePct
+          : null;
+
+      const signal =
+        createSignal(
+          moodValue,
+          priceChange
+        );
+
+      const negative =
+        mood.negative;
+
+      const positive =
+        mood.positive;
+
+      const total =
+        Number(negative || 0) +
+        Number(positive || 0);
+
+      const negativeWidth =
+        total > 0
+          ? (
+              Number(negative) /
+              total *
+              100
+            )
+          : 50;
+
+      const positiveWidth =
+        total > 0
+          ? (
+              Number(positive) /
+              total *
+              100
+            )
+          : 50;
+
+      const priceText =
+        price
+          ? formatPrice(
+              price.close
+            )
+          : "—";
+
+      const changeText =
+        price
+          ? formatPercent(
+              price.changePct
+            )
+          : "—";
+
+      const heatText =
+        mood.heat !== null &&
+        mood.heat !== undefined
+          ? mood.heat
+          : "蓄積中";
+
+      cards.push(`
+
+        <section class="card">
+
+          <div class="stock-header">
+
+            <div class="stock-name">
+              ${keyword}
+            </div>
+
+            <div>
+
+              <div class="price">
+                ${priceText}
+              </div>
+
+              <div
+                class="change ${changeClass(
+                  priceChange
+                )}"
+              >
+                ${changeText}
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="mood-box">
+
+            <div class="mood-row">
+
+              <div>
+                <div class="mood-label">
+                  Mood
+                </div>
+
+                <div
+                  class="mood-status ${moodClass(
+                    moodValue
+                  )}"
+                >
+                  ${mood.label || "—"}
+                </div>
+              </div>
+
+              <div
+                class="mood-value ${moodClass(
+                  moodValue
+                )}"
+              >
+                ${formatMood(
+                  moodValue
+                )}
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="stats">
+
+            <div class="stat">
+
+              <div class="stat-name">
+                投稿数24h
+              </div>
+
+              <div class="stat-value">
+                ${
+                  mood.posts24h ??
+                  "—"
+                }
+              </div>
+
+            </div>
+
+
+            <div class="stat">
+
+              <div class="stat-name">
+                Heat
+              </div>
+
+              <div class="stat-value">
+                ${heatText}
+              </div>
+
+            </div>
+
+
+            <div class="stat">
+
+              <div class="stat-name">
+                基準投稿数
+              </div>
+
+              <div class="stat-value">
+                ${
+                  mood.baselinePosts24h ??
+                  "蓄積中"
+                }
+              </div>
+
+            </div>
+
+
+            <div class="stat">
+
+              <div class="stat-name">
+                信頼度
+              </div>
+
+              <div class="stat-value">
+                ${
+                  mood.confidence !==
+                  null &&
+                  mood.confidence !==
+                  undefined
+                    ? (
+                        Number(
+                          mood.confidence
+                        ) * 100
+                      ).toFixed(0) +
+                      "%"
+                    : "—"
+                }
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="sentiment">
+
+            <div class="sentiment-title">
+              Yahoo 24時間感情
+            </div>
+
+            <div class="bar">
+
+              <div
+                class="negative-bar"
+                style="
+                  width:${negativeWidth}%
+                "
+              ></div>
+
+              <div
+                class="positive-bar"
+                style="
+                  width:${positiveWidth}%
+                "
+              ></div>
+
+            </div>
+
+            <div class="sentiment-values">
+
+              <span>
+                悲観 ${negative ?? "—"}%
+              </span>
+
+              <span>
+                楽観 ${positive ?? "—"}%
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="
+              signal
+              ${
+                signal.normal
+                  ? "normal"
+                  : ""
+              }
+            "
+          >
+            ${signal.text}
+          </div>
+
+        </section>
+
+      `);
     }
 
-    if (priceStocks.length === 0) {
+    if (cards.length === 0) {
 
-      stocksElement.innerHTML =
-        `<div class="loading">
-          株価データがありません
-        </div>`;
+      app.innerHTML = `
+        <div class="error">
+          データがまだ取得できていません。
+        </div>
+      `;
+
+    } else {
+
+      app.innerHTML =
+        cards.join("");
+
+    }
+
+    const updated =
+      document.getElementById(
+        "updated"
+      );
+
+    if (moodData.updatedAt) {
+
+      const date =
+        new Date(
+          moodData.updatedAt
+        );
+
+      updated.textContent =
+        "Mood更新: " +
+        date.toLocaleString(
+          "ja-JP"
+        );
+
     }
 
   } catch (error) {
 
     console.error(error);
 
-    loading.style.display = "none";
+    app.innerHTML = `
+      <div class="error">
+        データの読み込みに失敗しました。<br>
+        ${error.message}
+      </div>
+    `;
 
-    errorElement.innerHTML =
-      `<div class="error">
-        データ取得エラー：${escapeHtml(error.message)}
-      </div>`;
   }
 }
 
-loadData();
+render();
 
 </script>
 

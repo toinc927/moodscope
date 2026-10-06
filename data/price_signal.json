@@ -1,41 +1,41 @@
 {
-  "updatedAt": "2026-10-05T14:19:47.201Z",
+  "updatedAt": "2026-10-06T12:28:13.227Z",
   "stocks": [
     {
       "keyword": "ソフトバンクグループ",
       "symbol": "9984.T",
-      "date": "2026-10-05",
-      "close": 6497,
-      "previousClose": 6310,
-      "changePct": 2.96,
-      "direction": "上昇"
+      "date": "2026-10-06",
+      "close": 6295,
+      "previousClose": 6497,
+      "changePct": -3.11,
+      "direction": "下落"
     },
     {
       "keyword": "データセクション",
       "symbol": "3905.T",
-      "date": "2026-10-05",
-      "close": 1950,
-      "previousClose": 2042,
-      "changePct": -4.51,
+      "date": "2026-10-06",
+      "close": 1842,
+      "previousClose": 1950,
+      "changePct": -5.54,
       "direction": "下落"
     },
     {
       "keyword": "ファナック",
       "symbol": "6954.T",
-      "date": "2026-10-05",
-      "close": 6186,
-      "previousClose": 6075,
-      "changePct": 1.83,
+      "date": "2026-10-06",
+      "close": 6220,
+      "previousClose": 6186,
+      "changePct": 0.55,
       "direction": "上昇"
     },
     {
       "keyword": "メタプラネット",
       "symbol": "3350.T",
-      "date": "2026-10-05",
-      "close": 297,
-      "previousClose": 291,
-      "changePct": 2.06,
-      "direction": "上昇"
+      "date": "2026-10-06",
+      "close": 288,
+      "previousClose": 297,
+      "changePct": -3.03,
+      "direction": "下落"
     }
   ]
 }

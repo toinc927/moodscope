@@ -1,0 +1,49 @@
+{
+  "stocks": [
+    {
+      "keyword": "ソフトバンクグループ",
+      "date": "2026-10-06",
+      "mood": -14,
+      "label": "中立",
+      "negative": 63,
+      "positive": 37,
+      "posts24h": 146,
+      "heat": null,
+      "confidence": 0.55
+    },
+    {
+      "keyword": "データセクション",
+      "date": "2026-10-06",
+      "mood": -26,
+      "label": "警戒",
+      "negative": 74,
+      "positive": 26,
+      "posts24h": 147,
+      "heat": null,
+      "confidence": 0.55
+    },
+    {
+      "keyword": "ファナック",
+      "date": "2026-10-06",
+      "mood": -23,
+      "label": "警戒",
+      "negative": 62,
+      "positive": 38,
+      "posts24h": 72,
+      "heat": 40,
+      "confidence": 0.942
+    },
+    {
+      "keyword": "メタプラネット",
+      "date": "2026-10-06",
+      "mood": 2,
+      "label": "中立",
+      "negative": 48,
+      "positive": 52,
+      "posts24h": 444,
+      "heat": null,
+      "confidence": 0.55
+    }
+  ],
+  "updatedAt": "2026-10-06T12:29:41.213Z"
+}

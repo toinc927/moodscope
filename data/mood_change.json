@@ -1,0 +1,33 @@
+{
+  "updatedAt": "2026-10-06T12:41:19.909Z",
+  "stocks": [
+    {
+      "keyword": "ファナック",
+      "currentMood": -23,
+      "previousMood": null,
+      "change": null,
+      "status": "蓄積中"
+    },
+    {
+      "keyword": "ソフトバンクグループ",
+      "currentMood": -15,
+      "previousMood": null,
+      "change": null,
+      "status": "蓄積中"
+    },
+    {
+      "keyword": "メタプラネット",
+      "currentMood": 3,
+      "previousMood": null,
+      "change": null,
+      "status": "蓄積中"
+    },
+    {
+      "keyword": "データセクション",
+      "currentMood": -26,
+      "previousMood": null,
+      "change": null,
+      "status": "蓄積中"
+    }
+  ]
+}

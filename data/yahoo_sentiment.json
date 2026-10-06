@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-06T12:29:41.106Z",
+  "updatedAt": "2026-10-06T12:41:19.716Z",
   "stocks": [
     {
       "keyword": "ファナック",
@@ -10,14 +10,14 @@
     {
       "keyword": "ソフトバンクグループ",
       "date": "2026-10-06",
-      "negative": 63,
-      "positive": 37
+      "negative": 64,
+      "positive": 36
     },
     {
       "keyword": "メタプラネット",
       "date": "2026-10-06",
-      "negative": 48,
-      "positive": 52
+      "negative": 47,
+      "positive": 53
     },
     {
       "keyword": "データセクション",

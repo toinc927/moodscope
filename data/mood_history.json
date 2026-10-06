@@ -3,11 +3,11 @@
     {
       "keyword": "ソフトバンクグループ",
       "date": "2026-10-06",
-      "mood": -14,
+      "mood": -15,
       "label": "中立",
-      "negative": 63,
-      "positive": 37,
-      "posts24h": 146,
+      "negative": 64,
+      "positive": 36,
+      "posts24h": 147,
       "heat": null,
       "confidence": 0.55
     },
@@ -18,7 +18,7 @@
       "label": "警戒",
       "negative": 74,
       "positive": 26,
-      "posts24h": 147,
+      "posts24h": 145,
       "heat": null,
       "confidence": 0.55
     },
@@ -29,21 +29,21 @@
       "label": "警戒",
       "negative": 62,
       "positive": 38,
-      "posts24h": 72,
-      "heat": 40,
-      "confidence": 0.942
+      "posts24h": 71,
+      "heat": 39,
+      "confidence": 0.939
     },
     {
       "keyword": "メタプラネット",
       "date": "2026-10-06",
-      "mood": 2,
+      "mood": 3,
       "label": "中立",
-      "negative": 48,
-      "positive": 52,
-      "posts24h": 444,
+      "negative": 47,
+      "positive": 53,
+      "posts24h": 436,
       "heat": null,
       "confidence": 0.55
     }
   ],
-  "updatedAt": "2026-10-06T12:29:41.213Z"
+  "updatedAt": "2026-10-06T12:41:19.849Z"
 }

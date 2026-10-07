@@ -1,26 +1,26 @@
 {
-  "updatedAt": "2026-10-07T13:07:57.372Z",
+  "updatedAt": "2026-10-07T14:16:56.820Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-10-07",
-      "posts24h": 71,
+      "posts24h": 65,
       "baselinePosts24h": 94,
-      "heat": 40,
+      "heat": 37,
       "status": "計算済み"
     },
     {
       "keyword": "ソフトバンクグループ",
       "date": "2026-10-07",
-      "posts24h": 124,
+      "posts24h": 117,
       "baselinePosts24h": 154,
-      "heat": 42,
+      "heat": 40,
       "status": "計算済み"
     },
     {
       "keyword": "メタプラネット",
       "date": "2026-10-07",
-      "posts24h": 193,
+      "posts24h": 182,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"
@@ -28,7 +28,7 @@
     {
       "keyword": "データセクション",
       "date": "2026-10-07",
-      "posts24h": 115,
+      "posts24h": 111,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"

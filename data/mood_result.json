@@ -1,57 +1,57 @@
 {
-  "updatedAt": "2026-10-06T14:18:48.365Z",
+  "updatedAt": "2026-10-07T10:57:20.783Z",
   "stocks": [
     {
       "keyword": "ファナック",
-      "negative": 56,
-      "positive": 44,
-      "polarity": -12,
-      "confidence": 0.942,
-      "mood": -11,
+      "negative": 44,
+      "positive": 56,
+      "polarity": 12,
+      "confidence": 0.947,
+      "mood": 11,
       "label": "中立",
-      "posts24h": 72,
-      "baselinePosts24h": 95,
-      "heat": 40,
-      "date": "2026-10-06"
+      "posts24h": 73,
+      "baselinePosts24h": 94,
+      "heat": 41,
+      "date": "2026-10-07"
     },
     {
       "keyword": "ソフトバンクグループ",
-      "negative": 63,
-      "positive": 37,
-      "polarity": -26,
-      "confidence": 0.55,
-      "mood": -14,
-      "label": "中立",
-      "posts24h": 156,
-      "baselinePosts24h": 0,
-      "heat": null,
-      "date": "2026-10-06"
+      "negative": 72,
+      "positive": 28,
+      "polarity": -44,
+      "confidence": 0.976,
+      "mood": -43,
+      "label": "警戒",
+      "posts24h": 138,
+      "baselinePosts24h": 154,
+      "heat": 46,
+      "date": "2026-10-07"
     },
     {
       "keyword": "メタプラネット",
-      "negative": 38,
-      "positive": 62,
-      "polarity": 24,
+      "negative": 33,
+      "positive": 67,
+      "polarity": 34,
       "confidence": 0.55,
-      "mood": 13,
+      "mood": 19,
       "label": "中立",
-      "posts24h": 393,
+      "posts24h": 209,
       "baselinePosts24h": 0,
       "heat": null,
-      "date": "2026-10-06"
+      "date": "2026-10-07"
     },
     {
       "keyword": "データセクション",
-      "negative": 76,
-      "positive": 24,
-      "polarity": -52,
+      "negative": 68,
+      "positive": 32,
+      "polarity": -36,
       "confidence": 0.55,
-      "mood": -29,
+      "mood": -20,
       "label": "警戒",
-      "posts24h": 152,
+      "posts24h": 126,
       "baselinePosts24h": 0,
       "heat": null,
-      "date": "2026-10-06"
+      "date": "2026-10-07"
     }
   ]
 }

@@ -12,6 +12,17 @@
       "confidence": 0.55
     },
     {
+      "keyword": "ソフトバンクグループ",
+      "date": "2026-10-07",
+      "mood": -43,
+      "label": "警戒",
+      "negative": 72,
+      "positive": 28,
+      "posts24h": 138,
+      "heat": 46,
+      "confidence": 0.976
+    },
+    {
       "keyword": "データセクション",
       "date": "2026-10-06",
       "mood": -29,
@@ -19,6 +30,17 @@
       "negative": 76,
       "positive": 24,
       "posts24h": 152,
+      "heat": null,
+      "confidence": 0.55
+    },
+    {
+      "keyword": "データセクション",
+      "date": "2026-10-07",
+      "mood": -20,
+      "label": "警戒",
+      "negative": 68,
+      "positive": 32,
+      "posts24h": 126,
       "heat": null,
       "confidence": 0.55
     },
@@ -34,6 +56,17 @@
       "confidence": 0.942
     },
     {
+      "keyword": "ファナック",
+      "date": "2026-10-07",
+      "mood": 11,
+      "label": "中立",
+      "negative": 44,
+      "positive": 56,
+      "posts24h": 73,
+      "heat": 41,
+      "confidence": 0.947
+    },
+    {
       "keyword": "メタプラネット",
       "date": "2026-10-06",
       "mood": 13,
@@ -43,7 +76,18 @@
       "posts24h": 393,
       "heat": null,
       "confidence": 0.55
+    },
+    {
+      "keyword": "メタプラネット",
+      "date": "2026-10-07",
+      "mood": 19,
+      "label": "中立",
+      "negative": 33,
+      "positive": 67,
+      "posts24h": 209,
+      "heat": null,
+      "confidence": 0.55
     }
   ],
-  "updatedAt": "2026-10-06T14:18:48.422Z"
+  "updatedAt": "2026-10-07T10:57:20.838Z"
 }

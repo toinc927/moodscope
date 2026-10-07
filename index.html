@@ -91,6 +91,15 @@
       color: #727c8d;
     }
 
+    .signal-error {
+      background: #fff0f0;
+      border-radius: 14px;
+      padding: 15px;
+      color: #b51f1f;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
     .signal-card {
       border-radius: 16px;
       padding: 15px;
@@ -317,6 +326,15 @@
       color: #687386;
     }
 
+    .error-box {
+      background: #fff0f0;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 18px;
+      color: #b51f1f;
+      line-height: 1.6;
+    }
+
     .footer {
       text-align: center;
       color: #8a93a2;
@@ -367,7 +385,9 @@
       </div>
     </div>
 
+
     <div class="summary">
+
       <div class="summary-title">
         現在の分析対象
       </div>
@@ -378,7 +398,9 @@
       >
         読み込み中
       </div>
+
     </div>
+
 
     <div class="signal-panel">
 
@@ -395,209 +417,325 @@
 
     </div>
 
+
+    <div id="errorArea"></div>
+
+
     <div id="stocks">
-      読み込み中...
+
+      <div class="summary">
+        データを読み込み中...
+      </div>
+
     </div>
 
+
     <div class="footer">
-      Yahoo! Finance / Yahoo!リアルタイムを利用<br>
+
+      Yahoo! Finance / Yahoo!リアルタイムを利用
+      <br>
+
       MoodScope独自分析
+
       <br><br>
+
       最終更新:
       <span id="updatedAt">
         --
       </span>
+
     </div>
 
   </div>
 
+
   <script>
 
-    const timestamp =
-      Date.now();
+    /*
+      MoodScope
+      データ読み込み
+
+      3つのJSONを個別に読み込む。
+      1つのファイルが失敗しても、
+      他のデータまで巻き込んで停止しない。
+    */
+
+
+    const timestamp = Date.now();
+
 
     const moodUrl =
       "./data/mood_result.json?ts=" +
       timestamp;
 
+
     const priceUrl =
       "./data/price_signal.json?ts=" +
       timestamp;
+
 
     const signalUrl =
       "./data/signals.json?ts=" +
       timestamp;
 
-    Promise.all([
-      fetch(moodUrl)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(
-              "mood_result.json error"
-            );
-          }
 
-          return response.json();
-        }),
+    let moodData = null;
+    let priceData = null;
+    let signalData = null;
 
-      fetch(priceUrl)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(
-              "price_signal.json error"
-            );
-          }
 
-          return response.json();
-        }),
+    async function loadJson(
+      url,
+      name
+    ) {
 
-      fetch(signalUrl)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(
-              "signals.json error"
-            );
-          }
+      try {
 
-          return response.json();
-        })
-    ])
+        const response =
+          await fetch(url, {
+            cache: "no-store"
+          });
 
-    .then(
-      ([
-        moodData,
-        priceData,
-        signalData
-      ]) => {
 
-        const moods =
-          moodData.stocks || [];
+        if (!response.ok) {
 
-        const prices =
-          priceData.stocks || [];
-
-        const signals =
-          signalData.stocks || [];
-
-        const stockMap =
-          new Map();
-
-        for (
-          const mood
-          of moods
-        ) {
-
-          stockMap.set(
-            mood.keyword,
-            {
-              ...mood
-            }
+          throw new Error(
+            name +
+            " HTTP " +
+            response.status
           );
 
         }
 
-        for (
-          const price
-          of prices
-        ) {
 
-          const stock =
-            stockMap.get(
-              price.keyword
-            );
+        return await response.json();
 
-          if (stock) {
+      } catch (error) {
 
-            stock.price =
-              price.close;
+        console.error(
+          name,
+          error
+        );
 
-            stock.changePct =
-              price.changePct;
+        showError(
+          name +
+          " の読み込みに失敗しました。"
+        );
 
-            stock.direction =
-              price.direction;
+        return null;
 
-          }
+      }
 
-        }
+    }
 
-        const stocks =
-          Array.from(
-            stockMap.values()
-          );
+
+    async function loadAllData() {
+
+      /*
+        3つを順番に処理する。
+        Promise.allは使わない。
+      */
+
+
+      moodData =
+        await loadJson(
+          moodUrl,
+          "mood_result.json"
+        );
+
+
+      priceData =
+        await loadJson(
+          priceUrl,
+          "price_signal.json"
+        );
+
+
+      signalData =
+        await loadJson(
+          signalUrl,
+          "signals.json"
+        );
+
+
+      /*
+        少なくともMoodデータがあれば
+        銘柄カードを表示する。
+      */
+
+
+      if (moodData) {
+
+        renderStocks();
+
+        updateSummary();
+
+        updateUpdatedAt();
+
+      } else {
 
         document
           .getElementById(
-            "stockCount"
+            "stocks"
           )
-          .textContent =
-          stocks.length +
-          "銘柄";
-
-        renderSignals(
-          signals
-        );
-
-        renderStocks(
-          stocks
-        );
-
-        const updated =
-          moodData.updatedAt ||
-          signalData.updatedAt;
-
-        if (updated) {
-
-          const date =
-            new Date(updated);
-
-          document
-            .getElementById(
-              "updatedAt"
-            )
-            .textContent =
-            date.toLocaleString(
-              "ja-JP"
-            );
-
-        }
+          .innerHTML = `
+            <div class="error-box">
+              Moodデータを読み込めませんでした。
+            </div>
+          `;
 
       }
-    )
 
-    .catch(error => {
 
-      console.error(error);
+      /*
+        Signalデータがあれば表示。
+      */
 
-      document
-        .getElementById(
-          "stocks"
-        )
-        .innerHTML = `
-          <div class="summary">
-            データの読み込みに失敗しました。<br>
-            少し時間を置いて再読み込みしてください。
+
+      if (signalData) {
+
+        renderSignals();
+
+      } else {
+
+        document
+          .getElementById(
+            "signalArea"
+          )
+          .innerHTML = `
+            <div class="signal-error">
+              シグナルデータを読み込めませんでした。
+            </div>
+          `;
+
+      }
+
+    }
+
+
+    function showError(
+      message
+    ) {
+
+      const area =
+        document.getElementById(
+          "errorArea"
+        );
+
+
+      const existing =
+        area.innerHTML;
+
+
+      area.innerHTML =
+        existing +
+        `
+          <div class="error-box">
+            ${escapeHtml(
+              message
+            )}
           </div>
         `;
 
+    }
+
+
+    function updateSummary() {
+
+      const stocks =
+        moodData &&
+        Array.isArray(
+          moodData.stocks
+        )
+          ? moodData.stocks
+          : [];
+
+
       document
         .getElementById(
-          "signalArea"
+          "stockCount"
         )
         .textContent =
-        "シグナルを読み込めませんでした。";
+        stocks.length +
+        "銘柄";
 
-    });
+    }
 
 
-    function renderSignals(
-      signals
-    ) {
+    function updateUpdatedAt() {
+
+      let updated =
+        null;
+
+
+      if (
+        moodData &&
+        moodData.updatedAt
+      ) {
+
+        updated =
+          moodData.updatedAt;
+
+      } else if (
+        signalData &&
+        signalData.updatedAt
+      ) {
+
+        updated =
+          signalData.updatedAt;
+
+      } else if (
+        priceData &&
+        priceData.updatedAt
+      ) {
+
+        updated =
+          priceData.updatedAt;
+
+      }
+
+
+      if (!updated) {
+
+        return;
+
+      }
+
+
+      const date =
+        new Date(
+          updated
+        );
+
+
+      document
+        .getElementById(
+          "updatedAt"
+        )
+        .textContent =
+        date.toLocaleString(
+          "ja-JP"
+        );
+
+    }
+
+
+    function renderSignals() {
 
       const area =
         document.getElementById(
           "signalArea"
         );
+
+
+      const signals =
+        signalData &&
+        Array.isArray(
+          signalData.stocks
+        )
+          ? signalData.stocks
+          : [];
+
 
       const active =
         signals
@@ -617,6 +755,7 @@
                 "通常": 1
               };
 
+
               return (
                 (rank[b.priority] || 0) -
                 (rank[a.priority] || 0)
@@ -624,6 +763,7 @@
 
             }
           );
+
 
       if (
         active.length === 0
@@ -636,131 +776,231 @@
         `;
 
         return;
+
       }
+
 
       area.innerHTML =
         active
-          .map(stock => {
+          .map(
+            stock => {
 
-            const priorityClass =
-              stock.priority === "高"
-                ? "high"
-                : stock.priority === "中"
-                  ? "medium"
+              const priorityClass =
+                stock.priority === "高"
+                  ? "high"
+                  : stock.priority === "中"
+                    ? "medium"
+                    : "";
+
+
+              const mood =
+                formatNumber(
+                  stock.currentMood
+                );
+
+
+              const moodChange =
+                formatSignedNumber(
+                  stock.moodChange
+                );
+
+
+              const priceChange =
+                formatSignedNumber(
+                  stock.priceChangePct
+                );
+
+
+              const signalList =
+                Array.isArray(
+                  stock.signals
+                )
+                  ? stock.signals
+                      .map(
+                        signal =>
+                          "・" +
+                          escapeHtml(
+                            signal
+                          )
+                      )
+                      .join("<br>")
                   : "";
 
-            const mood =
-              formatNumber(
-                stock.currentMood
-              );
 
-            const moodChange =
-              formatSignedNumber(
-                stock.moodChange
-              );
+              return `
+                <div
+                  class="signal-card ${priorityClass}"
+                >
 
-            const priceChange =
-              formatSignedNumber(
-                stock.priceChangePct
-              );
-
-            return `
-              <div
-                class="signal-card ${priorityClass}"
-              >
-
-                <div class="signal-stock">
-                  ${escapeHtml(
-                    stock.keyword
-                  )}
-                </div>
-
-                <div class="signal-priority">
-                  優先度：${escapeHtml(
-                    stock.priority
-                  )}
-                </div>
-
-                <div class="signal-metrics">
-
-                  <div class="signal-metric">
-                    <div class="signal-metric-label">
-                      Mood
-                    </div>
-                    <div class="signal-metric-value">
-                      ${mood}
-                    </div>
+                  <div class="signal-stock">
+                    ${escapeHtml(
+                      stock.keyword
+                    )}
                   </div>
 
-                  <div class="signal-metric">
-                    <div class="signal-metric-label">
-                      Mood変化
-                    </div>
-                    <div class="signal-metric-value">
-                      ${moodChange}
-                    </div>
+                  <div class="signal-priority">
+                    優先度：
+                    ${escapeHtml(
+                      stock.priority ||
+                      "通常"
+                    )}
                   </div>
 
-                  <div class="signal-metric">
-                    <div class="signal-metric-label">
-                      株価変化
+                  <div class="signal-metrics">
+
+                    <div class="signal-metric">
+
+                      <div class="signal-metric-label">
+                        Mood
+                      </div>
+
+                      <div class="signal-metric-value">
+                        ${mood}
+                      </div>
+
                     </div>
-                    <div class="signal-metric-value">
-                      ${priceChange}%
+
+
+                    <div class="signal-metric">
+
+                      <div class="signal-metric-label">
+                        Mood変化
+                      </div>
+
+                      <div class="signal-metric-value">
+                        ${moodChange}
+                      </div>
+
                     </div>
+
+
+                    <div class="signal-metric">
+
+                      <div class="signal-metric-label">
+                        株価変化
+                      </div>
+
+                      <div class="signal-metric-value">
+                        ${priceChange}%
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="signal-list">
+                    ${signalList}
                   </div>
 
                 </div>
+              `;
 
-                <div class="signal-list">
-                  ${stock.signals
-                    .map(
-                      signal =>
-                        "・" +
-                        escapeHtml(
-                          signal
-                        )
-                    )
-                    .join("<br>")}
-                </div>
-
-              </div>
-            `;
-
-          })
+            }
+          )
           .join("");
 
     }
 
 
-    function renderStocks(
-      stocks
-    ) {
+    function renderStocks() {
 
       const container =
         document.getElementById(
           "stocks"
         );
 
+
+      const moods =
+        moodData &&
+        Array.isArray(
+          moodData.stocks
+        )
+          ? moodData.stocks
+          : [];
+
+
+      const prices =
+        priceData &&
+        Array.isArray(
+          priceData.stocks
+        )
+          ? priceData.stocks
+          : [];
+
+
       if (
-        stocks.length === 0
+        moods.length === 0
       ) {
 
         container.innerHTML = `
-          <div class="summary">
-            株価データがありません。
+          <div class="error-box">
+            株式データがありません。
           </div>
         `;
 
         return;
+
       }
+
+
+      const priceMap =
+        new Map();
+
+
+      prices.forEach(
+        price => {
+
+          priceMap.set(
+            price.keyword,
+            price
+          );
+
+        }
+      );
+
+
+      const stocks =
+        moods.map(
+          mood => {
+
+            const price =
+              priceMap.get(
+                mood.keyword
+              );
+
+
+            return {
+              ...mood,
+
+              price:
+                price
+                  ? price.close
+                  : null,
+
+              changePct:
+                price
+                  ? price.changePct
+                  : null,
+
+              direction:
+                price
+                  ? price.direction
+                  : null
+
+            };
+
+          }
+        );
+
 
       container.innerHTML =
         stocks
-          .map(stock =>
-            createStockCard(
-              stock
-            )
+          .map(
+            stock =>
+              createStockCard(
+                stock
+              )
           )
           .join("");
 
@@ -775,53 +1015,64 @@
         stock.mood ??
         null;
 
+
       const label =
         stock.label ||
         "判定不可";
 
+
       const price =
         stock.price;
+
 
       const changePct =
         stock.changePct;
 
+
       const negative =
         Number(
-          stock.negative ?? 0
+          stock.negative ??
+          0
         );
+
 
       const positive =
         Number(
-          stock.positive ?? 0
+          stock.positive ??
+          0
         );
+
 
       const total =
         negative +
         positive;
 
+
       let negativeWidth =
         50;
+
 
       let positiveWidth =
         50;
 
-      if (total > 0) {
+
+      if (
+        total > 0
+      ) {
 
         negativeWidth =
-          (
-            negative /
-            total *
-            100
-          );
+          negative /
+          total *
+          100;
+
 
         positiveWidth =
-          (
-            positive /
-            total *
-            100
-          );
+          positive /
+          total *
+          100;
 
       }
+
 
       const moodClass =
         mood === null
@@ -831,6 +1082,7 @@
             : mood < 0
               ? "mood-negative"
               : "mood-neutral";
+
 
       const changeClass =
         changePct === null ||
@@ -842,6 +1094,7 @@
               ? "down"
               : "flat";
 
+
       const priceText =
         price === null ||
         price === undefined
@@ -850,7 +1103,9 @@
               price
             ).toLocaleString(
               "ja-JP"
-            ) + "円";
+            ) +
+            "円";
+
 
       const changeText =
         changePct === null ||
@@ -866,11 +1121,13 @@
             ).toFixed(2) +
             "%";
 
+
       const moodText =
         mood === null ||
         mood === undefined
           ? "--"
           : mood;
+
 
       const postsText =
         stock.posts24h === null ||
@@ -882,11 +1139,104 @@
               "ja-JP"
             );
 
+
       const heatText =
         stock.heat === null ||
         stock.heat === undefined
           ? "蓄積中"
           : stock.heat;
 
+
       const baselineText =
-        stock.bas
+        stock.baselinePosts24h === null ||
+        stock.baselinePosts24h === undefined
+          ? "--"
+          : Number(
+              stock.baselinePosts24h
+            ).toLocaleString(
+              "ja-JP"
+            );
+
+
+      const confidenceText =
+        stock.confidence === null ||
+        stock.confidence === undefined
+          ? "--"
+          : Number(
+              stock.confidence
+            ).toFixed(3);
+
+
+      return `
+        <div class="stock-card">
+
+          <div class="stock-header">
+
+            <div class="stock-name">
+              ${escapeHtml(
+                stock.keyword
+              )}
+            </div>
+
+
+            <div class="price-area">
+
+              <div class="price">
+                ${priceText}
+              </div>
+
+              <div
+                class="change ${changeClass}"
+              >
+                ${changeText}
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="mood-box">
+
+            <div>
+
+              <div class="mood-label">
+                SNS Mood
+              </div>
+
+              <div class="mood-name">
+                ${escapeHtml(
+                  label
+                )}
+              </div>
+
+            </div>
+
+
+            <div
+              class="mood-number ${moodClass}"
+            >
+              ${moodText}
+            </div>
+
+          </div>
+
+
+          <div class="metrics">
+
+            <div class="metric">
+
+              <div class="metric-label">
+                24時間投稿数
+              </div>
+
+              <div class="metric-value">
+                ${postsText}
+              </div>
+
+            </div>
+
+
+            <div class="metric">
+
+              <div class="

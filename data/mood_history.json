@@ -18,9 +18,9 @@
       "label": "警戒",
       "negative": 72,
       "positive": 28,
-      "posts24h": 138,
-      "heat": 46,
-      "confidence": 0.976
+      "posts24h": 141,
+      "heat": 47,
+      "confidence": 0.981
     },
     {
       "keyword": "データセクション",
@@ -36,11 +36,11 @@
     {
       "keyword": "データセクション",
       "date": "2026-10-07",
-      "mood": -20,
+      "mood": -22,
       "label": "警戒",
-      "negative": 68,
-      "positive": 32,
-      "posts24h": 126,
+      "negative": 70,
+      "positive": 30,
+      "posts24h": 125,
       "heat": null,
       "confidence": 0.55
     },
@@ -58,13 +58,13 @@
     {
       "keyword": "ファナック",
       "date": "2026-10-07",
-      "mood": 11,
+      "mood": 17,
       "label": "中立",
-      "negative": 44,
-      "positive": 56,
-      "posts24h": 73,
-      "heat": 41,
-      "confidence": 0.947
+      "negative": 41,
+      "positive": 59,
+      "posts24h": 72,
+      "heat": 40,
+      "confidence": 0.944
     },
     {
       "keyword": "メタプラネット",
@@ -84,10 +84,10 @@
       "label": "中立",
       "negative": 33,
       "positive": 67,
-      "posts24h": 209,
+      "posts24h": 207,
       "heat": null,
       "confidence": 0.55
     }
   ],
-  "updatedAt": "2026-10-07T10:57:20.838Z"
+  "updatedAt": "2026-10-07T11:06:35.306Z"
 }

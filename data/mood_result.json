@@ -1,17 +1,17 @@
 {
-  "updatedAt": "2026-10-07T10:57:20.783Z",
+  "updatedAt": "2026-10-07T11:06:35.257Z",
   "stocks": [
     {
       "keyword": "ファナック",
-      "negative": 44,
-      "positive": 56,
-      "polarity": 12,
-      "confidence": 0.947,
-      "mood": 11,
+      "negative": 41,
+      "positive": 59,
+      "polarity": 18,
+      "confidence": 0.944,
+      "mood": 17,
       "label": "中立",
-      "posts24h": 73,
+      "posts24h": 72,
       "baselinePosts24h": 94,
-      "heat": 41,
+      "heat": 40,
       "date": "2026-10-07"
     },
     {
@@ -19,12 +19,12 @@
       "negative": 72,
       "positive": 28,
       "polarity": -44,
-      "confidence": 0.976,
+      "confidence": 0.981,
       "mood": -43,
       "label": "警戒",
-      "posts24h": 138,
+      "posts24h": 141,
       "baselinePosts24h": 154,
-      "heat": 46,
+      "heat": 47,
       "date": "2026-10-07"
     },
     {
@@ -35,20 +35,20 @@
       "confidence": 0.55,
       "mood": 19,
       "label": "中立",
-      "posts24h": 209,
+      "posts24h": 207,
       "baselinePosts24h": 0,
       "heat": null,
       "date": "2026-10-07"
     },
     {
       "keyword": "データセクション",
-      "negative": 68,
-      "positive": 32,
-      "polarity": -36,
+      "negative": 70,
+      "positive": 30,
+      "polarity": -40,
       "confidence": 0.55,
-      "mood": -20,
+      "mood": -22,
       "label": "警戒",
-      "posts24h": 126,
+      "posts24h": 125,
       "baselinePosts24h": 0,
       "heat": null,
       "date": "2026-10-07"

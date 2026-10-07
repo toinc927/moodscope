@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-10-07T10:57:20.726Z",
+  "updatedAt": "2026-10-07T11:06:35.204Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-10-07",
-      "negative": 44,
-      "positive": 56
+      "negative": 41,
+      "positive": 59
     },
     {
       "keyword": "ソフトバンクグループ",
@@ -22,8 +22,8 @@
     {
       "keyword": "データセクション",
       "date": "2026-10-07",
-      "negative": 68,
-      "positive": 32
+      "negative": 70,
+      "positive": 30
     }
   ]
 }

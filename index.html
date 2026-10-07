@@ -1,1242 +1,369 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>MoodScope</title>
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 20px 14px 40px;
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
-      background: #f4f6f9;
-      color: #172033;
-    }
-
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-    }
-
-    .header {
-      padding: 12px 4px 24px;
-    }
-
-    .title {
-      font-size: 32px;
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .subtitle {
-      font-size: 15px;
-      color: #687386;
-    }
-
-    .summary {
-      background: white;
-      border-radius: 22px;
-      padding: 20px;
-      margin-bottom: 18px;
-      box-shadow:
-        0 8px 25px rgba(20, 30, 50, 0.06);
-    }
-
-    .summary-title {
-      font-size: 14px;
-      color: #7a8495;
-      margin-bottom: 5px;
-    }
-
-    .summary-value {
-      font-size: 25px;
-      font-weight: 800;
-    }
-
-    .signal-panel {
-      background: #fff;
-      border-radius: 22px;
-      padding: 20px;
-      margin-bottom: 18px;
-      box-shadow:
-        0 8px 25px rgba(20, 30, 50, 0.06);
-    }
-
-    .signal-title {
-      font-size: 20px;
-      font-weight: 800;
-      margin-bottom: 14px;
-    }
-
-    .signal-empty {
-      background: #f5f7fa;
-      border-radius: 14px;
-      padding: 15px;
-      color: #727c8d;
-    }
-
-    .signal-error {
-      background: #fff0f0;
-      border-radius: 14px;
-      padding: 15px;
-      color: #b51f1f;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .signal-card {
-      border-radius: 16px;
-      padding: 15px;
-      margin-top: 12px;
-      background: #f5f7fa;
-    }
-
-    .signal-card.high {
-      border-left: 5px solid #d62828;
-    }
-
-    .signal-card.medium {
-      border-left: 5px solid #e09b00;
-    }
-
-    .signal-stock {
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .signal-priority {
-      display: inline-block;
-      padding: 4px 9px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      background: #e9edf3;
-    }
-
-    .signal-card.high .signal-priority {
-      background: #fde4e4;
-      color: #b51f1f;
-    }
-
-    .signal-card.medium .signal-priority {
-      background: #fff1cc;
-      color: #946400;
-    }
-
-    .signal-metrics {
-      display: grid;
-      grid-template-columns:
-        repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .signal-metric {
-      background: white;
-      border-radius: 10px;
-      padding: 9px;
-    }
-
-    .signal-metric-label {
-      font-size: 11px;
-      color: #7a8495;
-      margin-bottom: 3px;
-    }
-
-    .signal-metric-value {
-      font-size: 16px;
-      font-weight: 800;
-    }
-
-    .signal-list {
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.7;
-    }
-
-    .stock-card {
-      background: white;
-      border-radius: 24px;
-      padding: 22px;
-      margin-bottom: 18px;
-      box-shadow:
-        0 8px 25px rgba(20, 30, 50, 0.06);
-    }
-
-    .stock-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .stock-name {
-      font-size: 23px;
-      font-weight: 800;
-      line-height: 1.3;
-    }
-
-    .price-area {
-      text-align: right;
-      flex-shrink: 0;
-    }
-
-    .price {
-      font-size: 27px;
-      font-weight: 800;
-    }
-
-    .change {
-      font-size: 17px;
-      font-weight: 800;
-      margin-top: 2px;
-    }
-
-    .up {
-      color: #16833b;
-    }
-
-    .down {
-      color: #c62828;
-    }
-
-    .flat {
-      color: #687386;
-    }
-
-    .mood-box {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f4f6f9;
-      border-radius: 18px;
-      padding: 16px 18px;
-      margin-bottom: 12px;
-    }
-
-    .mood-label {
-      font-size: 14px;
-      color: #788293;
-      margin-bottom: 4px;
-    }
-
-    .mood-name {
-      font-size: 20px;
-      font-weight: 800;
-    }
-
-    .mood-number {
-      font-size: 40px;
-      font-weight: 900;
-    }
-
-    .mood-positive {
-      color: #16833b;
-    }
-
-    .mood-negative {
-      color: #c62828;
-    }
-
-    .mood-neutral {
-      color: #687386;
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns:
-        repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .metric {
-      background: #f7f8fa;
-      border-radius: 15px;
-      padding: 14px;
-    }
-
-    .metric-label {
-      font-size: 13px;
-      color: #788293;
-      margin-bottom: 5px;
-    }
-
-    .metric-value {
-      font-size: 20px;
-      font-weight: 800;
-    }
-
-    .sentiment-title {
-      font-size: 14px;
-      color: #788293;
-      margin-bottom: 8px;
-    }
-
-    .sentiment-bar {
-      display: flex;
-      width: 100%;
-      height: 23px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: #ddd;
-    }
-
-    .negative-bar {
-      background: #d94b4b;
-    }
-
-    .positive-bar {
-      background: #3d82e8;
-    }
-
-    .sentiment-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      margin-top: 7px;
-      color: #687386;
-    }
-
-    .status {
-      margin-top: 14px;
-      background: #f4f6f9;
-      border-radius: 13px;
-      padding: 12px 14px;
-      font-weight: 700;
-      color: #687386;
-    }
-
-    .error-box {
-      background: #fff0f0;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 18px;
-      color: #b51f1f;
-      line-height: 1.6;
-    }
-
-    .footer {
-      text-align: center;
-      color: #8a93a2;
-      font-size: 12px;
-      line-height: 1.7;
-      padding: 12px;
-    }
-
-    @media (max-width: 520px) {
-
-      body {
-        padding: 14px 10px 30px;
-      }
-
-      .stock-card {
-        padding: 18px;
-      }
-
-      .stock-name {
-        font-size: 20px;
-      }
-
-      .price {
-        font-size: 23px;
-      }
-
-      .signal-metrics {
-        grid-template-columns:
-          repeat(3, 1fr);
-      }
-
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MoodScope</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:18px 12px 40px;background:#f4f6f9;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+.container{max-width:760px;margin:auto}
+.header{padding:10px 4px 22px}
+.title{font-size:34px;font-weight:800}
+.subtitle{font-size:15px;color:#687386;margin-top:5px}
+.box{background:#fff;border-radius:22px;padding:20px;margin-bottom:18px;box-shadow:0 8px 25px rgba(20,30,50,.06)}
+.box-title{font-size:20px;font-weight:800;margin-bottom:14px}
+.summary-label{font-size:14px;color:#7a8495}
+.summary-value{font-size:28px;font-weight:800;margin-top:5px}
+.signal{background:#f5f7fa;border-radius:16px;padding:15px;margin-top:12px}
+.signal.high{border-left:5px solid #d62828}
+.signal.medium{border-left:5px solid #e09b00}
+.signal-name{font-size:18px;font-weight:800;margin-bottom:8px}
+.badge{display:inline-block;background:#e9edf3;border-radius:8px;padding:4px 9px;font-size:12px;font-weight:700;margin-bottom:10px}
+.high .badge{background:#fde4e4;color:#b51f1f}
+.medium .badge{background:#fff1cc;color:#946400}
+.signal-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.signal-metric{background:#fff;border-radius:10px;padding:9px}
+.small{font-size:11px;color:#7a8495}
+.big{font-size:16px;font-weight:800;margin-top:3px}
+.signal-list{font-size:14px;font-weight:700;line-height:1.7;margin-top:10px}
+.stock{background:#fff;border-radius:24px;padding:20px;margin-bottom:18px;box-shadow:0 8px 25px rgba(20,30,50,.06)}
+.stock-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:16px}
+.name{font-size:22px;font-weight:800}
+.price{text-align:right;font-size:25px;font-weight:800}
+.change{text-align:right;font-size:16px;font-weight:800;margin-top:3px}
+.up{color:#16833b}.down{color:#c62828}.flat{color:#687386}
+.mood{display:flex;justify-content:space-between;align-items:center;background:#f4f6f9;border-radius:18px;padding:15px 18px;margin-bottom:12px}
+.mood-label{font-size:13px;color:#788293}
+.mood-name{font-size:20px;font-weight:800;margin-top:3px}
+.mood-number{font-size:40px;font-weight:900}
+.positive{color:#16833b}.negative{color:#c62828}.neutral{color:#687386}
+.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:14px}
+.metric{background:#f7f8fa;border-radius:14px;padding:12px}
+.metric-label{font-size:12px;color:#788293}
+.metric-value{font-size:19px;font-weight:800;margin-top:4px}
+.sent-title{font-size:13px;color:#788293;margin-bottom:7px}
+.bar{height:22px;border-radius:99px;overflow:hidden;display:flex;background:#ddd}
+.neg{background:#d94b4b}.pos{background:#3d82e8}
+.labels{display:flex;justify-content:space-between;font-size:12px;color:#687386;margin-top:6px}
+.status{margin-top:12px;background:#f4f6f9;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:700;color:#687386}
+.error{background:#fff0f0;color:#b51f1f;border-radius:15px;padding:14px;line-height:1.6;margin-bottom:18px}
+.footer{text-align:center;color:#8a93a2;font-size:12px;line-height:1.7;padding:10px}
+@media(max-width:520px){
+body{padding:12px 9px 30px}
+.stock{padding:17px}
+.name{font-size:20px}
+.price{font-size:22px}
+}
+</style>
 </head>
 
 <body>
+<div class="container">
+
+<div class="header">
+<div class="title">MoodScope</div>
+<div class="subtitle">SNS投資心理・独自分析</div>
+</div>
+
+<div class="box">
+<div class="summary-label">現在の分析対象</div>
+<div id="count" class="summary-value">読み込み中</div>
+</div>
+
+<div class="box">
+<div class="box-title">独自シグナル</div>
+<div id="signals">読み込み中...</div>
+</div>
+
+<div id="errors"></div>
+<div id="stocks">データを読み込み中...</div>
+
+<div class="footer">
+Yahoo! Finance / Yahoo!リアルタイムを利用<br>
+MoodScope独自分析<br><br>
+最終更新: <span id="updated">--</span>
+</div>
+
+</div>
+
+<script>
+const q="?v="+Date.now();
+
+async function getData(file){
+  const r=await fetch("./data/"+file+q,{cache:"no-store"});
+  if(!r.ok)throw new Error(file+" HTTP "+r.status);
+  return await r.json();
+}
+
+function esc(x){
+  return String(x??"")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function num(x){
+  if(x===null||x===undefined||Number.isNaN(Number(x)))return "--";
+  return Number(x).toLocaleString("ja-JP");
+}
+
+function signed(x){
+  if(x===null||x===undefined||Number.isNaN(Number(x)))return "--";
+  const n=Number(x);
+  return (n>0?"+":"")+n.toLocaleString("ja-JP");
+}
+
+function showError(text){
+  document.getElementById("errors").innerHTML+=
+    '<div class="error">'+esc(text)+'</div>';
+}
+
+async function start(){
+
+  let mood=null;
+  let price=null;
+  let signal=null;
+
+  try{
+    mood=await getData("mood_result.json");
+  }catch(e){
+    showError("Moodデータを読み込めませんでした。");
+  }
+
+  try{
+    price=await getData("price_signal.json");
+  }catch(e){
+    showError("株価データを読み込めませんでした。");
+  }
+
+  try{
+    signal=await getData("signals.json");
+  }catch(e){
+    showError("シグナルデータを読み込めませんでした。");
+  }
+
+  if(mood){
+    drawStocks(mood,price);
+    document.getElementById("count").textContent=
+      (mood.stocks||[]).length+"銘柄";
+  }else{
+    document.getElementById("count").textContent="読み込み失敗";
+    document.getElementById("stocks").innerHTML="";
+  }
+
+  if(signal){
+    drawSignals(signal);
+  }else{
+    document.getElementById("signals").innerHTML=
+      '<div class="error">シグナルデータを読み込めませんでした。</div>';
+  }
 
-  <div class="container">
+  const updated=
+    (mood&&mood.updatedAt)||
+    (signal&&signal.updatedAt)||
+    (price&&price.updatedAt);
 
-    <div class="header">
-      <div class="title">
-        MoodScope
-      </div>
+  if(updated){
+    document.getElementById("updated").textContent=
+      new Date(updated).toLocaleString("ja-JP");
+  }
+}
 
-      <div class="subtitle">
-        SNS投資心理・独自分析
-      </div>
-    </div>
+function drawSignals(data){
 
+  const list=(data.stocks||[])
+    .filter(x=>Array.isArray(x.signals)&&x.signals.length);
 
-    <div class="summary">
+  if(!list.length){
+    document.getElementById("signals").innerHTML=
+      '<div class="signal">現在、該当する独自シグナルはありません。</div>';
+    return;
+  }
 
-      <div class="summary-title">
-        現在の分析対象
-      </div>
+  const rank={高:3,中:2,通常:1};
 
-      <div
-        class="summary-value"
-        id="stockCount"
-      >
-        読み込み中
-      </div>
+  list.sort((a,b)=>
+    (rank[b.priority]||0)-(rank[a.priority]||0)
+  );
 
-    </div>
+  document.getElementById("signals").innerHTML=
+    list.map(x=>{
 
-
-    <div class="signal-panel">
-
-      <div class="signal-title">
-        独自シグナル
-      </div>
-
-      <div
-        id="signalArea"
-        class="signal-empty"
-      >
-        シグナルを読み込み中...
-      </div>
-
-    </div>
-
-
-    <div id="errorArea"></div>
-
-
-    <div id="stocks">
-
-      <div class="summary">
-        データを読み込み中...
-      </div>
-
-    </div>
-
-
-    <div class="footer">
-
-      Yahoo! Finance / Yahoo!リアルタイムを利用
-      <br>
-
-      MoodScope独自分析
-
-      <br><br>
-
-      最終更新:
-      <span id="updatedAt">
-        --
-      </span>
-
-    </div>
-
-  </div>
-
-
-  <script>
-
-    /*
-      MoodScope
-      データ読み込み
-
-      3つのJSONを個別に読み込む。
-      1つのファイルが失敗しても、
-      他のデータまで巻き込んで停止しない。
-    */
-
-
-    const timestamp = Date.now();
-
-
-    const moodUrl =
-      "./data/mood_result.json?ts=" +
-      timestamp;
-
-
-    const priceUrl =
-      "./data/price_signal.json?ts=" +
-      timestamp;
-
-
-    const signalUrl =
-      "./data/signals.json?ts=" +
-      timestamp;
-
-
-    let moodData = null;
-    let priceData = null;
-    let signalData = null;
-
-
-    async function loadJson(
-      url,
-      name
-    ) {
-
-      try {
-
-        const response =
-          await fetch(url, {
-            cache: "no-store"
-          });
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            name +
-            " HTTP " +
-            response.status
-          );
-
-        }
-
-
-        return await response.json();
-
-      } catch (error) {
-
-        console.error(
-          name,
-          error
-        );
-
-        showError(
-          name +
-          " の読み込みに失敗しました。"
-        );
-
-        return null;
-
-      }
-
-    }
-
-
-    async function loadAllData() {
-
-      /*
-        3つを順番に処理する。
-        Promise.allは使わない。
-      */
-
-
-      moodData =
-        await loadJson(
-          moodUrl,
-          "mood_result.json"
-        );
-
-
-      priceData =
-        await loadJson(
-          priceUrl,
-          "price_signal.json"
-        );
-
-
-      signalData =
-        await loadJson(
-          signalUrl,
-          "signals.json"
-        );
-
-
-      /*
-        少なくともMoodデータがあれば
-        銘柄カードを表示する。
-      */
-
-
-      if (moodData) {
-
-        renderStocks();
-
-        updateSummary();
-
-        updateUpdatedAt();
-
-      } else {
-
-        document
-          .getElementById(
-            "stocks"
-          )
-          .innerHTML = `
-            <div class="error-box">
-              Moodデータを読み込めませんでした。
-            </div>
-          `;
-
-      }
-
-
-      /*
-        Signalデータがあれば表示。
-      */
-
-
-      if (signalData) {
-
-        renderSignals();
-
-      } else {
-
-        document
-          .getElementById(
-            "signalArea"
-          )
-          .innerHTML = `
-            <div class="signal-error">
-              シグナルデータを読み込めませんでした。
-            </div>
-          `;
-
-      }
-
-    }
-
-
-    function showError(
-      message
-    ) {
-
-      const area =
-        document.getElementById(
-          "errorArea"
-        );
-
-
-      const existing =
-        area.innerHTML;
-
-
-      area.innerHTML =
-        existing +
-        `
-          <div class="error-box">
-            ${escapeHtml(
-              message
-            )}
-          </div>
-        `;
-
-    }
-
-
-    function updateSummary() {
-
-      const stocks =
-        moodData &&
-        Array.isArray(
-          moodData.stocks
-        )
-          ? moodData.stocks
-          : [];
-
-
-      document
-        .getElementById(
-          "stockCount"
-        )
-        .textContent =
-        stocks.length +
-        "銘柄";
-
-    }
-
-
-    function updateUpdatedAt() {
-
-      let updated =
-        null;
-
-
-      if (
-        moodData &&
-        moodData.updatedAt
-      ) {
-
-        updated =
-          moodData.updatedAt;
-
-      } else if (
-        signalData &&
-        signalData.updatedAt
-      ) {
-
-        updated =
-          signalData.updatedAt;
-
-      } else if (
-        priceData &&
-        priceData.updatedAt
-      ) {
-
-        updated =
-          priceData.updatedAt;
-
-      }
-
-
-      if (!updated) {
-
-        return;
-
-      }
-
-
-      const date =
-        new Date(
-          updated
-        );
-
-
-      document
-        .getElementById(
-          "updatedAt"
-        )
-        .textContent =
-        date.toLocaleString(
-          "ja-JP"
-        );
-
-    }
-
-
-    function renderSignals() {
-
-      const area =
-        document.getElementById(
-          "signalArea"
-        );
-
-
-      const signals =
-        signalData &&
-        Array.isArray(
-          signalData.stocks
-        )
-          ? signalData.stocks
-          : [];
-
-
-      const active =
-        signals
-          .filter(
-            stock =>
-              Array.isArray(
-                stock.signals
-              ) &&
-              stock.signals.length > 0
-          )
-          .sort(
-            (a, b) => {
-
-              const rank = {
-                "高": 3,
-                "中": 2,
-                "通常": 1
-              };
-
-
-              return (
-                (rank[b.priority] || 0) -
-                (rank[a.priority] || 0)
-              );
-
-            }
-          );
-
-
-      if (
-        active.length === 0
-      ) {
-
-        area.innerHTML = `
-          <div class="signal-empty">
-            現在、該当する独自シグナルはありません。
-          </div>
-        `;
-
-        return;
-
-      }
-
-
-      area.innerHTML =
-        active
-          .map(
-            stock => {
-
-              const priorityClass =
-                stock.priority === "高"
-                  ? "high"
-                  : stock.priority === "中"
-                    ? "medium"
-                    : "";
-
-
-              const mood =
-                formatNumber(
-                  stock.currentMood
-                );
-
-
-              const moodChange =
-                formatSignedNumber(
-                  stock.moodChange
-                );
-
-
-              const priceChange =
-                formatSignedNumber(
-                  stock.priceChangePct
-                );
-
-
-              const signalList =
-                Array.isArray(
-                  stock.signals
-                )
-                  ? stock.signals
-                      .map(
-                        signal =>
-                          "・" +
-                          escapeHtml(
-                            signal
-                          )
-                      )
-                      .join("<br>")
-                  : "";
-
-
-              return `
-                <div
-                  class="signal-card ${priorityClass}"
-                >
-
-                  <div class="signal-stock">
-                    ${escapeHtml(
-                      stock.keyword
-                    )}
-                  </div>
-
-                  <div class="signal-priority">
-                    優先度：
-                    ${escapeHtml(
-                      stock.priority ||
-                      "通常"
-                    )}
-                  </div>
-
-                  <div class="signal-metrics">
-
-                    <div class="signal-metric">
-
-                      <div class="signal-metric-label">
-                        Mood
-                      </div>
-
-                      <div class="signal-metric-value">
-                        ${mood}
-                      </div>
-
-                    </div>
-
-
-                    <div class="signal-metric">
-
-                      <div class="signal-metric-label">
-                        Mood変化
-                      </div>
-
-                      <div class="signal-metric-value">
-                        ${moodChange}
-                      </div>
-
-                    </div>
-
-
-                    <div class="signal-metric">
-
-                      <div class="signal-metric-label">
-                        株価変化
-                      </div>
-
-                      <div class="signal-metric-value">
-                        ${priceChange}%
-                      </div>
-
-                    </div>
-
-                  </div>
-
-
-                  <div class="signal-list">
-                    ${signalList}
-                  </div>
-
-                </div>
-              `;
-
-            }
-          )
-          .join("");
-
-    }
-
-
-    function renderStocks() {
-
-      const container =
-        document.getElementById(
-          "stocks"
-        );
-
-
-      const moods =
-        moodData &&
-        Array.isArray(
-          moodData.stocks
-        )
-          ? moodData.stocks
-          : [];
-
-
-      const prices =
-        priceData &&
-        Array.isArray(
-          priceData.stocks
-        )
-          ? priceData.stocks
-          : [];
-
-
-      if (
-        moods.length === 0
-      ) {
-
-        container.innerHTML = `
-          <div class="error-box">
-            株式データがありません。
-          </div>
-        `;
-
-        return;
-
-      }
-
-
-      const priceMap =
-        new Map();
-
-
-      prices.forEach(
-        price => {
-
-          priceMap.set(
-            price.keyword,
-            price
-          );
-
-        }
-      );
-
-
-      const stocks =
-        moods.map(
-          mood => {
-
-            const price =
-              priceMap.get(
-                mood.keyword
-              );
-
-
-            return {
-              ...mood,
-
-              price:
-                price
-                  ? price.close
-                  : null,
-
-              changePct:
-                price
-                  ? price.changePct
-                  : null,
-
-              direction:
-                price
-                  ? price.direction
-                  : null
-
-            };
-
-          }
-        );
-
-
-      container.innerHTML =
-        stocks
-          .map(
-            stock =>
-              createStockCard(
-                stock
-              )
-          )
-          .join("");
-
-    }
-
-
-    function createStockCard(
-      stock
-    ) {
-
-      const mood =
-        stock.mood ??
-        null;
-
-
-      const label =
-        stock.label ||
-        "判定不可";
-
-
-      const price =
-        stock.price;
-
-
-      const changePct =
-        stock.changePct;
-
-
-      const negative =
-        Number(
-          stock.negative ??
-          0
-        );
-
-
-      const positive =
-        Number(
-          stock.positive ??
-          0
-        );
-
-
-      const total =
-        negative +
-        positive;
-
-
-      let negativeWidth =
-        50;
-
-
-      let positiveWidth =
-        50;
-
-
-      if (
-        total > 0
-      ) {
-
-        negativeWidth =
-          negative /
-          total *
-          100;
-
-
-        positiveWidth =
-          positive /
-          total *
-          100;
-
-      }
-
-
-      const moodClass =
-        mood === null
-          ? "mood-neutral"
-          : mood > 0
-            ? "mood-positive"
-            : mood < 0
-              ? "mood-negative"
-              : "mood-neutral";
-
-
-      const changeClass =
-        changePct === null ||
-        changePct === undefined
-          ? "flat"
-          : changePct > 0
-            ? "up"
-            : changePct < 0
-              ? "down"
-              : "flat";
-
-
-      const priceText =
-        price === null ||
-        price === undefined
-          ? "--"
-          : Number(
-              price
-            ).toLocaleString(
-              "ja-JP"
-            ) +
-            "円";
-
-
-      const changeText =
-        changePct === null ||
-        changePct === undefined
-          ? "--"
-          : (
-              changePct > 0
-                ? "+"
-                : ""
-            ) +
-            Number(
-              changePct
-            ).toFixed(2) +
-            "%";
-
-
-      const moodText =
-        mood === null ||
-        mood === undefined
-          ? "--"
-          : mood;
-
-
-      const postsText =
-        stock.posts24h === null ||
-        stock.posts24h === undefined
-          ? "--"
-          : Number(
-              stock.posts24h
-            ).toLocaleString(
-              "ja-JP"
-            );
-
-
-      const heatText =
-        stock.heat === null ||
-        stock.heat === undefined
-          ? "蓄積中"
-          : stock.heat;
-
-
-      const baselineText =
-        stock.baselinePosts24h === null ||
-        stock.baselinePosts24h === undefined
-          ? "--"
-          : Number(
-              stock.baselinePosts24h
-            ).toLocaleString(
-              "ja-JP"
-            );
-
-
-      const confidenceText =
-        stock.confidence === null ||
-        stock.confidence === undefined
-          ? "--"
-          : Number(
-              stock.confidence
-            ).toFixed(3);
-
+      const cls=
+        x.priority==="高"?"high":
+        x.priority==="中"?"medium":"";
 
       return `
-        <div class="stock-card">
+      <div class="signal ${cls}">
+        <div class="signal-name">${esc(x.keyword)}</div>
+        <div class="badge">優先度：${esc(x.priority)}</div>
 
-          <div class="stock-header">
+        <div class="signal-metrics">
 
-            <div class="stock-name">
-              ${escapeHtml(
-                stock.keyword
-              )}
-            </div>
-
-
-            <div class="price-area">
-
-              <div class="price">
-                ${priceText}
-              </div>
-
-              <div
-                class="change ${changeClass}"
-              >
-                ${changeText}
-              </div>
-
-            </div>
-
+          <div class="signal-metric">
+            <div class="small">Mood</div>
+            <div class="big">${num(x.currentMood)}</div>
           </div>
 
-
-          <div class="mood-box">
-
-            <div>
-
-              <div class="mood-label">
-                SNS Mood
-              </div>
-
-              <div class="mood-name">
-                ${escapeHtml(
-                  label
-                )}
-              </div>
-
-            </div>
-
-
-            <div
-              class="mood-number ${moodClass}"
-            >
-              ${moodText}
-            </div>
-
+          <div class="signal-metric">
+            <div class="small">Mood変化</div>
+            <div class="big">${signed(x.moodChange)}</div>
           </div>
 
+          <div class="signal-metric">
+            <div class="small">株価変化</div>
+            <div class="big">${signed(x.priceChangePct)}%</div>
+          </div>
 
-          <div class="metrics">
+        </div>
 
-            <div class="metric">
+        <div class="signal-list">
+          ${x.signals.map(s=>"・"+esc(s)).join("<br>")}
+        </div>
+      </div>`;
+    }).join("");
+}
 
-              <div class="metric-label">
-                24時間投稿数
-              </div>
+function drawStocks(mood,price){
 
-              <div class="metric-value">
-                ${postsText}
-              </div>
+  const prices=new Map(
+    (price&&price.stocks||[])
+      .map(x=>[x.keyword,x])
+  );
 
+  const list=mood.stocks||[];
+
+  document.getElementById("stocks").innerHTML=
+    list.map(x=>{
+
+      const p=prices.get(x.keyword)||{};
+      const change=p.changePct;
+      const moodValue=x.mood;
+
+      const changeClass=
+        change>0?"up":
+        change<0?"down":"flat";
+
+      const moodClass=
+        moodValue>0?"positive":
+        moodValue<0?"negative":"neutral";
+
+      const priceText=
+        p.close===undefined
+        ?"--"
+        :Number(p.close).toLocaleString("ja-JP")+"円";
+
+      const changeText=
+        change===undefined
+        ?"--"
+        :(change>0?"+":"")+Number(change).toFixed(2)+"%";
+
+      const neg=Number(x.negative||0);
+      const pos=Number(x.positive||0);
+      const total=neg+pos;
+
+      const negWidth=
+        total?neg/total*100:50;
+
+      const posWidth=
+        total?pos/total*100:50;
+
+      const posts=
+        x.posts24h===undefined
+        ?"--"
+        :Number(x.posts24h).toLocaleString("ja-JP");
+
+      const heat=
+        x.heat===null||x.heat===undefined
+        ?"蓄積中"
+        :x.heat;
+
+      const base=
+        x.baselinePosts24h===null||
+        x.baselinePosts24h===undefined
+        ?"--"
+        :Number(x.baselinePosts24h).toLocaleString("ja-JP");
+
+      const conf=
+        x.confidence===null||
+        x.confidence===undefined
+        ?"--"
+        :Number(x.confidence).toFixed(3);
+
+      return `
+      <div class="stock">
+
+        <div class="stock-head">
+          <div class="name">${esc(x.keyword)}</div>
+          <div>
+            <div class="price">${priceText}</div>
+            <div class="change ${changeClass}">
+              ${changeText}
             </div>
+          </div>
+        </div>
 
+        <div class="mood">
+          <div>
+            <div class="mood-label">SNS Mood</div>
+            <div class="mood-name">${esc(x.label||"判定不可")}</div>
+          </div>
+          <div class="mood-number ${moodClass}">
+            ${moodValue===undefined?"--":moodValue}
+          </div>
+        </div>
 
-            <div class="metric">
+        <div class="metrics">
 
-              <div class="
+          <div class="metric">
+            <div class="metric-label">24時間投稿数</div>
+            <div class="metric-value">${posts}</div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">Heat</div>
+            <div class="metric-value">${heat}</div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">基準投稿数</div>
+            <div class="metric-value">${base}</div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">Confidence</div>
+            <div class="metric-value">${conf}</div>
+          </div>
+
+        </div>
+
+        <div class="sent-title">
+          Yahoo! 24時間センチメント
+        </div>
+
+        <div class="bar">
+          <div class="neg" style="width:${negWidth}%"></div>
+          <div class="pos" style="width:${posWidth}%"></div>
+        </div>
+
+        <div class="labels">
+          <span>悲観 ${neg}%</span>
+          <span>楽観 ${pos}%</span>
+        </div>
+
+        <div class="status">
+          ${esc(x.status||"計算済み")}
+        </div>
+
+      </div>`;
+    }).join("");
+}
+
+start();
+</script>
+
+</body>
+</html>

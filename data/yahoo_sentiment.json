@@ -1,29 +1,29 @@
 {
-  "updatedAt": "2026-10-08T11:14:34.729Z",
+  "updatedAt": "2026-10-08T14:11:26.757Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-10-08",
-      "negative": 69,
-      "positive": 31
+      "negative": 62,
+      "positive": 38
     },
     {
       "keyword": "ソフトバンクグループ",
       "date": "2026-10-08",
-      "negative": 74,
-      "positive": 26
+      "negative": 75,
+      "positive": 25
     },
     {
       "keyword": "メタプラネット",
       "date": "2026-10-08",
-      "negative": 38,
-      "positive": 62
+      "negative": 43,
+      "positive": 57
     },
     {
       "keyword": "データセクション",
       "date": "2026-10-08",
-      "negative": 70,
-      "positive": 30
+      "negative": 72,
+      "positive": 28
     },
     {
       "keyword": "キオクシア",
@@ -58,8 +58,8 @@
     {
       "keyword": "アストロスケール",
       "date": "2026-10-08",
-      "negative": 69,
-      "positive": 31
+      "negative": 77,
+      "positive": 23
     }
   ]
 }

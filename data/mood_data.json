@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-10-08T10:52:25.463Z",
+  "updatedAt": "2026-10-08T11:11:07.969Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-10-08",
-      "posts24h": 49,
+      "posts24h": 50,
       "baselinePosts24h": 93,
-      "heat": 27,
+      "heat": 28,
       "status": "計算済み"
     },
     {
       "keyword": "ソフトバンクグループ",
       "date": "2026-10-08",
-      "posts24h": 179,
+      "posts24h": 181,
       "baselinePosts24h": 136,
       "heat": 60,
       "status": "計算済み"
@@ -20,7 +20,7 @@
     {
       "keyword": "メタプラネット",
       "date": "2026-10-08",
-      "posts24h": 259,
+      "posts24h": 258,
       "baselinePosts24h": 207,
       "heat": 58,
       "status": "計算済み"
@@ -28,15 +28,15 @@
     {
       "keyword": "データセクション",
       "date": "2026-10-08",
-      "posts24h": 175,
+      "posts24h": 174,
       "baselinePosts24h": 142,
-      "heat": 58,
+      "heat": 57,
       "status": "計算済み"
     },
     {
       "keyword": "キオクシア",
       "date": "2026-10-08",
-      "posts24h": 3961,
+      "posts24h": 3948,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"
@@ -44,7 +44,7 @@
     {
       "keyword": "任天堂",
       "date": "2026-10-08",
-      "posts24h": 1388,
+      "posts24h": 1392,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"
@@ -68,7 +68,7 @@
     {
       "keyword": "三菱電機",
       "date": "2026-10-08",
-      "posts24h": 119,
+      "posts24h": 120,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"
@@ -76,7 +76,7 @@
     {
       "keyword": "アストロスケール",
       "date": "2026-10-08",
-      "posts24h": 117,
+      "posts24h": 116,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"

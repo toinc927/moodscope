@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-08T10:54:04.076Z",
+  "updatedAt": "2026-10-08T11:14:34.910Z",
   "stocks": [
     {
       "keyword": "ファナック",
@@ -22,10 +22,10 @@
     {
       "keyword": "メタプラネット",
       "currentDate": "2026-10-08",
-      "currentMood": 20,
+      "currentMood": 24,
       "previousDate": "2026-10-07",
       "previousMood": 8,
-      "change": 12,
+      "change": 16,
       "status": "計算済み"
     },
     {

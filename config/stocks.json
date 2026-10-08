@@ -1,42 +1,70 @@
 [
   {
     "keyword": "ファナック",
-    "symbol": "6954.T"
+    "symbol": "6954.T",
+    "aliases": []
   },
   {
     "keyword": "ソフトバンクグループ",
-    "symbol": "9984.T"
+    "symbol": "9984.T",
+    "aliases": [
+      "ソフバン",
+      "ソフトバンクG"
+    ]
   },
   {
     "keyword": "メタプラネット",
-    "symbol": "3350.T"
+    "symbol": "3350.T",
+    "aliases": [
+      "メタプラ"
+    ]
   },
   {
     "keyword": "データセクション",
-    "symbol": "3905.T"
+    "symbol": "3905.T",
+    "aliases": [
+      "データセク",
+      "デーセク"
+    ]
   },
   {
     "keyword": "キオクシア",
-    "symbol": "285A.T"
+    "symbol": "285A.T",
+    "aliases": []
   },
   {
     "keyword": "任天堂",
-    "symbol": "7974.T"
+    "symbol": "7974.T",
+    "aliases": []
   },
   {
     "keyword": "信越化学工業",
-    "symbol": "4063.T"
+    "symbol": "4063.T",
+    "aliases": [
+      "信越化学",
+      "信越化"
+    ]
   },
   {
     "keyword": "三菱重工業",
-    "symbol": "7011.T"
+    "symbol": "7011.T",
+    "aliases": [
+      "三菱重工",
+      "三菱重"
+    ]
   },
   {
     "keyword": "三菱電機",
-    "symbol": "6503.T"
+    "symbol": "6503.T",
+    "aliases": [
+      "三菱電"
+    ]
   },
   {
     "keyword": "アストロスケール",
-    "symbol": "186A.T"
+    "symbol": "186A.T",
+    "aliases": [
+      "アストロ"
+    ]
   }
 ]

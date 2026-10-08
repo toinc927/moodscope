@@ -1,26 +1,21 @@
 import { chromium } from "playwright";
 import fs from "fs";
 
-const stocks = [
-  {
-    keyword: "ファナック"
-  },
-  {
-    keyword: "ソフトバンクグループ"
-  },
-  {
-    keyword: "メタプラネット"
-  },
-  {
-    keyword: "データセクション"
-  }
-];
-
+const configPath = "./config/stocks.json";
 const outputPath = "./data/yahoo_sentiment.json";
+
+const stocks = JSON.parse(
+  fs.readFileSync(configPath, "utf8")
+);
 
 console.log("====================================");
 console.log("Yahoo 24-hour sentiment fetch");
 console.log("====================================");
+
+console.log(
+  "stocks:",
+  stocks.length
+);
 
 const browser = await chromium.launch({
   headless: true

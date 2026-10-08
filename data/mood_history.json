@@ -7,7 +7,7 @@
       "label": "警戒",
       "negative": 77,
       "positive": 23,
-      "posts24h": 116,
+      "posts24h": 600,
       "heat": null,
       "confidence": 0.55
     },
@@ -18,7 +18,7 @@
       "label": "警戒",
       "negative": 68,
       "positive": 32,
-      "posts24h": 3948,
+      "posts24h": 200,
       "heat": null,
       "confidence": 0.55
     },
@@ -51,8 +51,8 @@
       "label": "警戒",
       "negative": 75,
       "positive": 25,
-      "posts24h": 181,
-      "heat": 60,
+      "posts24h": 439,
+      "heat": 92,
       "confidence": 1
     },
     {
@@ -84,8 +84,8 @@
       "label": "警戒",
       "negative": 72,
       "positive": 28,
-      "posts24h": 174,
-      "heat": 57,
+      "posts24h": 670,
+      "heat": 100,
       "confidence": 1
     },
     {
@@ -113,13 +113,13 @@
     {
       "keyword": "ファナック",
       "date": "2026-10-08",
-      "mood": -21,
+      "mood": -24,
       "label": "警戒",
       "negative": 62,
       "positive": 38,
-      "posts24h": 50,
-      "heat": 28,
-      "confidence": 0.88
+      "posts24h": 541,
+      "heat": 100,
+      "confidence": 1
     },
     {
       "keyword": "メタプラネット",
@@ -146,13 +146,13 @@
     {
       "keyword": "メタプラネット",
       "date": "2026-10-08",
-      "mood": 14,
+      "mood": 15,
       "label": "中立",
-      "negative": 43,
-      "positive": 57,
-      "posts24h": 258,
-      "heat": 58,
-      "confidence": 1
+      "negative": 42,
+      "positive": 58,
+      "posts24h": 175,
+      "heat": 44,
+      "confidence": 0.964
     },
     {
       "keyword": "三菱重工業",
@@ -161,7 +161,7 @@
       "label": "中立",
       "negative": 50,
       "positive": 50,
-      "posts24h": 91,
+      "posts24h": 681,
       "heat": null,
       "confidence": 0.55
     },
@@ -172,7 +172,7 @@
       "label": "中立",
       "negative": 67,
       "positive": 33,
-      "posts24h": 120,
+      "posts24h": 109,
       "heat": null,
       "confidence": 0.55
     },
@@ -183,7 +183,7 @@
       "label": "中立",
       "negative": 48,
       "positive": 52,
-      "posts24h": 1392,
+      "posts24h": 185,
       "heat": null,
       "confidence": 0.55
     },
@@ -194,10 +194,10 @@
       "label": "楽観",
       "negative": 0,
       "positive": 100,
-      "posts24h": 735,
+      "posts24h": 1127,
       "heat": null,
       "confidence": 0.55
     }
   ],
-  "updatedAt": "2026-10-08T14:11:26.896Z"
+  "updatedAt": "2026-10-08T14:25:26.771Z"
 }

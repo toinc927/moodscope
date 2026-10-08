@@ -1,17 +1,17 @@
 {
-  "updatedAt": "2026-10-08T14:11:26.832Z",
+  "updatedAt": "2026-10-08T14:25:26.719Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "negative": 62,
       "positive": 38,
       "polarity": -24,
-      "confidence": 0.88,
-      "mood": -21,
+      "confidence": 1,
+      "mood": -24,
       "label": "警戒",
-      "posts24h": 50,
+      "posts24h": 541,
       "baselinePosts24h": 93,
-      "heat": 28,
+      "heat": 100,
       "date": "2026-10-08"
     },
     {
@@ -22,22 +22,22 @@
       "confidence": 1,
       "mood": -50,
       "label": "警戒",
-      "posts24h": 181,
+      "posts24h": 439,
       "baselinePosts24h": 136,
-      "heat": 60,
+      "heat": 92,
       "date": "2026-10-08"
     },
     {
       "keyword": "メタプラネット",
-      "negative": 43,
-      "positive": 57,
-      "polarity": 14,
-      "confidence": 1,
-      "mood": 14,
+      "negative": 42,
+      "positive": 58,
+      "polarity": 16,
+      "confidence": 0.964,
+      "mood": 15,
       "label": "中立",
-      "posts24h": 258,
+      "posts24h": 175,
       "baselinePosts24h": 207,
-      "heat": 58,
+      "heat": 44,
       "date": "2026-10-08"
     },
     {
@@ -48,9 +48,9 @@
       "confidence": 1,
       "mood": -44,
       "label": "警戒",
-      "posts24h": 174,
+      "posts24h": 670,
       "baselinePosts24h": 142,
-      "heat": 57,
+      "heat": 100,
       "date": "2026-10-08"
     },
     {
@@ -61,7 +61,7 @@
       "confidence": 0.55,
       "mood": -20,
       "label": "警戒",
-      "posts24h": 3948,
+      "posts24h": 200,
       "baselinePosts24h": 0,
       "heat": null,
       "date": "2026-10-08"
@@ -74,7 +74,7 @@
       "confidence": 0.55,
       "mood": 2,
       "label": "中立",
-      "posts24h": 1392,
+      "posts24h": 185,
       "baselinePosts24h": 0,
       "heat": null,
       "date": "2026-10-08"
@@ -87,7 +87,7 @@
       "confidence": 0.55,
       "mood": 55,
       "label": "楽観",
-      "posts24h": 735,
+      "posts24h": 1127,
       "baselinePosts24h": 0,
       "heat": null,
       "date": "2026-10-08"
@@ -100,7 +100,7 @@
       "confidence": 0.55,
       "mood": 0,
       "label": "中立",
-      "posts24h": 91,
+      "posts24h": 681,
       "baselinePosts24h": 0,
       "heat": null,
       "date": "2026-10-08"
@@ -113,7 +113,7 @@
       "confidence": 0.55,
       "mood": -19,
       "label": "中立",
-      "posts24h": 120,
+      "posts24h": 109,
       "baselinePosts24h": 0,
       "heat": null,
       "date": "2026-10-08"
@@ -126,7 +126,7 @@
       "confidence": 0.55,
       "mood": -30,
       "label": "警戒",
-      "posts24h": 116,
+      "posts24h": 600,
       "baselinePosts24h": 0,
       "heat": null,
       "date": "2026-10-08"

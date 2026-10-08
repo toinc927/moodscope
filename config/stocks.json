@@ -14,5 +14,29 @@
   {
     "keyword": "データセクション",
     "symbol": "3905.T"
+  },
+  {
+    "keyword": "キオクシア",
+    "symbol": "285A.T"
+  },
+  {
+    "keyword": "任天堂",
+    "symbol": "7974.T"
+  },
+  {
+    "keyword": "信越化学工業",
+    "symbol": "4063.T"
+  },
+  {
+    "keyword": "三菱重工業",
+    "symbol": "7011.T"
+  },
+  {
+    "keyword": "三菱電機",
+    "symbol": "6503.T"
+  },
+  {
+    "keyword": "アストロスケール",
+    "symbol": "186A.T"
   }
 ]

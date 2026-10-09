@@ -1,40 +1,40 @@
 {
-  "updatedAt": "2026-10-08T14:25:26.823Z",
+  "updatedAt": "2026-10-09T14:24:07.392Z",
   "stocks": [
     {
       "keyword": "ファナック",
-      "currentDate": "2026-10-08",
-      "currentMood": -24,
-      "previousDate": "2026-10-07",
-      "previousMood": -6,
-      "change": -18,
+      "currentDate": "2026-10-09",
+      "currentMood": 17,
+      "previousDate": "2026-10-08",
+      "previousMood": -24,
+      "change": 41,
       "status": "計算済み"
     },
     {
       "keyword": "ソフトバンクグループ",
-      "currentDate": "2026-10-08",
-      "currentMood": -50,
-      "previousDate": "2026-10-07",
-      "previousMood": -34,
-      "change": -16,
+      "currentDate": "2026-10-09",
+      "currentMood": -46,
+      "previousDate": "2026-10-08",
+      "previousMood": -50,
+      "change": 4,
       "status": "計算済み"
     },
     {
       "keyword": "メタプラネット",
-      "currentDate": "2026-10-08",
-      "currentMood": 15,
-      "previousDate": "2026-10-07",
-      "previousMood": 8,
-      "change": 7,
+      "currentDate": "2026-10-09",
+      "currentMood": 52,
+      "previousDate": "2026-10-08",
+      "previousMood": 15,
+      "change": 37,
       "status": "計算済み"
     },
     {
       "keyword": "データセクション",
-      "currentDate": "2026-10-08",
-      "currentMood": -44,
-      "previousDate": "2026-10-07",
-      "previousMood": -20,
-      "change": -24,
+      "currentDate": "2026-10-09",
+      "currentMood": -4,
+      "previousDate": "2026-10-08",
+      "previousMood": -44,
+      "change": 40,
       "status": "計算済み"
     }
   ]

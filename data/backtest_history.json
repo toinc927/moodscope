@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-12T12:20:51.407Z",
+  "updatedAt": "2026-10-12T13:08:45.340Z",
   "records": [
     {
       "date": "2026-10-07",
@@ -784,12 +784,13 @@
       "priceChangePct": 5.18,
       "signals": [],
       "priority": "通常",
-      "posts24h": 578,
+      "posts24h": 759,
       "heat": null,
       "negative": 0,
       "positive": 100,
       "nextClose": null,
-      "nextReturnPct": null
+      "nextReturnPct": null,
+      "methodVersion": "v1.0"
     },
     {
       "date": "2026-10-12",
@@ -801,29 +802,31 @@
       "priceChangePct": -2.21,
       "signals": [],
       "priority": "通常",
-      "posts24h": 152,
+      "posts24h": 96,
       "heat": null,
       "negative": 63,
       "positive": 37,
       "nextClose": null,
-      "nextReturnPct": null
+      "nextReturnPct": null,
+      "methodVersion": "v1.0"
     },
     {
       "date": "2026-10-12",
       "keyword": "ソフトバンクグループ",
       "close": 5803,
-      "mood": 24,
+      "mood": 28,
       "label": "楽観",
-      "moodChange": 52,
+      "moodChange": 56,
       "priceChangePct": -3.92,
       "signals": [],
       "priority": "通常",
-      "posts24h": 639,
-      "heat": 100,
-      "negative": 38,
-      "positive": 62,
+      "posts24h": 360,
+      "heat": 80,
+      "negative": 36,
+      "positive": 64,
       "nextClose": null,
-      "nextReturnPct": null
+      "nextReturnPct": null,
+      "methodVersion": "v1.0"
     },
     {
       "date": "2026-10-12",
@@ -839,12 +842,13 @@
         "悲観急変"
       ],
       "priority": "高",
-      "posts24h": 1247,
+      "posts24h": 1119,
       "heat": 100,
       "negative": 67,
       "positive": 33,
       "nextClose": null,
-      "nextReturnPct": null
+      "nextReturnPct": null,
+      "methodVersion": "v1.0"
     },
     {
       "date": "2026-10-12",
@@ -856,80 +860,87 @@
       "priceChangePct": 1.4,
       "signals": [],
       "priority": "通常",
-      "posts24h": 484,
+      "posts24h": 573,
       "heat": 100,
-      "negative": 0,
-      "positive": 0,
+      "negative": 50,
+      "positive": 50,
       "nextClose": null,
-      "nextReturnPct": null
+      "nextReturnPct": null,
+      "methodVersion": "v1.0"
     },
     {
       "date": "2026-10-12",
       "keyword": "メタプラネット",
       "close": 265,
-      "mood": 91,
+      "mood": 76,
       "label": "浮かれてる",
-      "moodChange": -9,
+      "moodChange": -24,
       "priceChangePct": 2.71,
-      "signals": [],
-      "priority": "通常",
-      "posts24h": 145,
-      "heat": 33,
-      "negative": 0,
-      "positive": 100,
+      "signals": [
+        "Mood急落"
+      ],
+      "priority": "中",
+      "posts24h": 408,
+      "heat": 71,
+      "negative": 12,
+      "positive": 88,
       "nextClose": null,
-      "nextReturnPct": null
+      "nextReturnPct": null,
+      "methodVersion": "v1.0"
     },
     {
       "date": "2026-10-12",
       "keyword": "三菱重工業",
       "close": 3669,
-      "mood": -33,
+      "mood": -36,
       "label": "警戒",
       "moodChange": null,
       "priceChangePct": -0.3,
       "signals": [],
       "priority": "通常",
-      "posts24h": 298,
+      "posts24h": 766,
       "heat": null,
-      "negative": 80,
-      "positive": 20,
+      "negative": 83,
+      "positive": 17,
       "nextClose": null,
-      "nextReturnPct": null
+      "nextReturnPct": null,
+      "methodVersion": "v1.0"
     },
     {
       "date": "2026-10-12",
       "keyword": "三菱電機",
       "close": 5143,
-      "mood": -26,
-      "label": "警戒",
+      "mood": -13,
+      "label": "中立",
       "moodChange": null,
       "priceChangePct": 1.82,
       "signals": [],
       "priority": "通常",
-      "posts24h": 116,
+      "posts24h": 109,
       "heat": null,
-      "negative": 74,
-      "positive": 26,
+      "negative": 62,
+      "positive": 38,
       "nextClose": null,
-      "nextReturnPct": null
+      "nextReturnPct": null,
+      "methodVersion": "v1.0"
     },
     {
       "date": "2026-10-12",
       "keyword": "任天堂",
       "close": 8146,
-      "mood": 11,
+      "mood": 10,
       "label": "中立",
       "moodChange": null,
       "priceChangePct": 3.76,
       "signals": [],
       "priority": "通常",
-      "posts24h": 182,
+      "posts24h": 113,
       "heat": null,
-      "negative": 40,
-      "positive": 60,
+      "negative": 41,
+      "positive": 59,
       "nextClose": null,
-      "nextReturnPct": null
+      "nextReturnPct": null,
+      "methodVersion": "v1.0"
     },
     {
       "date": "2026-10-12",
@@ -941,12 +952,13 @@
       "priceChangePct": -0.59,
       "signals": [],
       "priority": "通常",
-      "posts24h": 1073,
+      "posts24h": 1042,
       "heat": null,
       "negative": 0,
       "positive": 0,
       "nextClose": null,
-      "nextReturnPct": null
+      "nextReturnPct": null,
+      "methodVersion": "v1.0"
     }
   ]
 }

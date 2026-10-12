@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-12T12:20:51.289Z",
+  "updatedAt": "2026-10-12T13:08:45.230Z",
   "stocks": [
     {
       "keyword": "ファナック",
@@ -13,19 +13,19 @@
     {
       "keyword": "ソフトバンクグループ",
       "currentDate": "2026-10-12",
-      "currentMood": 24,
+      "currentMood": 28,
       "previousDate": "2026-10-11",
       "previousMood": -28,
-      "change": 52,
+      "change": 56,
       "status": "計算済み"
     },
     {
       "keyword": "メタプラネット",
       "currentDate": "2026-10-12",
-      "currentMood": 91,
+      "currentMood": 76,
       "previousDate": "2026-10-11",
       "previousMood": 100,
-      "change": -9,
+      "change": -24,
       "status": "計算済み"
     },
     {

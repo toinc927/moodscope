@@ -3,7 +3,10 @@ import fs from "fs";
 const MOOD_FILE = "./data/mood_result.json";
 const PRICE_FILE = "./data/price_signal.json";
 const SIGNAL_FILE = "./data/signals.json";
+const POSTS_FILE = "./data/yahoo_posts.json";
 const HISTORY_FILE = "./data/backtest_history.json";
+
+const METHOD_VERSION = "v1.0";
 
 function readJson(path, fallback) {
   if (!fs.existsSync(path)) {
@@ -23,6 +26,9 @@ const priceData =
 
 const signalData =
   readJson(SIGNAL_FILE, { stocks: [] });
+
+const postsData =
+  readJson(POSTS_FILE, []);
 
 const oldHistory =
   readJson(HISTORY_FILE, { records: [] });
@@ -50,6 +56,21 @@ const signalMap = new Map(
   )
 );
 
+const postsMap = new Map(
+  (Array.isArray(postsData) ? postsData : [])
+    .filter(
+      row =>
+        row.date &&
+        row.keyword
+    )
+    .map(
+      row => [
+        `${row.date}|${row.keyword}`,
+        row
+      ]
+    )
+);
+
 const keywords = new Set([
   ...moodMap.keys(),
   ...priceMap.keys(),
@@ -62,7 +83,6 @@ const date =
   new Date().toISOString().slice(0, 10);
 
 for (const keyword of keywords) {
-
   const mood =
     moodMap.get(keyword) || {};
 
@@ -72,9 +92,17 @@ for (const keyword of keywords) {
   const signal =
     signalMap.get(keyword) || {};
 
+  const posts =
+    postsMap.get(`${date}|${keyword}`) || {};
+
   const record = {
     date,
     keyword,
+
+    methodVersion:
+      posts.methodVersion === METHOD_VERSION
+        ? METHOD_VERSION
+        : "legacy-or-unknown",
 
     close:
       price.close ?? null,
@@ -126,7 +154,10 @@ for (const keyword of keywords) {
     );
 
   if (index >= 0) {
-    history[index] = record;
+    history[index] = {
+      ...history[index],
+      ...record
+    };
   } else {
     history.push(record);
   }
@@ -141,23 +172,15 @@ history.sort(
 const byKeyword = new Map();
 
 for (const record of history) {
-
   if (!byKeyword.has(record.keyword)) {
-    byKeyword.set(
-      record.keyword,
-      []
-    );
+    byKeyword.set(record.keyword, []);
   }
 
-  byKeyword
-    .get(record.keyword)
-    .push(record);
+  byKeyword.get(record.keyword).push(record);
 }
 
 for (const records of byKeyword.values()) {
-
   for (let i = 0; i < records.length - 1; i++) {
-
     const current = records[i];
     const next = records[i + 1];
 
@@ -166,9 +189,7 @@ for (const records of byKeyword.values()) {
       next.close !== null &&
       Number(current.close) !== 0
     ) {
-
-      current.nextClose =
-        next.close;
+      current.nextClose = next.close;
 
       current.nextReturnPct =
         Number(
@@ -178,36 +199,35 @@ for (const records of byKeyword.values()) {
             100
           ).toFixed(2)
         );
-
     }
   }
 }
 
 const output = {
-  updatedAt:
-    new Date().toISOString(),
-
+  updatedAt: new Date().toISOString(),
   records: history
 };
 
 fs.writeFileSync(
   HISTORY_FILE,
-  JSON.stringify(
-    output,
-    null,
-    2
-  )
+  JSON.stringify(output, null, 2)
 );
 
-console.log(
-  "BACKTEST HISTORY SAVED"
-);
+console.log("BACKTEST HISTORY SAVED");
+console.log(HISTORY_FILE);
+console.log("records:", history.length);
+
+const versionCounts = {};
+
+for (const record of history) {
+  const version =
+    record.methodVersion || "legacy-or-unknown";
+
+  versionCounts[version] =
+    (versionCounts[version] || 0) + 1;
+}
 
 console.log(
-  HISTORY_FILE
-);
-
-console.log(
-  "records:",
-  history.length
+  "method versions:",
+  JSON.stringify(versionCounts)
 );

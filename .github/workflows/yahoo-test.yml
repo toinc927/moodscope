@@ -1,5 +1,10 @@
 name: Yahoo realtime nightly
 
+# 同じワークフローの同時実行を防ぐ
+concurrency:
+  group: yahoo-realtime-nightly
+  cancel-in-progress: false
+
 on:
   workflow_dispatch:
   schedule:

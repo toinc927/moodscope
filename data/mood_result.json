@@ -1,83 +1,83 @@
 {
-  "updatedAt": "2026-10-11T18:51:51.898Z",
+  "updatedAt": "2026-10-12T12:20:51.170Z",
   "stocks": [
     {
       "keyword": "ファナック",
-      "negative": 67,
-      "positive": 33,
-      "polarity": -34,
+      "negative": 0,
+      "positive": 0,
+      "polarity": 0,
       "confidence": 1,
-      "mood": -34,
-      "label": "警戒",
-      "posts24h": 462,
+      "mood": 0,
+      "label": "中立",
+      "posts24h": 484,
       "baselinePosts24h": 94,
       "heat": 100,
-      "date": "2026-10-11"
+      "date": "2026-10-12"
     },
     {
       "keyword": "ソフトバンクグループ",
-      "negative": 64,
-      "positive": 36,
-      "polarity": -28,
+      "negative": 38,
+      "positive": 62,
+      "polarity": 24,
       "confidence": 1,
-      "mood": -28,
-      "label": "警戒",
-      "posts24h": 1255,
+      "mood": 24,
+      "label": "楽観",
+      "posts24h": 639,
       "baselinePosts24h": 156,
       "heat": 100,
-      "date": "2026-10-11"
+      "date": "2026-10-12"
     },
     {
       "keyword": "メタプラネット",
       "negative": 0,
       "positive": 100,
       "polarity": 100,
-      "confidence": 1,
-      "mood": 100,
+      "confidence": 0.907,
+      "mood": 91,
       "label": "浮かれてる",
-      "posts24h": 509,
+      "posts24h": 145,
       "baselinePosts24h": 231,
-      "heat": 79,
-      "date": "2026-10-11"
+      "heat": 33,
+      "date": "2026-10-12"
     },
     {
       "keyword": "データセクション",
-      "negative": 33,
-      "positive": 67,
-      "polarity": 34,
+      "negative": 67,
+      "positive": 33,
+      "polarity": -34,
       "confidence": 1,
-      "mood": 34,
-      "label": "楽観",
-      "posts24h": 1188,
+      "mood": -34,
+      "label": "警戒",
+      "posts24h": 1247,
       "baselinePosts24h": 187,
       "heat": 100,
-      "date": "2026-10-11"
+      "date": "2026-10-12"
     },
     {
       "keyword": "キオクシア",
-      "negative": 60,
-      "positive": 40,
-      "polarity": -20,
+      "negative": 63,
+      "positive": 37,
+      "polarity": -26,
       "confidence": 0.55,
-      "mood": -11,
+      "mood": -14,
       "label": "中立",
-      "posts24h": 107,
+      "posts24h": 152,
       "baselinePosts24h": 0,
       "heat": null,
-      "date": "2026-10-11"
+      "date": "2026-10-12"
     },
     {
       "keyword": "任天堂",
-      "negative": 45,
-      "positive": 55,
-      "polarity": 10,
+      "negative": 40,
+      "positive": 60,
+      "polarity": 20,
       "confidence": 0.55,
-      "mood": 6,
+      "mood": 11,
       "label": "中立",
-      "posts24h": 117,
+      "posts24h": 182,
       "baselinePosts24h": 0,
       "heat": null,
-      "date": "2026-10-11"
+      "date": "2026-10-12"
     },
     {
       "keyword": "信越化学工業",
@@ -87,36 +87,36 @@
       "confidence": 0.55,
       "mood": 0,
       "label": "中立",
-      "posts24h": 1051,
+      "posts24h": 1073,
       "baselinePosts24h": 0,
       "heat": null,
-      "date": "2026-10-11"
+      "date": "2026-10-12"
     },
     {
       "keyword": "三菱重工業",
-      "negative": 67,
-      "positive": 33,
-      "polarity": -34,
+      "negative": 80,
+      "positive": 20,
+      "polarity": -60,
       "confidence": 0.55,
-      "mood": -19,
-      "label": "中立",
-      "posts24h": 1136,
+      "mood": -33,
+      "label": "警戒",
+      "posts24h": 298,
       "baselinePosts24h": 0,
       "heat": null,
-      "date": "2026-10-11"
+      "date": "2026-10-12"
     },
     {
       "keyword": "三菱電機",
-      "negative": 91,
-      "positive": 9,
-      "polarity": -82,
+      "negative": 74,
+      "positive": 26,
+      "polarity": -48,
       "confidence": 0.55,
-      "mood": -45,
+      "mood": -26,
       "label": "警戒",
-      "posts24h": 88,
+      "posts24h": 116,
       "baselinePosts24h": 0,
       "heat": null,
-      "date": "2026-10-11"
+      "date": "2026-10-12"
     },
     {
       "keyword": "アストロスケール",
@@ -126,10 +126,10 @@
       "confidence": 0.55,
       "mood": 55,
       "label": "楽観",
-      "posts24h": 642,
+      "posts24h": 578,
       "baselinePosts24h": 0,
       "heat": null,
-      "date": "2026-10-11"
+      "date": "2026-10-12"
     }
   ]
 }

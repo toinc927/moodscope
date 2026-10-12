@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-10-11T18:48:00.181Z",
+  "updatedAt": "2026-10-12T12:17:20.307Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-10-12",
-      "posts24h": 462,
+      "posts24h": 484,
       "baselinePosts24h": 94,
       "heat": 100,
       "status": "計算済み"
@@ -12,7 +12,7 @@
     {
       "keyword": "ソフトバンクグループ",
       "date": "2026-10-12",
-      "posts24h": 1255,
+      "posts24h": 639,
       "baselinePosts24h": 156,
       "heat": 100,
       "status": "計算済み"
@@ -20,15 +20,15 @@
     {
       "keyword": "メタプラネット",
       "date": "2026-10-12",
-      "posts24h": 509,
+      "posts24h": 145,
       "baselinePosts24h": 231,
-      "heat": 79,
+      "heat": 33,
       "status": "計算済み"
     },
     {
       "keyword": "データセクション",
       "date": "2026-10-12",
-      "posts24h": 1188,
+      "posts24h": 1247,
       "baselinePosts24h": 187,
       "heat": 100,
       "status": "計算済み"
@@ -36,7 +36,7 @@
     {
       "keyword": "キオクシア",
       "date": "2026-10-12",
-      "posts24h": 107,
+      "posts24h": 152,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"
@@ -44,7 +44,7 @@
     {
       "keyword": "任天堂",
       "date": "2026-10-12",
-      "posts24h": 117,
+      "posts24h": 182,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"
@@ -52,7 +52,7 @@
     {
       "keyword": "信越化学工業",
       "date": "2026-10-12",
-      "posts24h": 1051,
+      "posts24h": 1073,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"
@@ -60,7 +60,7 @@
     {
       "keyword": "三菱重工業",
       "date": "2026-10-12",
-      "posts24h": 1136,
+      "posts24h": 298,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"
@@ -68,7 +68,7 @@
     {
       "keyword": "三菱電機",
       "date": "2026-10-12",
-      "posts24h": 88,
+      "posts24h": 116,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"
@@ -76,7 +76,7 @@
     {
       "keyword": "アストロスケール",
       "date": "2026-10-12",
-      "posts24h": 642,
+      "posts24h": 578,
       "baselinePosts24h": null,
       "heat": null,
       "status": "蓄積中"

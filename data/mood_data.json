@@ -1,84 +1,84 @@
 {
-  "updatedAt": "2026-10-15T13:28:57.363Z",
+  "updatedAt": "2026-10-15T18:10:34.967Z",
   "stocks": [
     {
       "keyword": "ファナック",
-      "date": "2026-10-15",
-      "posts24h": 592,
-      "baselinePosts24h": 99,
+      "date": "2026-10-16",
+      "posts24h": 559,
+      "baselinePosts24h": 107,
       "heat": 100,
       "status": "計算済み"
     },
     {
       "keyword": "ソフトバンクグループ",
-      "date": "2026-10-15",
-      "posts24h": 551,
-      "baselinePosts24h": 226,
-      "heat": 82,
+      "date": "2026-10-16",
+      "posts24h": 713,
+      "baselinePosts24h": 238,
+      "heat": 90,
       "status": "計算済み"
     },
     {
       "keyword": "メタプラネット",
-      "date": "2026-10-15",
-      "posts24h": 283,
-      "baselinePosts24h": 254,
-      "heat": 54,
+      "date": "2026-10-16",
+      "posts24h": 255,
+      "baselinePosts24h": 269,
+      "heat": 48,
       "status": "計算済み"
     },
     {
       "keyword": "データセクション",
-      "date": "2026-10-15",
-      "posts24h": 306,
-      "baselinePosts24h": 252,
-      "heat": 57,
+      "date": "2026-10-16",
+      "posts24h": 860,
+      "baselinePosts24h": 273,
+      "heat": 91,
       "status": "計算済み"
     },
     {
       "keyword": "キオクシア",
-      "date": "2026-10-15",
-      "posts24h": 173,
-      "baselinePosts24h": null,
-      "heat": null,
-      "status": "蓄積中"
+      "date": "2026-10-16",
+      "posts24h": 176,
+      "baselinePosts24h": 118,
+      "heat": 64,
+      "status": "計算済み"
     },
     {
       "keyword": "任天堂",
-      "date": "2026-10-15",
-      "posts24h": 100,
-      "baselinePosts24h": null,
-      "heat": null,
-      "status": "蓄積中"
+      "date": "2026-10-16",
+      "posts24h": 429,
+      "baselinePosts24h": 117,
+      "heat": 97,
+      "status": "計算済み"
     },
     {
       "keyword": "信越化学工業",
-      "date": "2026-10-15",
-      "posts24h": 973,
-      "baselinePosts24h": null,
-      "heat": null,
-      "status": "蓄積中"
+      "date": "2026-10-16",
+      "posts24h": 897,
+      "baselinePosts24h": 1047,
+      "heat": 44,
+      "status": "計算済み"
     },
     {
       "keyword": "三菱重工業",
-      "date": "2026-10-15",
-      "posts24h": 644,
-      "baselinePosts24h": null,
-      "heat": null,
-      "status": "蓄積中"
+      "date": "2026-10-16",
+      "posts24h": 700,
+      "baselinePosts24h": 693,
+      "heat": 50,
+      "status": "計算済み"
     },
     {
       "keyword": "三菱電機",
-      "date": "2026-10-15",
-      "posts24h": 98,
-      "baselinePosts24h": null,
-      "heat": null,
-      "status": "蓄積中"
+      "date": "2026-10-16",
+      "posts24h": 104,
+      "baselinePosts24h": 109,
+      "heat": 48,
+      "status": "計算済み"
     },
     {
       "keyword": "アストロスケール",
-      "date": "2026-10-15",
-      "posts24h": 726,
-      "baselinePosts24h": 637,
-      "heat": 55,
+      "date": "2026-10-16",
+      "posts24h": 588,
+      "baselinePosts24h": 644,
+      "heat": 47,
       "status": "計算済み"
     }
   ]

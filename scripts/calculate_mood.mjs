@@ -10,7 +10,7 @@ const outputPath =
   "./data/mood_result.json";
 
 console.log("====================================");
-console.log("Calculate Mood");
+console.log("Calculate Mood v1.1");
 console.log("====================================");
 
 const sentimentData =
@@ -29,37 +29,33 @@ const moodData =
     )
   );
 
-function clamp(
-  value,
-  min,
-  max
-) {
+function clamp(value, min, max) {
   return Math.max(
     min,
     Math.min(max, value)
   );
 }
 
-function round(
-  value
-) {
-  return Math.round(
-    value
+function round(value) {
+  return Math.round(value);
+}
+
+function isValidPercentage(value) {
+  return (
+    typeof value === "number" &&
+    Number.isFinite(value) &&
+    value >= 0 &&
+    value <= 100
   );
 }
 
 const results = [];
 
-for (
-  const sentiment
-  of sentimentData.stocks
-) {
-
-  const keyword =
-    sentiment.keyword;
+for (const sentiment of sentimentData.stocks || []) {
+  const keyword = sentiment.keyword;
 
   const moodRows =
-    moodData.stocks.filter(
+    (moodData.stocks || []).filter(
       stock =>
         stock.keyword === keyword
     );
@@ -69,33 +65,59 @@ for (
       ? moodRows[moodRows.length - 1]
       : null;
 
-  const negative =
-    Number(
-      sentiment.negative
-    );
+  const negative = sentiment.negative;
+  const positive = sentiment.positive;
 
-  const positive =
-    Number(
-      sentiment.positive
-    );
+  const validSentiment =
+    isValidPercentage(negative) &&
+    isValidPercentage(positive) &&
+    negative + positive > 0;
 
-  if (
-    !Number.isFinite(negative) ||
-    !Number.isFinite(positive)
-  ) {
+  const posts24h =
+    latestMoodRow &&
+    Number.isFinite(
+      Number(latestMoodRow.posts24h)
+    )
+      ? Number(latestMoodRow.posts24h)
+      : null;
 
-    console.log(
-      "ERROR:",
-      keyword,
-      "sentiment unavailable"
-    );
+  const baseline =
+    latestMoodRow &&
+    latestMoodRow.baselinePosts24h !== null &&
+    latestMoodRow.baselinePosts24h !== undefined &&
+    Number.isFinite(
+      Number(latestMoodRow.baselinePosts24h)
+    )
+      ? Number(latestMoodRow.baselinePosts24h)
+      : null;
+
+  if (!validSentiment) {
+    console.log("");
+    console.log("DATA UNAVAILABLE:", keyword);
+    console.log("negative:", negative);
+    console.log("positive:", positive);
 
     results.push({
       keyword,
-      mood: null,
+      negative:
+        Number.isFinite(negative)
+          ? negative
+          : null,
+      positive:
+        Number.isFinite(positive)
+          ? positive
+          : null,
       polarity: null,
       confidence: null,
-      status: "判定不可"
+      mood: null,
+      label: "データ不足",
+      posts24h,
+      baselinePosts24h: baseline,
+      heat: latestMoodRow?.heat ?? null,
+      date: sentiment.date ?? null,
+      status: "判定不可",
+      reason:
+        "センチメントが未取得、または有効なデータがありません"
     });
 
     continue;
@@ -106,33 +128,17 @@ for (
 
   let confidence = 0.55;
 
-  const posts24h =
-    latestMoodRow
-      ? Number(
-          latestMoodRow.posts24h
-        )
-      : null;
-
-  const baseline =
-    latestMoodRow
-      ? Number(
-          latestMoodRow.baselinePosts24h
-        )
-      : null;
-
   if (
-    Number.isFinite(posts24h) &&
-    Number.isFinite(baseline) &&
+    posts24h !== null &&
+    baseline !== null &&
     baseline > 0
   ) {
-
     const ratio =
       posts24h / baseline;
 
     confidence =
       0.55 +
-      0.45 *
-      Math.sqrt(ratio);
+      0.45 * Math.sqrt(ratio);
 
     confidence =
       clamp(
@@ -145,8 +151,7 @@ for (
   const mood =
     clamp(
       round(
-        polarity *
-        confidence
+        polarity * confidence
       ),
       -100,
       100
@@ -165,40 +170,13 @@ for (
   }
 
   console.log("");
-  console.log(
-    "STOCK:",
-    keyword
-  );
-
-  console.log(
-    "negative:",
-    negative
-  );
-
-  console.log(
-    "positive:",
-    positive
-  );
-
-  console.log(
-    "polarity:",
-    polarity
-  );
-
-  console.log(
-    "confidence:",
-    confidence.toFixed(3)
-  );
-
-  console.log(
-    "mood:",
-    mood
-  );
-
-  console.log(
-    "label:",
-    label
-  );
+  console.log("STOCK:", keyword);
+  console.log("negative:", negative);
+  console.log("positive:", positive);
+  console.log("polarity:", polarity);
+  console.log("confidence:", confidence.toFixed(3));
+  console.log("mood:", mood);
+  console.log("label:", label);
 
   results.push({
     keyword,
@@ -206,32 +184,23 @@ for (
     positive,
     polarity,
     confidence:
-      Number(
-        confidence.toFixed(3)
-      ),
+      Number(confidence.toFixed(3)),
     mood,
     label,
-    posts24h:
-      Number.isFinite(posts24h)
-        ? posts24h
-        : null,
-    baselinePosts24h:
-      Number.isFinite(baseline)
-        ? baseline
-        : null,
-    heat:
-      latestMoodRow?.heat ??
-      null,
-    date:
-      sentiment.date
+    posts24h,
+    baselinePosts24h: baseline,
+    heat: latestMoodRow?.heat ?? null,
+    date: sentiment.date ?? null,
+    status: "計算済み",
+    reason: null
   });
 }
 
 const output = {
   updatedAt:
     new Date().toISOString(),
-  stocks:
-    results
+  methodVersion: "v1.1",
+  stocks: results
 };
 
 fs.writeFileSync(
@@ -248,11 +217,19 @@ console.log("====================================");
 console.log("MOOD SAVED");
 console.log("====================================");
 
+console.log(outputPath);
+console.log("stocks:", results.length);
+
 console.log(
-  outputPath
+  "判定不可:",
+  results.filter(
+    stock => stock.status === "判定不可"
+  ).length
 );
 
 console.log(
-  "stocks:",
-  results.length
+  "計算済み:",
+  results.filter(
+    stock => stock.status === "計算済み"
+  ).length
 );

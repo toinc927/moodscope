@@ -10,12 +10,9 @@ const stocks = JSON.parse(
 
 console.log("====================================");
 console.log("Yahoo 24-hour sentiment fetch");
+console.log("DEBUG VERSION");
 console.log("====================================");
-
-console.log(
-  "stocks:",
-  stocks.length
-);
+console.log("stocks:", stocks.length);
 
 const browser = await chromium.launch({
   headless: true
@@ -24,7 +21,6 @@ const browser = await chromium.launch({
 const results = [];
 
 for (const stock of stocks) {
-
   const keyword = stock.keyword;
 
   console.log("");
@@ -37,7 +33,6 @@ for (const stock of stocks) {
   let latestSentiment = null;
 
   page.on("response", async (response) => {
-
     const url = response.url();
 
     if (!url.includes("/realtime/api/v1/transition")) {
@@ -45,59 +40,65 @@ for (const stock of stocks) {
     }
 
     try {
-
       const parsed = new URL(url);
       const data = await response.json();
 
-      const sentiment =
-        data?.sentimentPieChart;
+      const parameters = Object.fromEntries(
+        parsed.searchParams.entries()
+      );
 
-      if (!sentiment) {
-        return;
-      }
-
-      const parameters =
-        Object.fromEntries(
-          parsed.searchParams.entries()
-        );
+      const sentiment = data?.sentimentPieChart;
 
       console.log("");
       console.log("TRANSITION API");
+      console.log("keyword:", keyword);
       console.log("span:", parameters.span);
-      console.log(
-        "samplingRate:",
-        parameters.samplingRate
-      );
-      console.log(
-        "negative:",
-        sentiment.negative
-      );
-      console.log(
-        "positive:",
-        sentiment.positive
-      );
+      console.log("samplingRate:", parameters.samplingRate);
+      console.log("HTTP status:", response.status());
+      console.log("response keys:", Object.keys(data || {}));
+
+      if (!sentiment) {
+        console.log("sentimentPieChart: NOT FOUND");
+        return;
+      }
+
+      console.log("negative:", sentiment.negative);
+      console.log("positive:", sentiment.positive);
 
       if (
         parameters.span === "86400" &&
         parameters.samplingRate === "100"
       ) {
-
         latestSentiment = {
           negative: sentiment.negative,
           positive: sentiment.positive
         };
 
+        if (
+          sentiment.negative === 0 &&
+          sentiment.positive === 0
+        ) {
+          console.log("");
+          console.log("========== ZERO DATA DEBUG ==========");
+          console.log("keyword:", keyword);
+          console.log("API URL:", url);
+          console.log(
+            "sentimentPieChart:",
+            JSON.stringify(sentiment)
+          );
+          console.log(
+            "FULL API RESPONSE:",
+            JSON.stringify(data).slice(0, 12000)
+          );
+          console.log("=====================================");
+        }
       }
-
     } catch (error) {
-
       console.log(
         "Response parse error:",
         error.message
       );
-
     }
-
   });
 
   const yahooUrl =
@@ -106,99 +107,59 @@ for (const stock of stocks) {
 
   console.log("Opening Yahoo...");
 
-  await page.goto(
-    yahooUrl,
-    {
-      waitUntil: "networkidle",
-      timeout: 60000
-    }
-  );
+  await page.goto(yahooUrl, {
+    waitUntil: "networkidle",
+    timeout: 60000
+  });
 
   await page.waitForTimeout(5000);
 
-  console.log(
-    "Looking for 24-hour link..."
-  );
+  console.log("Looking for 24-hour link...");
 
-  const links =
-    page
-      .locator("a")
-      .filter({
-        hasText: "24時間"
-      });
+  const links = page.locator("a").filter({
+    hasText: "24時間"
+  });
 
-  const linkCount =
-    await links.count();
+  const linkCount = await links.count();
 
-  console.log(
-    "24-hour links:",
-    linkCount
-  );
+  console.log("24-hour links:", linkCount);
 
   if (linkCount === 0) {
-
-    console.log(
-      "ERROR: 24-hour link not found."
-    );
-
+    console.log("ERROR: 24-hour link not found.");
   } else {
-
     await links.first().click();
 
-    console.log(
-      "24-hour link clicked."
-    );
+    console.log("24-hour link clicked.");
 
     await page.waitForTimeout(5000);
-
   }
 
   if (latestSentiment) {
-
     console.log("");
     console.log("24-HOUR RESULT");
-    console.log(
-      "negative:",
-      latestSentiment.negative
-    );
-    console.log(
-      "positive:",
-      latestSentiment.positive
-    );
+    console.log("negative:", latestSentiment.negative);
+    console.log("positive:", latestSentiment.positive);
 
     results.push({
       keyword,
-      date: new Date()
-        .toISOString()
-        .slice(0, 10),
-      negative:
-        latestSentiment.negative,
-      positive:
-        latestSentiment.positive
+      date: new Date().toISOString().slice(0, 10),
+      negative: latestSentiment.negative,
+      positive: latestSentiment.positive
     });
-
   } else {
-
-    console.log(
-      "ERROR: 24-hour sentiment not captured."
-    );
+    console.log("ERROR: 24-hour sentiment not captured.");
 
     results.push({
       keyword,
-      date: new Date()
-        .toISOString()
-        .slice(0, 10),
+      date: new Date().toISOString().slice(0, 10),
       negative: null,
       positive: null
     });
-
   }
 
   await page.close();
 
-  await new Promise(
-    resolve => setTimeout(resolve, 1000)
-  );
+  await new Promise(resolve => setTimeout(resolve, 1000));
 }
 
 await browser.close();
@@ -207,8 +168,7 @@ fs.writeFileSync(
   outputPath,
   JSON.stringify(
     {
-      updatedAt:
-        new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       stocks: results
     },
     null,
@@ -220,12 +180,5 @@ console.log("");
 console.log("====================================");
 console.log("SAVED");
 console.log("====================================");
-
-console.log(
-  outputPath
-);
-
-console.log(
-  "stocks:",
-  results.length
-);
+console.log(outputPath);
+console.log("stocks:", results.length);

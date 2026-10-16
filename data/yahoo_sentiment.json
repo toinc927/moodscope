@@ -1,41 +1,41 @@
 {
-  "updatedAt": "2026-10-16T12:54:11.912Z",
+  "updatedAt": "2026-10-16T17:59:39.834Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-10-16",
-      "negative": 79,
-      "positive": 21
+      "negative": 71,
+      "positive": 29
     },
     {
       "keyword": "ソフトバンクグループ",
       "date": "2026-10-16",
-      "negative": 60,
-      "positive": 40
+      "negative": 61,
+      "positive": 39
     },
     {
       "keyword": "メタプラネット",
       "date": "2026-10-16",
-      "negative": 37,
-      "positive": 63
+      "negative": 33,
+      "positive": 67
     },
     {
       "keyword": "データセクション",
       "date": "2026-10-16",
-      "negative": 62,
-      "positive": 38
+      "negative": 56,
+      "positive": 44
     },
     {
       "keyword": "キオクシア",
       "date": "2026-10-16",
-      "negative": 70,
-      "positive": 30
+      "negative": 68,
+      "positive": 32
     },
     {
       "keyword": "任天堂",
       "date": "2026-10-16",
-      "negative": 44,
-      "positive": 56
+      "negative": 45,
+      "positive": 55
     },
     {
       "keyword": "信越化学工業",
@@ -46,14 +46,14 @@
     {
       "keyword": "三菱重工業",
       "date": "2026-10-16",
-      "negative": 76,
-      "positive": 24
+      "negative": 74,
+      "positive": 26
     },
     {
       "keyword": "三菱電機",
       "date": "2026-10-16",
-      "negative": 76,
-      "positive": 24
+      "negative": 74,
+      "positive": 26
     },
     {
       "keyword": "アストロスケール",

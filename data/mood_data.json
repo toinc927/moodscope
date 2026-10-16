@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-10-15T18:10:34.967Z",
+  "updatedAt": "2026-10-16T12:50:47.670Z",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-10-16",
-      "posts24h": 559,
+      "posts24h": 640,
       "baselinePosts24h": 107,
       "heat": 100,
       "status": "計算済み"
@@ -12,47 +12,47 @@
     {
       "keyword": "ソフトバンクグループ",
       "date": "2026-10-16",
-      "posts24h": 713,
+      "posts24h": 518,
       "baselinePosts24h": 238,
-      "heat": 90,
+      "heat": 78,
       "status": "計算済み"
     },
     {
       "keyword": "メタプラネット",
       "date": "2026-10-16",
-      "posts24h": 255,
+      "posts24h": 207,
       "baselinePosts24h": 269,
-      "heat": 48,
+      "heat": 41,
       "status": "計算済み"
     },
     {
       "keyword": "データセクション",
       "date": "2026-10-16",
-      "posts24h": 860,
+      "posts24h": 826,
       "baselinePosts24h": 273,
-      "heat": 91,
+      "heat": 90,
       "status": "計算済み"
     },
     {
       "keyword": "キオクシア",
       "date": "2026-10-16",
-      "posts24h": 176,
+      "posts24h": 156,
       "baselinePosts24h": 118,
-      "heat": 64,
+      "heat": 60,
       "status": "計算済み"
     },
     {
       "keyword": "任天堂",
       "date": "2026-10-16",
-      "posts24h": 429,
+      "posts24h": 227,
       "baselinePosts24h": 117,
-      "heat": 97,
+      "heat": 74,
       "status": "計算済み"
     },
     {
       "keyword": "信越化学工業",
       "date": "2026-10-16",
-      "posts24h": 897,
+      "posts24h": 892,
       "baselinePosts24h": 1047,
       "heat": 44,
       "status": "計算済み"
@@ -60,25 +60,25 @@
     {
       "keyword": "三菱重工業",
       "date": "2026-10-16",
-      "posts24h": 700,
+      "posts24h": 359,
       "baselinePosts24h": 693,
-      "heat": 50,
+      "heat": 26,
       "status": "計算済み"
     },
     {
       "keyword": "三菱電機",
       "date": "2026-10-16",
-      "posts24h": 104,
+      "posts24h": 405,
       "baselinePosts24h": 109,
-      "heat": 48,
+      "heat": 97,
       "status": "計算済み"
     },
     {
       "keyword": "アストロスケール",
       "date": "2026-10-16",
-      "posts24h": 588,
+      "posts24h": 658,
       "baselinePosts24h": 644,
-      "heat": 47,
+      "heat": 51,
       "status": "計算済み"
     }
   ]

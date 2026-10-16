@@ -1,65 +1,65 @@
 {
-  "updatedAt": "2026-10-15T18:13:52.305Z",
+  "updatedAt": "2026-10-16T12:54:11.912Z",
   "stocks": [
     {
       "keyword": "ファナック",
-      "date": "2026-10-15",
-      "negative": 81,
-      "positive": 19
+      "date": "2026-10-16",
+      "negative": 79,
+      "positive": 21
     },
     {
       "keyword": "ソフトバンクグループ",
-      "date": "2026-10-15",
-      "negative": 71,
-      "positive": 29
+      "date": "2026-10-16",
+      "negative": 60,
+      "positive": 40
     },
     {
       "keyword": "メタプラネット",
-      "date": "2026-10-15",
-      "negative": 54,
-      "positive": 46
+      "date": "2026-10-16",
+      "negative": 37,
+      "positive": 63
     },
     {
       "keyword": "データセクション",
-      "date": "2026-10-15",
-      "negative": 78,
-      "positive": 22
+      "date": "2026-10-16",
+      "negative": 62,
+      "positive": 38
     },
     {
       "keyword": "キオクシア",
-      "date": "2026-10-15",
-      "negative": 81,
-      "positive": 19
+      "date": "2026-10-16",
+      "negative": 70,
+      "positive": 30
     },
     {
       "keyword": "任天堂",
-      "date": "2026-10-15",
-      "negative": 52,
-      "positive": 48
+      "date": "2026-10-16",
+      "negative": 44,
+      "positive": 56
     },
     {
       "keyword": "信越化学工業",
-      "date": "2026-10-15",
+      "date": "2026-10-16",
       "negative": 0,
-      "positive": 0
+      "positive": 100
     },
     {
       "keyword": "三菱重工業",
-      "date": "2026-10-15",
-      "negative": 0,
-      "positive": 0
+      "date": "2026-10-16",
+      "negative": 76,
+      "positive": 24
     },
     {
       "keyword": "三菱電機",
-      "date": "2026-10-15",
-      "negative": 84,
-      "positive": 16
+      "date": "2026-10-16",
+      "negative": 76,
+      "positive": 24
     },
     {
       "keyword": "アストロスケール",
-      "date": "2026-10-15",
-      "negative": 50,
-      "positive": 50
+      "date": "2026-10-16",
+      "negative": 11,
+      "positive": 89
     }
   ]
 }

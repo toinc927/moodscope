@@ -352,12 +352,12 @@
   {
     "keyword": "アストロスケール",
     "date": "2026-10-16",
-    "posts24h": 588,
+    "posts24h": 658,
     "searchTerms": [
       "アストロスケール",
       "アストロ"
     ],
-    "pagesFetched": 24,
+    "pagesFetched": 27,
     "capped": true,
     "status": "success",
     "methodVersion": "v1.0",
@@ -365,21 +365,21 @@
       {
         "term": "アストロスケール",
         "pagesFetched": 20,
-        "totalResultsAvailable": 1558,
-        "uniquePostsFetched": 519,
+        "totalResultsAvailable": 58,
+        "uniquePostsFetched": 563,
         "capped": true,
         "status": "success"
       },
       {
         "term": "アストロ",
-        "pagesFetched": 4,
-        "totalResultsAvailable": 305,
-        "uniquePostsFetched": 79,
+        "pagesFetched": 7,
+        "totalResultsAvailable": 310,
+        "uniquePostsFetched": 126,
         "capped": false,
         "status": "success"
       }
     ],
-    "fetchedAt": "2026-10-15T18:10:34.906Z"
+    "fetchedAt": "2026-10-16T12:50:47.588Z"
   },
   {
     "keyword": "キオクシア",
@@ -545,25 +545,25 @@
   {
     "keyword": "キオクシア",
     "date": "2026-10-16",
-    "posts24h": 176,
+    "posts24h": 156,
     "searchTerms": [
       "キオクシア"
     ],
-    "pagesFetched": 8,
+    "pagesFetched": 5,
     "capped": false,
     "status": "success",
     "methodVersion": "v1.0",
     "termResults": [
       {
         "term": "キオクシア",
-        "pagesFetched": 8,
-        "totalResultsAvailable": 9003,
-        "uniquePostsFetched": 176,
+        "pagesFetched": 5,
+        "totalResultsAvailable": 4756,
+        "uniquePostsFetched": 156,
         "capped": false,
         "status": "success"
       }
     ],
-    "fetchedAt": "2026-10-15T18:08:37.923Z"
+    "fetchedAt": "2026-10-16T12:48:44.458Z"
   },
   {
     "date": "2026-09-12",
@@ -903,43 +903,43 @@
   {
     "keyword": "ソフトバンクグループ",
     "date": "2026-10-16",
-    "posts24h": 713,
+    "posts24h": 518,
     "searchTerms": [
       "ソフトバンクグループ",
       "ソフバン",
       "ソフトバンクG"
     ],
-    "pagesFetched": 52,
+    "pagesFetched": 28,
     "capped": true,
     "status": "success",
     "methodVersion": "v1.0",
     "termResults": [
       {
         "term": "ソフトバンクグループ",
-        "pagesFetched": 12,
-        "totalResultsAvailable": 376,
-        "uniquePostsFetched": 169,
+        "pagesFetched": 3,
+        "totalResultsAvailable": 217,
+        "uniquePostsFetched": 79,
         "capped": false,
         "status": "success"
       },
       {
         "term": "ソフバン",
         "pagesFetched": 20,
-        "totalResultsAvailable": 1996,
-        "uniquePostsFetched": 272,
-        "capped": false,
+        "totalResultsAvailable": 2718,
+        "uniquePostsFetched": 330,
+        "capped": true,
         "status": "success"
       },
       {
         "term": "ソフトバンクG",
-        "pagesFetched": 20,
-        "totalResultsAvailable": 290,
-        "uniquePostsFetched": 274,
-        "capped": true,
+        "pagesFetched": 5,
+        "totalResultsAvailable": 199,
+        "uniquePostsFetched": 109,
+        "capped": false,
         "status": "success"
       }
     ],
-    "fetchedAt": "2026-10-15T18:07:44.484Z"
+    "fetchedAt": "2026-10-16T12:47:57.229Z"
   },
   {
     "date": "2026-10-01",
@@ -1273,43 +1273,43 @@
   {
     "keyword": "データセクション",
     "date": "2026-10-16",
-    "posts24h": 860,
+    "posts24h": 826,
     "searchTerms": [
       "データセクション",
       "データセク",
       "デーセク"
     ],
-    "pagesFetched": 26,
+    "pagesFetched": 24,
     "capped": true,
     "status": "success",
     "methodVersion": "v1.0",
     "termResults": [
       {
         "term": "データセクション",
-        "pagesFetched": 4,
-        "totalResultsAvailable": 194,
-        "uniquePostsFetched": 106,
+        "pagesFetched": 2,
+        "totalResultsAvailable": 127,
+        "uniquePostsFetched": 75,
         "capped": false,
         "status": "success"
       },
       {
         "term": "データセク",
         "pagesFetched": 2,
-        "totalResultsAvailable": 106,
-        "uniquePostsFetched": 73,
+        "totalResultsAvailable": 107,
+        "uniquePostsFetched": 70,
         "capped": false,
         "status": "success"
       },
       {
         "term": "デーセク",
         "pagesFetched": 20,
-        "totalResultsAvailable": 147,
-        "uniquePostsFetched": 683,
+        "totalResultsAvailable": 47,
+        "uniquePostsFetched": 684,
         "capped": true,
         "status": "success"
       }
     ],
-    "fetchedAt": "2026-10-15T18:08:28.438Z"
+    "fetchedAt": "2026-10-16T12:48:38.218Z"
   },
   {
     "date": "2026-09-12",
@@ -1751,7 +1751,7 @@
   {
     "keyword": "ファナック",
     "date": "2026-10-16",
-    "posts24h": 559,
+    "posts24h": 640,
     "searchTerms": [
       "ファナック"
     ],
@@ -1763,13 +1763,13 @@
       {
         "term": "ファナック",
         "pagesFetched": 20,
-        "totalResultsAvailable": 58,
-        "uniquePostsFetched": 559,
+        "totalResultsAvailable": 64,
+        "uniquePostsFetched": 640,
         "capped": true,
         "status": "success"
       }
     ],
-    "fetchedAt": "2026-10-15T18:06:42.752Z"
+    "fetchedAt": "2026-10-16T12:47:22.429Z"
   },
   {
     "date": "2026-10-01",
@@ -2040,34 +2040,34 @@
   {
     "keyword": "メタプラネット",
     "date": "2026-10-16",
-    "posts24h": 255,
+    "posts24h": 207,
     "searchTerms": [
       "メタプラネット",
       "メタプラ"
     ],
-    "pagesFetched": 11,
+    "pagesFetched": 9,
     "capped": false,
     "status": "success",
     "methodVersion": "v1.0",
     "termResults": [
       {
         "term": "メタプラネット",
-        "pagesFetched": 5,
-        "totalResultsAvailable": 181,
-        "uniquePostsFetched": 98,
+        "pagesFetched": 4,
+        "totalResultsAvailable": 154,
+        "uniquePostsFetched": 95,
         "capped": false,
         "status": "success"
       },
       {
         "term": "メタプラ",
-        "pagesFetched": 6,
-        "totalResultsAvailable": 262,
-        "uniquePostsFetched": 171,
+        "pagesFetched": 5,
+        "totalResultsAvailable": 256,
+        "uniquePostsFetched": 116,
         "capped": false,
         "status": "success"
       }
     ],
-    "fetchedAt": "2026-10-15T18:07:57.569Z"
+    "fetchedAt": "2026-10-16T12:48:08.367Z"
   },
   {
     "date": "2026-09-12",
@@ -2365,43 +2365,43 @@
   {
     "keyword": "三菱重工業",
     "date": "2026-10-16",
-    "posts24h": 700,
+    "posts24h": 359,
     "searchTerms": [
       "三菱重工業",
       "三菱重工",
       "三菱重"
     ],
-    "pagesFetched": 26,
-    "capped": true,
+    "pagesFetched": 13,
+    "capped": false,
     "status": "success",
     "methodVersion": "v1.0",
     "termResults": [
       {
         "term": "三菱重工業",
-        "pagesFetched": 20,
-        "totalResultsAvailable": 64,
-        "uniquePostsFetched": 489,
-        "capped": true,
+        "pagesFetched": 4,
+        "totalResultsAvailable": 116,
+        "uniquePostsFetched": 87,
+        "capped": false,
         "status": "success"
       },
       {
         "term": "三菱重工",
-        "pagesFetched": 2,
-        "totalResultsAvailable": 304,
-        "uniquePostsFetched": 69,
+        "pagesFetched": 5,
+        "totalResultsAvailable": 402,
+        "uniquePostsFetched": 129,
         "capped": false,
         "status": "success"
       },
       {
         "term": "三菱重",
         "pagesFetched": 4,
-        "totalResultsAvailable": 197,
-        "uniquePostsFetched": 148,
+        "totalResultsAvailable": 187,
+        "uniquePostsFetched": 147,
         "capped": false,
         "status": "success"
       }
     ],
-    "fetchedAt": "2026-10-15T18:10:01.521Z"
+    "fetchedAt": "2026-10-16T12:49:47.752Z"
   },
   {
     "keyword": "三菱電機",
@@ -2630,22 +2630,22 @@
   {
     "keyword": "三菱電機",
     "date": "2026-10-16",
-    "posts24h": 104,
+    "posts24h": 405,
     "searchTerms": [
       "三菱電機",
       "三菱電"
     ],
-    "pagesFetched": 4,
-    "capped": false,
+    "pagesFetched": 21,
+    "capped": true,
     "status": "success",
     "methodVersion": "v1.0",
     "termResults": [
       {
         "term": "三菱電機",
-        "pagesFetched": 3,
-        "totalResultsAvailable": 103,
-        "uniquePostsFetched": 76,
-        "capped": false,
+        "pagesFetched": 20,
+        "totalResultsAvailable": 114,
+        "uniquePostsFetched": 378,
+        "capped": true,
         "status": "success"
       },
       {
@@ -2657,7 +2657,7 @@
         "status": "success"
       }
     ],
-    "fetchedAt": "2026-10-15T18:10:06.245Z"
+    "fetchedAt": "2026-10-16T12:50:13.927Z"
   },
   {
     "date": "2026-09-12",
@@ -2829,25 +2829,25 @@
   {
     "keyword": "任天堂",
     "date": "2026-10-16",
-    "posts24h": 429,
+    "posts24h": 227,
     "searchTerms": [
       "任天堂"
     ],
-    "pagesFetched": 20,
-    "capped": true,
+    "pagesFetched": 11,
+    "capped": false,
     "status": "success",
     "methodVersion": "v1.0",
     "termResults": [
       {
         "term": "任天堂",
-        "pagesFetched": 20,
-        "totalResultsAvailable": 1952,
-        "uniquePostsFetched": 429,
-        "capped": true,
+        "pagesFetched": 11,
+        "totalResultsAvailable": 1977,
+        "uniquePostsFetched": 227,
+        "capped": false,
         "status": "success"
       }
     ],
-    "fetchedAt": "2026-10-15T18:09:01.919Z"
+    "fetchedAt": "2026-10-16T12:48:58.025Z"
   },
   {
     "keyword": "信越化学工業",
@@ -3139,13 +3139,13 @@
   {
     "keyword": "信越化学工業",
     "date": "2026-10-16",
-    "posts24h": 897,
+    "posts24h": 892,
     "searchTerms": [
       "信越化学工業",
       "信越化学",
       "信越化"
     ],
-    "pagesFetched": 24,
+    "pagesFetched": 27,
     "capped": false,
     "status": "success",
     "methodVersion": "v1.0",
@@ -3153,29 +3153,29 @@
       {
         "term": "信越化学工業",
         "pagesFetched": 8,
-        "totalResultsAvailable": 568,
-        "uniquePostsFetched": 303,
+        "totalResultsAvailable": 525,
+        "uniquePostsFetched": 299,
         "capped": false,
         "status": "success"
       },
       {
         "term": "信越化学",
-        "pagesFetched": 14,
-        "totalResultsAvailable": 1142,
-        "uniquePostsFetched": 520,
+        "pagesFetched": 17,
+        "totalResultsAvailable": 1018,
+        "uniquePostsFetched": 534,
         "capped": false,
         "status": "success"
       },
       {
         "term": "信越化",
         "pagesFetched": 2,
-        "totalResultsAvailable": 84,
-        "uniquePostsFetched": 80,
+        "totalResultsAvailable": 67,
+        "uniquePostsFetched": 67,
         "capped": false,
         "status": "success"
       }
     ],
-    "fetchedAt": "2026-10-15T18:09:30.522Z"
+    "fetchedAt": "2026-10-16T12:49:31.628Z"
   },
   {
     "date": "2026-09-12",

@@ -3,15 +3,13 @@ import fs from "fs";
 
 const configPath = "./config/stocks.json";
 const outputPath = "./data/yahoo_sentiment.json";
-const debugPath = "./data/yahoo_sentiment_debug.json";
 
 const stocks = JSON.parse(
   fs.readFileSync(configPath, "utf8")
 );
 
 console.log("====================================");
-console.log("Yahoo 24-hour sentiment fetch");
-console.log("DEBUG VERSION 2");
+console.log("Yahoo 24-hour sentiment fetch v1.2");
 console.log("====================================");
 console.log("stocks:", stocks.length);
 
@@ -20,7 +18,15 @@ const browser = await chromium.launch({
 });
 
 const results = [];
-const debugResults = [];
+
+function isValidPercentage(value) {
+  return (
+    typeof value === "number" &&
+    Number.isFinite(value) &&
+    value >= 0 &&
+    value <= 100
+  );
+}
 
 for (const stock of stocks) {
   const keyword = stock.keyword;
@@ -32,8 +38,7 @@ for (const stock of stocks) {
 
   const page = await browser.newPage();
 
-  let latestSentiment = null;
-  const stockDebug = [];
+  let latestResult = null;
 
   page.on("response", async (response) => {
     const url = response.url();
@@ -44,77 +49,84 @@ for (const stock of stocks) {
 
     try {
       const parsed = new URL(url);
-      const data = await response.json();
-
       const parameters = Object.fromEntries(
         parsed.searchParams.entries()
       );
 
+      const data = await response.json();
+
       const sentiment = data?.sentimentPieChart;
 
-      const record = {
-        keyword,
-        capturedAt: new Date().toISOString(),
-        httpStatus: response.status(),
-        parameters,
-        responseKeys: Object.keys(data || {}),
-        sentimentPieChart: sentiment ?? null,
-        fullResponse: data
+      if (
+        parameters.span !== "86400" ||
+        parameters.samplingRate !== "100"
+      ) {
+        return;
+      }
+
+      const negative = sentiment?.negative;
+      const positive = sentiment?.positive;
+      const shouldRender = sentiment?.shouldRender;
+
+      const transitionHead =
+        data?.tweetTransition?.head ?? null;
+
+      const totalResultsAvailable =
+        transitionHead?.totalResultsAvailable ?? null;
+
+      const validPercentages =
+        isValidPercentage(negative) &&
+        isValidPercentage(positive);
+
+      const hasSentiment =
+        validPercentages &&
+        negative + positive > 0;
+
+      const renderAllowed =
+        shouldRender !== false;
+
+      const status =
+        response.status() === 200 &&
+        renderAllowed &&
+        hasSentiment
+          ? "取得済み"
+          : "データ不足";
+
+      latestResult = {
+        negative:
+          isValidPercentage(negative)
+            ? negative
+            : null,
+        positive:
+          isValidPercentage(positive)
+            ? positive
+            : null,
+        shouldRender:
+          typeof shouldRender === "boolean"
+            ? shouldRender
+            : null,
+        totalResultsAvailable,
+        status,
+        httpStatus: response.status()
       };
 
-      stockDebug.push(record);
-
       console.log("");
-      console.log("TRANSITION API");
+      console.log("24-HOUR RESPONSE");
       console.log("keyword:", keyword);
-      console.log("span:", parameters.span);
-      console.log("samplingRate:", parameters.samplingRate);
       console.log("HTTP status:", response.status());
+      console.log("negative:", negative);
+      console.log("positive:", positive);
+      console.log("shouldRender:", shouldRender);
       console.log(
-        "response keys:",
-        JSON.stringify(record.responseKeys)
+        "totalResultsAvailable:",
+        totalResultsAvailable
       );
-      console.log(
-        "sentimentPieChart:",
-        JSON.stringify(record.sentimentPieChart)
-      );
-
-      if (
-        parameters.span === "86400" &&
-        parameters.samplingRate === "100"
-      ) {
-        console.log("24-HOUR RESPONSE DETECTED");
-
-        latestSentiment = {
-          negative: sentiment?.negative ?? null,
-          positive: sentiment?.positive ?? null
-        };
-
-        console.log(
-          "24-hour negative:",
-          latestSentiment.negative
-        );
-        console.log(
-          "24-hour positive:",
-          latestSentiment.positive
-        );
-
-        console.log(
-          "24-hour full response:",
-          JSON.stringify(data).slice(0, 12000)
-        );
-      }
+      console.log("status:", status);
     } catch (error) {
       console.log(
         "Response parse error:",
         error.message
       );
-
-      stockDebug.push({
-        keyword,
-        capturedAt: new Date().toISOString(),
-        error: error.message
-      });
     }
   });
 
@@ -131,8 +143,6 @@ for (const stock of stocks) {
 
   await page.waitForTimeout(5000);
 
-  console.log("Looking for 24-hour link...");
-
   const links = page.locator("a").filter({
     hasText: "24時間"
   });
@@ -141,63 +151,45 @@ for (const stock of stocks) {
 
   console.log("24-hour links:", linkCount);
 
-  if (linkCount === 0) {
-    console.log("ERROR: 24-hour link not found.");
-  } else {
+  if (linkCount > 0) {
     await links.first().click();
-
     console.log("24-hour link clicked.");
-
     await page.waitForTimeout(5000);
+  } else {
+    console.log("ERROR: 24-hour link not found.");
   }
 
-  const validNumber = (value) =>
-    typeof value === "number" &&
-    Number.isFinite(value) &&
-    value >= 0 &&
-    value <= 100;
-
-  const validSentiment =
-    latestSentiment !== null &&
-    validNumber(latestSentiment.negative) &&
-    validNumber(latestSentiment.positive) &&
-    latestSentiment.negative + latestSentiment.positive > 0;
-
-  if (validSentiment) {
-    console.log("");
-    console.log("24-HOUR RESULT");
-    console.log("negative:", latestSentiment.negative);
-    console.log("positive:", latestSentiment.positive);
-
-    results.push({
-      keyword,
-      date: new Date().toISOString().slice(0, 10),
-      negative: latestSentiment.negative,
-      positive: latestSentiment.positive,
-      status: "取得済み"
-    });
-  } else {
-    console.log("ERROR: Valid 24-hour sentiment not captured.");
+  if (latestResult === null) {
     console.log(
-      "Latest result:",
-      JSON.stringify(latestSentiment)
+      "ERROR: Valid 24-hour response not captured."
     );
 
     results.push({
       keyword,
       date: new Date().toISOString().slice(0, 10),
-      negative: latestSentiment?.negative ?? null,
-      positive: latestSentiment?.positive ?? null,
-      status: "データ不足"
+      negative: null,
+      positive: null,
+      shouldRender: null,
+      totalResultsAvailable: null,
+      status: "データ不足",
+      reason: "24時間センチメントを取得できませんでした"
+    });
+  } else {
+    results.push({
+      keyword,
+      date: new Date().toISOString().slice(0, 10),
+      negative: latestResult.negative,
+      positive: latestResult.positive,
+      shouldRender: latestResult.shouldRender,
+      totalResultsAvailable:
+        latestResult.totalResultsAvailable,
+      status: latestResult.status,
+      reason:
+        latestResult.status === "取得済み"
+          ? null
+          : "センチメントが無効、または描画対象外です"
     });
   }
-
-  debugResults.push({
-    keyword,
-    capturedAt: new Date().toISOString(),
-    responseCount: stockDebug.length,
-    responses: stockDebug
-  });
 
   await page.close();
 
@@ -211,20 +203,8 @@ fs.writeFileSync(
   JSON.stringify(
     {
       updatedAt: new Date().toISOString(),
+      methodVersion: "v1.2",
       stocks: results
-    },
-    null,
-    2
-  )
-);
-
-fs.writeFileSync(
-  debugPath,
-  JSON.stringify(
-    {
-      updatedAt: new Date().toISOString(),
-      methodVersion: "debug-v2",
-      stocks: debugResults
     },
     null,
     2
@@ -236,13 +216,18 @@ console.log("====================================");
 console.log("SAVED");
 console.log("====================================");
 console.log(outputPath);
-console.log(debugPath);
 console.log("stocks:", results.length);
+
 console.log(
-  "valid:",
-  results.filter(stock => stock.status === "取得済み").length
+  "取得済み:",
+  results.filter(
+    stock => stock.status === "取得済み"
+  ).length
 );
+
 console.log(
-  "unavailable:",
-  results.filter(stock => stock.status === "データ不足").length
+  "データ不足:",
+  results.filter(
+    stock => stock.status === "データ不足"
+  ).length
 );

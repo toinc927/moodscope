@@ -1,64 +1,64 @@
 {
-  "updatedAt": "2026-10-17T07:27:23.470Z",
+  "updatedAt": "2026-10-17T17:02:40.633Z",
   "methodVersion": "v1.2",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-10-17",
-      "negative": 71,
-      "positive": 29,
+      "negative": 67,
+      "positive": 33,
       "shouldRender": true,
-      "totalResultsAvailable": 46,
+      "totalResultsAvailable": 28,
       "status": "取得済み",
       "reason": null
     },
     {
       "keyword": "ソフトバンクグループ",
       "date": "2026-10-17",
-      "negative": 61,
-      "positive": 39,
+      "negative": 70,
+      "positive": 30,
       "shouldRender": true,
-      "totalResultsAvailable": 150,
+      "totalResultsAvailable": 128,
       "status": "取得済み",
       "reason": null
     },
     {
       "keyword": "メタプラネット",
       "date": "2026-10-17",
-      "negative": 25,
-      "positive": 75,
+      "negative": 20,
+      "positive": 80,
       "shouldRender": false,
-      "totalResultsAvailable": 108,
+      "totalResultsAvailable": 73,
       "status": "データ不足",
       "reason": "センチメントが無効、または描画対象外です"
     },
     {
       "keyword": "データセクション",
       "date": "2026-10-17",
-      "negative": 57,
-      "positive": 43,
-      "shouldRender": false,
-      "totalResultsAvailable": 87,
-      "status": "データ不足",
-      "reason": "センチメントが無効、または描画対象外です"
+      "negative": 75,
+      "positive": 25,
+      "shouldRender": true,
+      "totalResultsAvailable": 52,
+      "status": "取得済み",
+      "reason": null
     },
     {
       "keyword": "キオクシア",
       "date": "2026-10-17",
-      "negative": 68,
-      "positive": 32,
+      "negative": 71,
+      "positive": 29,
       "shouldRender": true,
-      "totalResultsAvailable": 2824,
+      "totalResultsAvailable": 2324,
       "status": "取得済み",
       "reason": null
     },
     {
       "keyword": "任天堂",
       "date": "2026-10-17",
-      "negative": 47,
-      "positive": 53,
+      "negative": 49,
+      "positive": 51,
       "shouldRender": true,
-      "totalResultsAvailable": 1551,
+      "totalResultsAvailable": 1351,
       "status": "取得済み",
       "reason": null
     },
@@ -68,27 +68,27 @@
       "negative": 0,
       "positive": 100,
       "shouldRender": true,
-      "totalResultsAvailable": 17,
+      "totalResultsAvailable": 10,
       "status": "取得済み",
       "reason": null
     },
     {
       "keyword": "三菱重工業",
       "date": "2026-10-17",
-      "negative": 80,
-      "positive": 20,
+      "negative": 82,
+      "positive": 18,
       "shouldRender": true,
-      "totalResultsAvailable": 85,
+      "totalResultsAvailable": 62,
       "status": "取得済み",
       "reason": null
     },
     {
       "keyword": "三菱電機",
       "date": "2026-10-17",
-      "negative": 75,
-      "positive": 25,
+      "negative": 67,
+      "positive": 33,
       "shouldRender": true,
-      "totalResultsAvailable": 194,
+      "totalResultsAvailable": 157,
       "status": "取得済み",
       "reason": null
     },
@@ -96,11 +96,11 @@
       "keyword": "アストロスケール",
       "date": "2026-10-17",
       "negative": 0,
-      "positive": 100,
-      "shouldRender": true,
-      "totalResultsAvailable": 35,
-      "status": "取得済み",
-      "reason": null
+      "positive": 0,
+      "shouldRender": false,
+      "totalResultsAvailable": 11,
+      "status": "データ不足",
+      "reason": "センチメントが無効、または描画対象外です"
     }
   ]
 }

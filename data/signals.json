@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-17T07:05:03.573Z",
+  "updatedAt": "2026-10-17T07:27:23.705Z",
   "stocks": [
     {
       "keyword": "ファナック",
@@ -34,8 +34,8 @@
     },
     {
       "keyword": "データセクション",
-      "currentMood": 0,
-      "moodChange": 12,
+      "currentMood": -14,
+      "moodChange": -2,
       "priceChangePct": 3.26,
       "signals": [],
       "priority": "通常",

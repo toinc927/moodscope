@@ -1,75 +1,106 @@
 {
-  "updatedAt": "2026-10-17T07:05:03.318Z",
+  "updatedAt": "2026-10-17T07:27:23.470Z",
+  "methodVersion": "v1.2",
   "stocks": [
     {
       "keyword": "ファナック",
       "date": "2026-10-17",
       "negative": 71,
       "positive": 29,
-      "status": "取得済み"
+      "shouldRender": true,
+      "totalResultsAvailable": 46,
+      "status": "取得済み",
+      "reason": null
     },
     {
       "keyword": "ソフトバンクグループ",
       "date": "2026-10-17",
       "negative": 61,
       "positive": 39,
-      "status": "取得済み"
+      "shouldRender": true,
+      "totalResultsAvailable": 150,
+      "status": "取得済み",
+      "reason": null
     },
     {
       "keyword": "メタプラネット",
       "date": "2026-10-17",
       "negative": 25,
       "positive": 75,
-      "status": "取得済み"
+      "shouldRender": false,
+      "totalResultsAvailable": 108,
+      "status": "データ不足",
+      "reason": "センチメントが無効、または描画対象外です"
     },
     {
       "keyword": "データセクション",
       "date": "2026-10-17",
-      "negative": 50,
-      "positive": 50,
-      "status": "取得済み"
+      "negative": 57,
+      "positive": 43,
+      "shouldRender": false,
+      "totalResultsAvailable": 87,
+      "status": "データ不足",
+      "reason": "センチメントが無効、または描画対象外です"
     },
     {
       "keyword": "キオクシア",
       "date": "2026-10-17",
-      "negative": 67,
-      "positive": 33,
-      "status": "取得済み"
+      "negative": 68,
+      "positive": 32,
+      "shouldRender": true,
+      "totalResultsAvailable": 2824,
+      "status": "取得済み",
+      "reason": null
     },
     {
       "keyword": "任天堂",
       "date": "2026-10-17",
-      "negative": 46,
-      "positive": 54,
-      "status": "取得済み"
+      "negative": 47,
+      "positive": 53,
+      "shouldRender": true,
+      "totalResultsAvailable": 1551,
+      "status": "取得済み",
+      "reason": null
     },
     {
       "keyword": "信越化学工業",
       "date": "2026-10-17",
       "negative": 0,
       "positive": 100,
-      "status": "取得済み"
+      "shouldRender": true,
+      "totalResultsAvailable": 17,
+      "status": "取得済み",
+      "reason": null
     },
     {
       "keyword": "三菱重工業",
       "date": "2026-10-17",
-      "negative": 79,
-      "positive": 21,
-      "status": "取得済み"
+      "negative": 80,
+      "positive": 20,
+      "shouldRender": true,
+      "totalResultsAvailable": 85,
+      "status": "取得済み",
+      "reason": null
     },
     {
       "keyword": "三菱電機",
       "date": "2026-10-17",
       "negative": 75,
       "positive": 25,
-      "status": "取得済み"
+      "shouldRender": true,
+      "totalResultsAvailable": 194,
+      "status": "取得済み",
+      "reason": null
     },
     {
       "keyword": "アストロスケール",
       "date": "2026-10-17",
       "negative": 0,
       "positive": 100,
-      "status": "取得済み"
+      "shouldRender": true,
+      "totalResultsAvailable": 35,
+      "status": "取得済み",
+      "reason": null
     }
   ]
 }

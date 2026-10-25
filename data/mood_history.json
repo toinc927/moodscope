@@ -177,6 +177,17 @@
       "confidence": 1
     },
     {
+      "keyword": "アストロスケール",
+      "date": "2026-10-25",
+      "mood": 99,
+      "label": "浮かれてる",
+      "negative": 0,
+      "positive": 100,
+      "posts24h": 650,
+      "heat": 48,
+      "confidence": 0.985
+    },
+    {
       "keyword": "キオクシア",
       "date": "2026-10-08",
       "mood": -20,
@@ -362,6 +373,17 @@
       "posts24h": 103,
       "heat": 35,
       "confidence": 0.914
+    },
+    {
+      "keyword": "キオクシア",
+      "date": "2026-10-25",
+      "mood": -28,
+      "label": "警戒",
+      "negative": 64,
+      "positive": 36,
+      "posts24h": 151,
+      "heat": 49,
+      "confidence": 0.993
     },
     {
       "keyword": "ソフトバンクグループ",
@@ -573,6 +595,17 @@
       "confidence": 0.952
     },
     {
+      "keyword": "ソフトバンクグループ",
+      "date": "2026-10-25",
+      "mood": 16,
+      "label": "中立",
+      "negative": 42,
+      "positive": 58,
+      "posts24h": 664,
+      "heat": 68,
+      "confidence": 1
+    },
+    {
       "keyword": "データセクション",
       "date": "2026-10-06",
       "mood": -29,
@@ -780,6 +813,17 @@
       "posts24h": 395,
       "heat": 26,
       "confidence": 0.872
+    },
+    {
+      "keyword": "データセクション",
+      "date": "2026-10-25",
+      "mood": 0,
+      "label": "中立",
+      "negative": 50,
+      "positive": 50,
+      "posts24h": 327,
+      "heat": 21,
+      "confidence": 0.853
     },
     {
       "keyword": "ファナック",
@@ -991,6 +1035,17 @@
       "confidence": 1
     },
     {
+      "keyword": "ファナック",
+      "date": "2026-10-25",
+      "mood": 15,
+      "label": "中立",
+      "negative": 42,
+      "positive": 58,
+      "posts24h": 99,
+      "heat": 38,
+      "confidence": 0.933
+    },
+    {
       "keyword": "メタプラネット",
       "date": "2026-10-06",
       "mood": 13,
@@ -1198,6 +1253,17 @@
       "posts24h": 140,
       "heat": 29,
       "confidence": 0.884
+    },
+    {
+      "keyword": "メタプラネット",
+      "date": "2026-10-25",
+      "mood": 58,
+      "label": "楽観",
+      "negative": 17,
+      "positive": 83,
+      "posts24h": 135,
+      "heat": 28,
+      "confidence": 0.88
     },
     {
       "keyword": "三菱重工業",
@@ -1563,6 +1629,17 @@
       "confidence": 1
     },
     {
+      "keyword": "三菱電機",
+      "date": "2026-10-25",
+      "mood": -22,
+      "label": "警戒",
+      "negative": 61,
+      "positive": 39,
+      "posts24h": 117,
+      "heat": 49,
+      "confidence": 0.996
+    },
+    {
       "keyword": "任天堂",
       "date": "2026-10-08",
       "mood": 2,
@@ -1750,6 +1827,17 @@
       "confidence": 1
     },
     {
+      "keyword": "任天堂",
+      "date": "2026-10-25",
+      "mood": 20,
+      "label": "楽観",
+      "negative": 40,
+      "positive": 60,
+      "posts24h": 163,
+      "heat": 58,
+      "confidence": 1
+    },
+    {
       "keyword": "信越化学工業",
       "date": "2026-10-08",
       "mood": 55,
@@ -1880,7 +1968,18 @@
       "posts24h": 737,
       "heat": 43,
       "confidence": 0.959
+    },
+    {
+      "keyword": "信越化学工業",
+      "date": "2026-10-25",
+      "mood": 97,
+      "label": "浮かれてる",
+      "negative": 0,
+      "positive": 100,
+      "posts24h": 750,
+      "heat": 45,
+      "confidence": 0.972
     }
   ],
-  "updatedAt": "2026-10-24T17:22:55.110Z"
+  "updatedAt": "2026-10-25T17:37:08.879Z"
 }

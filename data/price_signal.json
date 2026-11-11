@@ -1,94 +1,94 @@
 {
-  "updatedAt": "2026-11-10T20:47:31.193Z",
+  "updatedAt": "2026-11-11T21:12:41.721Z",
   "stocks": [
     {
       "keyword": "アストロスケール",
       "symbol": "186A.T",
-      "date": "2026-11-09",
-      "close": 988,
-      "previousClose": 959,
-      "changePct": 3.02,
+      "date": "2026-11-10",
+      "close": 1043,
+      "previousClose": 988,
+      "changePct": 5.57,
       "direction": "上昇"
     },
     {
       "keyword": "キオクシア",
       "symbol": "285A.T",
-      "date": "2026-11-09",
-      "close": 8302,
-      "previousClose": 8511,
-      "changePct": -2.46,
-      "direction": "下落"
+      "date": "2026-11-10",
+      "close": 9068,
+      "previousClose": 8302,
+      "changePct": 9.23,
+      "direction": "上昇"
     },
     {
       "keyword": "ソフトバンクグループ",
       "symbol": "9984.T",
-      "date": "2026-11-09",
-      "close": 3400,
-      "previousClose": 3549,
-      "changePct": -4.2,
-      "direction": "下落"
+      "date": "2026-11-10",
+      "close": 3872,
+      "previousClose": 3400,
+      "changePct": 13.88,
+      "direction": "上昇"
     },
     {
       "keyword": "データセクション",
       "symbol": "3905.T",
-      "date": "2026-11-09",
-      "close": 1555,
-      "previousClose": 1583,
-      "changePct": -1.77,
+      "date": "2026-11-10",
+      "close": 1399,
+      "previousClose": 1555,
+      "changePct": -10.03,
       "direction": "下落"
     },
     {
       "keyword": "ファナック",
       "symbol": "6954.T",
-      "date": "2026-11-09",
-      "close": 5339,
-      "previousClose": 5312,
-      "changePct": 0.51,
+      "date": "2026-11-10",
+      "close": 5530,
+      "previousClose": 5339,
+      "changePct": 3.58,
       "direction": "上昇"
     },
     {
       "keyword": "メタプラネット",
       "symbol": "3350.T",
-      "date": "2026-11-09",
-      "close": 233,
-      "previousClose": 237,
-      "changePct": -1.69,
-      "direction": "下落"
+      "date": "2026-11-10",
+      "close": 237,
+      "previousClose": 233,
+      "changePct": 1.72,
+      "direction": "上昇"
     },
     {
       "keyword": "三菱重工業",
       "symbol": "7011.T",
-      "date": "2026-11-09",
-      "close": 3063,
-      "previousClose": 2912.5,
-      "changePct": 5.17,
+      "date": "2026-11-10",
+      "close": 3151,
+      "previousClose": 3063,
+      "changePct": 2.87,
       "direction": "上昇"
     },
     {
       "keyword": "三菱電機",
       "symbol": "6503.T",
-      "date": "2026-11-09",
-      "close": 4824,
-      "previousClose": 4497,
-      "changePct": 7.27,
+      "date": "2026-11-10",
+      "close": 4908,
+      "previousClose": 4824,
+      "changePct": 1.74,
       "direction": "上昇"
     },
     {
       "keyword": "任天堂",
       "symbol": "7974.T",
-      "date": "2026-11-09",
-      "close": 8606,
-      "previousClose": 8178,
-      "changePct": 5.23,
-      "direction": "上昇"
+      "date": "2026-11-10",
+      "close": 8452,
+      "previousClose": 8606,
+      "changePct": -1.79,
+      "direction": "下落"
     },
     {
       "keyword": "信越化学工業",
       "symbol": "4063.T",
-      "date": "2026-11-09",
-      "close": 5441,
-      "previousClose": 5312,
-      "changePct": 2.43,
+      "date": "2026-11-10",
+      "close": 5658,
+      "previousClose": 5441,
+      "changePct": 3.99,
       "direction": "上昇"
     }
   ]

@@ -1630,6 +1630,38 @@
     "fetchedAt": "2026-11-24T01:36:16.351Z"
   },
   {
+    "keyword": "アストロスケール",
+    "date": "2026-11-25",
+    "posts24h": 585,
+    "searchTerms": [
+      "アストロスケール",
+      "アストロ"
+    ],
+    "pagesFetched": 20,
+    "capped": false,
+    "status": "success",
+    "methodVersion": "v1.0",
+    "termResults": [
+      {
+        "term": "アストロスケール",
+        "pagesFetched": 13,
+        "totalResultsAvailable": 863,
+        "uniquePostsFetched": 448,
+        "capped": false,
+        "status": "success"
+      },
+      {
+        "term": "アストロ",
+        "pagesFetched": 7,
+        "totalResultsAvailable": 321,
+        "uniquePostsFetched": 146,
+        "capped": false,
+        "status": "success"
+      }
+    ],
+    "fetchedAt": "2026-11-24T23:29:59.945Z"
+  },
+  {
     "keyword": "キオクシア",
     "date": "2026-10-08",
     "posts24h": 200,
@@ -2709,6 +2741,29 @@
       }
     ],
     "fetchedAt": "2026-11-24T01:33:47.266Z"
+  },
+  {
+    "keyword": "キオクシア",
+    "date": "2026-11-25",
+    "posts24h": 160,
+    "searchTerms": [
+      "キオクシア"
+    ],
+    "pagesFetched": 7,
+    "capped": false,
+    "status": "success",
+    "methodVersion": "v1.0",
+    "termResults": [
+      {
+        "term": "キオクシア",
+        "pagesFetched": 7,
+        "totalResultsAvailable": 4625,
+        "uniquePostsFetched": 160,
+        "capped": false,
+        "status": "success"
+      }
+    ],
+    "fetchedAt": "2026-11-24T23:27:33.051Z"
   },
   {
     "date": "2026-09-12",
@@ -4686,6 +4741,47 @@
     "fetchedAt": "2026-11-24T01:32:53.724Z"
   },
   {
+    "keyword": "ソフトバンクグループ",
+    "date": "2026-11-25",
+    "posts24h": 851,
+    "searchTerms": [
+      "ソフトバンクグループ",
+      "ソフバン",
+      "ソフトバンクG"
+    ],
+    "pagesFetched": 46,
+    "capped": true,
+    "status": "success",
+    "methodVersion": "v1.0",
+    "termResults": [
+      {
+        "term": "ソフトバンクグループ",
+        "pagesFetched": 20,
+        "totalResultsAvailable": 739,
+        "uniquePostsFetched": 353,
+        "capped": true,
+        "status": "success"
+      },
+      {
+        "term": "ソフバン",
+        "pagesFetched": 6,
+        "totalResultsAvailable": 317,
+        "uniquePostsFetched": 168,
+        "capped": false,
+        "status": "success"
+      },
+      {
+        "term": "ソフトバンクG",
+        "pagesFetched": 20,
+        "totalResultsAvailable": 229,
+        "uniquePostsFetched": 336,
+        "capped": true,
+        "status": "success"
+      }
+    ],
+    "fetchedAt": "2026-11-24T23:26:39.330Z"
+  },
+  {
     "date": "2026-10-01",
     "fetchedAt": "2026-10-01T14:17:46.487Z",
     "keyword": "データセクション",
@@ -6655,6 +6751,47 @@
     "fetchedAt": "2026-11-24T01:33:42.304Z"
   },
   {
+    "keyword": "データセクション",
+    "date": "2026-11-25",
+    "posts24h": 783,
+    "searchTerms": [
+      "データセクション",
+      "データセク",
+      "デーセク"
+    ],
+    "pagesFetched": 30,
+    "capped": true,
+    "status": "success",
+    "methodVersion": "v1.0",
+    "termResults": [
+      {
+        "term": "データセクション",
+        "pagesFetched": 20,
+        "totalResultsAvailable": 397,
+        "uniquePostsFetched": 449,
+        "capped": true,
+        "status": "success"
+      },
+      {
+        "term": "データセク",
+        "pagesFetched": 6,
+        "totalResultsAvailable": 48,
+        "uniquePostsFetched": 225,
+        "capped": false,
+        "status": "success"
+      },
+      {
+        "term": "デーセク",
+        "pagesFetched": 4,
+        "totalResultsAvailable": 232,
+        "uniquePostsFetched": 112,
+        "capped": false,
+        "status": "success"
+      }
+    ],
+    "fetchedAt": "2026-11-24T23:27:24.560Z"
+  },
+  {
     "date": "2026-09-12",
     "fetchedAt": "2026-09-12T14:44:59.793Z",
     "keyword": "ハーモニック・ドライブ",
@@ -8010,6 +8147,29 @@
       }
     ],
     "fetchedAt": "2026-11-24T01:32:19.998Z"
+  },
+  {
+    "keyword": "ファナック",
+    "date": "2026-11-25",
+    "posts24h": 689,
+    "searchTerms": [
+      "ファナック"
+    ],
+    "pagesFetched": 20,
+    "capped": true,
+    "status": "success",
+    "methodVersion": "v1.0",
+    "termResults": [
+      {
+        "term": "ファナック",
+        "pagesFetched": 20,
+        "totalResultsAvailable": 67,
+        "uniquePostsFetched": 689,
+        "capped": true,
+        "status": "success"
+      }
+    ],
+    "fetchedAt": "2026-11-24T23:25:42.201Z"
   },
   {
     "date": "2026-10-01",
@@ -9556,6 +9716,38 @@
       }
     ],
     "fetchedAt": "2026-11-24T01:33:24.941Z"
+  },
+  {
+    "keyword": "メタプラネット",
+    "date": "2026-11-25",
+    "posts24h": 188,
+    "searchTerms": [
+      "メタプラネット",
+      "メタプラ"
+    ],
+    "pagesFetched": 7,
+    "capped": false,
+    "status": "success",
+    "methodVersion": "v1.0",
+    "termResults": [
+      {
+        "term": "メタプラネット",
+        "pagesFetched": 3,
+        "totalResultsAvailable": 110,
+        "uniquePostsFetched": 84,
+        "capped": false,
+        "status": "success"
+      },
+      {
+        "term": "メタプラ",
+        "pagesFetched": 4,
+        "totalResultsAvailable": 178,
+        "uniquePostsFetched": 118,
+        "capped": false,
+        "status": "success"
+      }
+    ],
+    "fetchedAt": "2026-11-24T23:26:47.955Z"
   },
   {
     "date": "2026-09-12",
@@ -11491,6 +11683,47 @@
     "fetchedAt": "2026-11-24T01:35:08.041Z"
   },
   {
+    "keyword": "三菱重工業",
+    "date": "2026-11-25",
+    "posts24h": 630,
+    "searchTerms": [
+      "三菱重工業",
+      "三菱重工",
+      "三菱重"
+    ],
+    "pagesFetched": 27,
+    "capped": true,
+    "status": "success",
+    "methodVersion": "v1.0",
+    "termResults": [
+      {
+        "term": "三菱重工業",
+        "pagesFetched": 20,
+        "totalResultsAvailable": 66,
+        "uniquePostsFetched": 381,
+        "capped": true,
+        "status": "success"
+      },
+      {
+        "term": "三菱重工",
+        "pagesFetched": 3,
+        "totalResultsAvailable": 337,
+        "uniquePostsFetched": 96,
+        "capped": false,
+        "status": "success"
+      },
+      {
+        "term": "三菱重",
+        "pagesFetched": 4,
+        "totalResultsAvailable": 225,
+        "uniquePostsFetched": 155,
+        "capped": false,
+        "status": "success"
+      }
+    ],
+    "fetchedAt": "2026-11-24T23:29:08.700Z"
+  },
+  {
     "keyword": "三菱電機",
     "date": "2026-10-08",
     "posts24h": 109,
@@ -12995,6 +13228,38 @@
     "fetchedAt": "2026-11-24T01:35:35.322Z"
   },
   {
+    "keyword": "三菱電機",
+    "date": "2026-11-25",
+    "posts24h": 511,
+    "searchTerms": [
+      "三菱電機",
+      "三菱電"
+    ],
+    "pagesFetched": 22,
+    "capped": true,
+    "status": "success",
+    "methodVersion": "v1.0",
+    "termResults": [
+      {
+        "term": "三菱電機",
+        "pagesFetched": 20,
+        "totalResultsAvailable": 167,
+        "uniquePostsFetched": 445,
+        "capped": true,
+        "status": "success"
+      },
+      {
+        "term": "三菱電",
+        "pagesFetched": 2,
+        "totalResultsAvailable": 66,
+        "uniquePostsFetched": 66,
+        "capped": false,
+        "status": "success"
+      }
+    ],
+    "fetchedAt": "2026-11-24T23:29:35.572Z"
+  },
+  {
     "date": "2026-09-12",
     "fetchedAt": "2026-09-12T14:20:39.886Z",
     "keyword": "九州電力",
@@ -14080,6 +14345,29 @@
       }
     ],
     "fetchedAt": "2026-11-24T01:33:52.211Z"
+  },
+  {
+    "keyword": "任天堂",
+    "date": "2026-11-25",
+    "posts24h": 551,
+    "searchTerms": [
+      "任天堂"
+    ],
+    "pagesFetched": 20,
+    "capped": true,
+    "status": "success",
+    "methodVersion": "v1.0",
+    "termResults": [
+      {
+        "term": "任天堂",
+        "pagesFetched": 20,
+        "totalResultsAvailable": 1663,
+        "uniquePostsFetched": 551,
+        "capped": true,
+        "status": "success"
+      }
+    ],
+    "fetchedAt": "2026-11-24T23:27:57.679Z"
   },
   {
     "keyword": "信越化学工業",
@@ -16007,6 +16295,47 @@
       }
     ],
     "fetchedAt": "2026-11-24T01:34:33.257Z"
+  },
+  {
+    "keyword": "信越化学工業",
+    "date": "2026-11-25",
+    "posts24h": 1118,
+    "searchTerms": [
+      "信越化学工業",
+      "信越化学",
+      "信越化"
+    ],
+    "pagesFetched": 31,
+    "capped": false,
+    "status": "success",
+    "methodVersion": "v1.0",
+    "termResults": [
+      {
+        "term": "信越化学工業",
+        "pagesFetched": 10,
+        "totalResultsAvailable": 712,
+        "uniquePostsFetched": 369,
+        "capped": false,
+        "status": "success"
+      },
+      {
+        "term": "信越化学",
+        "pagesFetched": 19,
+        "totalResultsAvailable": 1407,
+        "uniquePostsFetched": 682,
+        "capped": false,
+        "status": "success"
+      },
+      {
+        "term": "信越化",
+        "pagesFetched": 2,
+        "totalResultsAvailable": 114,
+        "uniquePostsFetched": 78,
+        "capped": false,
+        "status": "success"
+      }
+    ],
+    "fetchedAt": "2026-11-24T23:28:35.644Z"
   },
   {
     "date": "2026-09-12",

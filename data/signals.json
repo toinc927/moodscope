@@ -1,37 +1,43 @@
 {
-  "updatedAt": "2026-11-22T20:44:32.134Z",
+  "updatedAt": "2026-11-24T01:39:24.736Z",
   "stocks": [
     {
       "keyword": "ファナック",
-      "currentMood": 0,
-      "moodChange": 24,
-      "priceChangePct": -5.33,
-      "signals": [],
-      "priority": "通常",
+      "currentMood": -54,
+      "moodChange": -54,
+      "priceChangePct": 7.29,
+      "signals": [
+        "警戒なのに株価上昇",
+        "Mood急落",
+        "悲観急変"
+      ],
+      "priority": "高",
       "status": "計算済み"
     },
     {
       "keyword": "ソフトバンクグループ",
-      "currentMood": -35,
+      "currentMood": -20,
       "moodChange": 15,
-      "priceChangePct": -14.48,
-      "signals": [],
-      "priority": "通常",
+      "priceChangePct": 8.2,
+      "signals": [
+        "警戒なのに株価上昇"
+      ],
+      "priority": "中",
       "status": "計算済み"
     },
     {
       "keyword": "メタプラネット",
-      "currentMood": 0,
-      "moodChange": -14,
-      "priceChangePct": -5.35,
+      "currentMood": 50,
+      "moodChange": 50,
+      "priceChangePct": 4.52,
       "signals": [],
       "priority": "通常",
       "status": "計算済み"
     },
     {
       "keyword": "データセクション",
-      "currentMood": -6,
-      "moodChange": 30,
+      "currentMood": -4,
+      "moodChange": 2,
       "priceChangePct": -7.93,
       "signals": [],
       "priority": "通常",

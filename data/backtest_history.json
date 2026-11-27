@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-26T23:00:35.403Z",
+  "updatedAt": "2026-11-27T22:40:15.804Z",
   "records": [
     {
       "date": "2026-10-07",
@@ -8890,8 +8890,8 @@
       "heat": 49,
       "negative": 67,
       "positive": 33,
-      "nextClose": null,
-      "nextReturnPct": null
+      "nextClose": 892,
+      "nextReturnPct": 13.2
     },
     {
       "date": "2026-11-26",
@@ -8908,8 +8908,8 @@
       "heat": 51,
       "negative": 66,
       "positive": 34,
-      "nextClose": null,
-      "nextReturnPct": null
+      "nextClose": 8450,
+      "nextReturnPct": 8.86
     },
     {
       "date": "2026-11-26",
@@ -8928,8 +8928,8 @@
       "heat": 45,
       "negative": 62,
       "positive": 38,
-      "nextClose": null,
-      "nextReturnPct": null
+      "nextClose": 2984.5,
+      "nextReturnPct": 3.13
     },
     {
       "date": "2026-11-26",
@@ -8950,8 +8950,8 @@
       "heat": 67,
       "negative": 79,
       "positive": 21,
-      "nextClose": null,
-      "nextReturnPct": null
+      "nextClose": 740,
+      "nextReturnPct": -1.07
     },
     {
       "date": "2026-11-26",
@@ -8971,8 +8971,8 @@
       "heat": 54,
       "negative": 87,
       "positive": 13,
-      "nextClose": null,
-      "nextReturnPct": null
+      "nextClose": 5339,
+      "nextReturnPct": 4.81
     },
     {
       "date": "2026-11-26",
@@ -8989,8 +8989,8 @@
       "heat": 73,
       "negative": 35,
       "positive": 65,
-      "nextClose": null,
-      "nextReturnPct": null
+      "nextClose": 183,
+      "nextReturnPct": 3.98
     },
     {
       "date": "2026-11-26",
@@ -9007,8 +9007,8 @@
       "heat": 74,
       "negative": 77,
       "positive": 23,
-      "nextClose": null,
-      "nextReturnPct": null
+      "nextClose": 2743,
+      "nextReturnPct": 4.61
     },
     {
       "date": "2026-11-26",
@@ -9025,8 +9025,8 @@
       "heat": 45,
       "negative": 60,
       "positive": 40,
-      "nextClose": null,
-      "nextReturnPct": null
+      "nextClose": 4678,
+      "nextReturnPct": 4.96
     },
     {
       "date": "2026-11-26",
@@ -9043,8 +9043,8 @@
       "heat": 48,
       "negative": 43,
       "positive": 57,
-      "nextClose": null,
-      "nextReturnPct": null
+      "nextClose": 9034,
+      "nextReturnPct": -0.53
     },
     {
       "date": "2026-11-26",
@@ -9059,6 +9059,186 @@
       "priority": "通常",
       "posts24h": 874,
       "heat": 50,
+      "negative": 0,
+      "positive": 100,
+      "nextClose": 5640,
+      "nextReturnPct": 2.25
+    },
+    {
+      "date": "2026-11-27",
+      "keyword": "アストロスケール",
+      "methodVersion": "v1.0",
+      "close": 892,
+      "mood": 38,
+      "label": "楽観",
+      "moodChange": null,
+      "priceChangePct": 13.2,
+      "signals": [],
+      "priority": "通常",
+      "posts24h": 579,
+      "heat": 48,
+      "negative": 31,
+      "positive": 69,
+      "nextClose": null,
+      "nextReturnPct": null
+    },
+    {
+      "date": "2026-11-27",
+      "keyword": "キオクシア",
+      "methodVersion": "v1.0",
+      "close": 8450,
+      "mood": -17,
+      "label": "中立",
+      "moodChange": null,
+      "priceChangePct": 8.86,
+      "signals": [],
+      "priority": "通常",
+      "posts24h": 139,
+      "heat": 45,
+      "negative": 59,
+      "positive": 41,
+      "nextClose": null,
+      "nextReturnPct": null
+    },
+    {
+      "date": "2026-11-27",
+      "keyword": "ソフトバンクグループ",
+      "methodVersion": "v1.0",
+      "close": 2984.5,
+      "mood": -18,
+      "label": "中立",
+      "moodChange": 5,
+      "priceChangePct": 3.13,
+      "signals": [],
+      "priority": "通常",
+      "posts24h": 651,
+      "heat": 50,
+      "negative": 59,
+      "positive": 41,
+      "nextClose": null,
+      "nextReturnPct": null
+    },
+    {
+      "date": "2026-11-27",
+      "keyword": "データセクション",
+      "methodVersion": "v1.0",
+      "close": 740,
+      "mood": 20,
+      "label": "楽観",
+      "moodChange": 78,
+      "priceChangePct": -1.07,
+      "signals": [],
+      "priority": "通常",
+      "posts24h": 998,
+      "heat": 77,
+      "negative": 40,
+      "positive": 60,
+      "nextClose": null,
+      "nextReturnPct": null
+    },
+    {
+      "date": "2026-11-27",
+      "keyword": "ファナック",
+      "methodVersion": "v1.0",
+      "close": 5339,
+      "mood": -6,
+      "label": "中立",
+      "moodChange": 68,
+      "priceChangePct": 4.81,
+      "signals": [],
+      "priority": "通常",
+      "posts24h": 641,
+      "heat": 51,
+      "negative": 53,
+      "positive": 47,
+      "nextClose": null,
+      "nextReturnPct": null
+    },
+    {
+      "date": "2026-11-27",
+      "keyword": "メタプラネット",
+      "methodVersion": "v1.0",
+      "close": 183,
+      "mood": 60,
+      "label": "浮かれてる",
+      "moodChange": 30,
+      "priceChangePct": 3.98,
+      "signals": [],
+      "priority": "通常",
+      "posts24h": 211,
+      "heat": 45,
+      "negative": 19,
+      "positive": 81,
+      "nextClose": null,
+      "nextReturnPct": null
+    },
+    {
+      "date": "2026-11-27",
+      "keyword": "三菱重工業",
+      "methodVersion": "v1.0",
+      "close": 2743,
+      "mood": -68,
+      "label": "総悲観",
+      "moodChange": null,
+      "priceChangePct": 4.61,
+      "signals": [],
+      "priority": "通常",
+      "posts24h": 666,
+      "heat": 56,
+      "negative": 84,
+      "positive": 16,
+      "nextClose": null,
+      "nextReturnPct": null
+    },
+    {
+      "date": "2026-11-27",
+      "keyword": "三菱電機",
+      "methodVersion": "v1.0",
+      "close": 4678,
+      "mood": -39,
+      "label": "警戒",
+      "moodChange": null,
+      "priceChangePct": 4.96,
+      "signals": [],
+      "priority": "通常",
+      "posts24h": 146,
+      "heat": 45,
+      "negative": 70,
+      "positive": 30,
+      "nextClose": null,
+      "nextReturnPct": null
+    },
+    {
+      "date": "2026-11-27",
+      "keyword": "任天堂",
+      "methodVersion": "v1.0",
+      "close": 9034,
+      "mood": 28,
+      "label": "楽観",
+      "moodChange": null,
+      "priceChangePct": -0.53,
+      "signals": [],
+      "priority": "通常",
+      "posts24h": 139,
+      "heat": 51,
+      "negative": 36,
+      "positive": 64,
+      "nextClose": null,
+      "nextReturnPct": null
+    },
+    {
+      "date": "2026-11-27",
+      "keyword": "信越化学工業",
+      "methodVersion": "v1.0",
+      "close": 5640,
+      "mood": 97,
+      "label": "浮かれてる",
+      "moodChange": null,
+      "priceChangePct": 2.25,
+      "signals": [],
+      "priority": "通常",
+      "posts24h": 761,
+      "heat": 45,
       "negative": 0,
       "positive": 100,
       "nextClose": null,
